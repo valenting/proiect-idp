@@ -10,12 +10,11 @@ public class StateManager {
 	private LineState ls = null;
 	
 	public StateManager(Mediator m) {
-		this.med = m;
-		// TODO
-		/*cs = new CircleState(m);
-		ss = new SquareState(m);
-		as = new ArrowState(m);
-		ls = new LineState(m);*/
+		med = m;
+		cs = new CircleState(med);
+		ss = new SquareState(med);
+		as = new ArrowState(med);
+		ls = new LineState(med);
 		currentState = ss;
 	}
 	

@@ -23,17 +23,9 @@ import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 import javax.swing.JTree;
 
-import worker.ExportTask;
-import buttons.CircleButton;
-import buttons.ClearButton;
-import buttons.ExportButton;
-import buttons.RectangleButton;
-import buttons.UndoButton;
-import drawings.JCanvas;
-
 import app.Mediator;
-import app.MouseApp;
-import app.MouseMoveApp;
+
+
 
 
 /**
@@ -64,6 +56,8 @@ public class Gui extends JFrame {
 		jp.setSize(400, 100);
 		getContentPane().add(jp);
 		med = new Mediator();
+		users = new JList();
+		users.add(new JLabel("Cvea"));
 
 		GridBagLayout gbl = new GridBagLayout();
 		gbl.layoutContainer(this);
@@ -84,7 +78,7 @@ public class Gui extends JFrame {
 		constraints.gridy = 0;
 		jp.add(users, constraints);
 		
-		setSize(new Dimension(500, 400));
+		setSize(new Dimension(1000, 600));
 		setVisible(true);
 
 		
