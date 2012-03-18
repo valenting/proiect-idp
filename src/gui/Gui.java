@@ -5,6 +5,10 @@ import javax.swing.JFrame;
 
 import app.Mediator;
 
+
+/**
+ * Graphical User Interface Implementation
+ */
 public class Gui extends JFrame{
 	private static final long serialVersionUID = 1L;
 	Mediator med = null;
