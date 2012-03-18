@@ -8,11 +8,15 @@ import java.awt.GridBagConstraints;
 import javax.swing.JToggleButton;
 import javax.swing.JLabel;
 import java.awt.Insets;
+
+import javax.swing.AbstractListModel;
 import javax.swing.JList;
+import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
 import javax.swing.JProgressBar;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.border.MatteBorder;
 import java.awt.Color;
 
@@ -61,24 +65,38 @@ public class GroupTab extends JPanel {
 		gbc_progressBar.gridy = 1;
 		add(progressBar, gbc_progressBar);
 		
-		JLabel lblJpanel = new JLabel("Jpanel");
-		lblJpanel.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
-		GridBagConstraints gbc_lblJpanel = new GridBagConstraints();
-		gbc_lblJpanel.fill = GridBagConstraints.BOTH;
-		gbc_lblJpanel.gridheight = 2;
-		gbc_lblJpanel.insets = new Insets(0, 0, 5, 5);
-		gbc_lblJpanel.gridx = 0;
-		gbc_lblJpanel.gridy = 1;
-		add(lblJpanel, gbc_lblJpanel);
+		JPanel panel = new JPanel();
+		panel.setBackground(Color.WHITE);
+		GridBagConstraints gbc_panel = new GridBagConstraints();
+		gbc_panel.gridheight = 2;
+		gbc_panel.insets = new Insets(0, 0, 5, 5);
+		gbc_panel.fill = GridBagConstraints.BOTH;
+		gbc_panel.gridx = 0;
+		gbc_panel.gridy = 1;
+		add(panel, gbc_panel);
 		
 		JList list = new JList();
+		list.setModel(new AbstractListModel() {
+			String[] values = new String[] {"User1", "User2", "User3","User1", "User2", "User3","User1", "User2", "User3"};
+			public int getSize() {
+				return values.length;
+			}
+			public Object getElementAt(int index) {
+				return values[index];
+			}
+		});
+		
 		GridBagConstraints gbc_list = new GridBagConstraints();
 		gbc_list.insets = new Insets(0, 0, 5, 0);
 		gbc_list.fill = GridBagConstraints.BOTH;
 		gbc_list.gridx = 1;
 		gbc_list.gridy = 2;
-		add(list, gbc_list);
+		JScrollPane p = new JScrollPane(list);
+		p.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		add(p, gbc_list);
 		
+		
+		// Discutii
 		JTextPane textPane = new JTextPane();
 		GridBagConstraints gbc_textPane = new GridBagConstraints();
 		gbc_textPane.insets = new Insets(0, 0, 5, 0);
@@ -86,7 +104,9 @@ public class GroupTab extends JPanel {
 		gbc_textPane.fill = GridBagConstraints.BOTH;
 		gbc_textPane.gridx = 0;
 		gbc_textPane.gridy = 3;
-		add(textPane, gbc_textPane);
+		p = new JScrollPane(textPane);
+		p.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		add(p, gbc_textPane);
 		
 		
 		
