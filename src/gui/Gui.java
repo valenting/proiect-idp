@@ -78,7 +78,7 @@ public class Gui extends JFrame {
 		constraints.gridy = 0;
 		jp.add(users, constraints);
 		
-		setSize(new Dimension(1000, 600));
+		setSize(new Dimension(1100, 700));
 		setVisible(true);
 
 		
