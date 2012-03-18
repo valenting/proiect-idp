@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<project name="Proiect-IDP" basedir="." default="run">     
+    <!-- Properties -->
+ 
+    <property name="src.dir" value="src" />
+    <property name="build.dir" value="build" />
+ 
+    <!-- Targets -->
+ 
+    <target name="compile">
+        <mkdir dir="${build.dir}" />
+        <javac srcdir="${src.dir}" destdir="${build.dir}" includeantruntime="false"/>
+    </target>
+ 
+    <target name="run" depends="compile">
+        <java classname="app.Main" fork="true">
+            <classpath>
+                <pathelement location="${build.dir}" />
+            </classpath>
+        </java>
+    </target>
+ 
+    <target name="clean">
+        <delete dir="${build.dir}" />
+    </target>     
+</project>
