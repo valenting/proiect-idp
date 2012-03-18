@@ -119,7 +119,7 @@ public class Gui extends JFrame {
 		
 		tabbedPane.addTab("tab1", new GroupTab());
 		
-		setSize(1100, 800);
+		setSize(1100, 700);
 		setVisible(true);
 	}
 }
