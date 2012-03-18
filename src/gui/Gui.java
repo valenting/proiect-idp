@@ -9,7 +9,7 @@ import app.Mediator;
 /**
  * Graphical User Interface Implementation
  */
-public class Gui extends JFrame{
+public class Gui extends JFrame {
 	private static final long serialVersionUID = 1L;
 	Mediator med = null;
 	public Gui(Mediator m) {
