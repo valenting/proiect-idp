@@ -2,7 +2,7 @@ package app;
 
 import java.util.Vector;
 
-import gui.Drawing;
+import gui.drawings.Drawing;
 public class Mediator {
 	Vector<Drawing> drawings;
 	StateManager stateMgr;

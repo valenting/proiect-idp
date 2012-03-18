@@ -5,8 +5,6 @@ import javax.swing.JPanel;
 import java.awt.GridBagLayout;
 import javax.swing.JToolBar;
 import java.awt.GridBagConstraints;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 import javax.swing.JToggleButton;
 import javax.swing.JLabel;
 import java.awt.Insets;
@@ -15,15 +13,18 @@ import javax.swing.JTextPane;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
 import javax.swing.JProgressBar;
+import javax.swing.border.MatteBorder;
+import java.awt.Color;
 
 public class GroupTab extends JPanel {
+	private static final long serialVersionUID = -163956933872151109L;
 	private JTextField textField;
 	public GroupTab() {
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{0, 0, 0};
 		gridBagLayout.rowHeights = new int[]{0, 0, 0, 0, 0, 0};
-		gridBagLayout.columnWeights = new double[]{1.0, 1.0, Double.MIN_VALUE};
-		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 1.0, 1.0, Double.MIN_VALUE, 0.0};
+		gridBagLayout.columnWeights = new double[]{1.0, 0.1, Double.MIN_VALUE};
+		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 1.0, 0.5, Double.MIN_VALUE, 0.0};
 		setLayout(gridBagLayout);
 		
 		JToolBar toolBar = new JToolBar();
@@ -61,10 +62,13 @@ public class GroupTab extends JPanel {
 		add(progressBar, gbc_progressBar);
 		
 		JLabel lblJpanel = new JLabel("Jpanel");
+		lblJpanel.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
 		GridBagConstraints gbc_lblJpanel = new GridBagConstraints();
+		gbc_lblJpanel.fill = GridBagConstraints.BOTH;
+		gbc_lblJpanel.gridheight = 2;
 		gbc_lblJpanel.insets = new Insets(0, 0, 5, 5);
 		gbc_lblJpanel.gridx = 0;
-		gbc_lblJpanel.gridy = 2;
+		gbc_lblJpanel.gridy = 1;
 		add(lblJpanel, gbc_lblJpanel);
 		
 		JList list = new JList();
