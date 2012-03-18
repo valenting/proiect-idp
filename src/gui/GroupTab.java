@@ -10,6 +10,7 @@ import javax.swing.JLabel;
 import java.awt.Insets;
 
 import javax.swing.AbstractListModel;
+import javax.swing.ImageIcon;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
@@ -39,16 +40,17 @@ public class GroupTab extends JPanel {
 		gbc_toolBar.gridy = 0;
 		add(toolBar, gbc_toolBar);
 		
-		JToggleButton tglbtnA = new JToggleButton("A");
+		JToggleButton tglbtnA = new JToggleButton(new ImageIcon("images/circle.jpg"));
 		toolBar.add(tglbtnA);
 		
-		JToggleButton tglbtnB = new JToggleButton("B");
+		JToggleButton tglbtnB = new JToggleButton(new ImageIcon("images/arrow.png"));
 		toolBar.add(tglbtnB);
 		
-		JToggleButton tglbtnC = new JToggleButton("C");
+		ImageIcon i = new ImageIcon("images/line.png");
+		JToggleButton tglbtnC = new JToggleButton(i);
 		toolBar.add(tglbtnC);
 		
-		JToggleButton tglbtnD = new JToggleButton("D");
+		JToggleButton tglbtnD = new JToggleButton(new ImageIcon("images/square.gif"));
 		toolBar.add(tglbtnD);
 		
 		JButton btnSaveWork = new JButton("Save work");
