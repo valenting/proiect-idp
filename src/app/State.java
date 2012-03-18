@@ -1,9 +1,9 @@
 package app;
 
-import gui.Arrow;
-import gui.Circle;
-import gui.Line;
-import gui.Square;
+import gui.drawings.Arrow;
+import gui.drawings.Circle;
+import gui.drawings.Line;
+import gui.drawings.Square;
 
 public class State {
 	public void mouseClick(int x, int y) {
