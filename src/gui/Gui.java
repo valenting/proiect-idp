@@ -2,13 +2,9 @@ package gui;
 
 import gui.buttons.LogOutButton;
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import javax.swing.JComboBox;
 import java.awt.GridBagLayout;
 import javax.swing.JList;
 import java.awt.GridBagConstraints;
@@ -21,8 +17,6 @@ import javax.swing.JTree;
 import javax.swing.JTabbedPane;
 import javax.swing.JButton;
 import javax.swing.ScrollPaneConstants;
-
-import sun.awt.VerticalBagLayout;
 
 import app.Mediator;
 import java.awt.event.ActionListener;

@@ -1,9 +1,7 @@
 package gui.buttons;
 
 import java.awt.event.ActionListener;
-
 import javax.swing.JButton;
-import javax.swing.JToggleButton;
 
 import app.Command;
 import app.Mediator;

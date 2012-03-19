@@ -17,7 +17,6 @@ import javax.swing.JLabel;
 import java.awt.Insets;
 
 import javax.swing.AbstractListModel;
-import javax.swing.ImageIcon;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
@@ -25,12 +24,8 @@ import javax.swing.JComboBox;
 import javax.swing.JTextField;
 import javax.swing.JProgressBar;
 import javax.swing.ScrollPaneConstants;
-import javax.swing.border.MatteBorder;
 
 import app.Mediator;
-
-import java.awt.Color;
-import java.awt.Dimension;
 
 public class GroupTab extends JPanel {
 	private static final long serialVersionUID = -163956933872151109L;
