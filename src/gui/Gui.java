@@ -1,5 +1,7 @@
 package gui;
 
+import gui.buttons.LogOutButton;
+
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
@@ -102,7 +104,7 @@ public class Gui extends JFrame implements ActionListener {
 		panel.setLayout(gbl_panel);
 		
 		// Log Out button
-		JLabel lblUser = new JLabel("User:");
+		JLabel lblUser = new JLabel("Connected User: username");
 		lblUser.setHorizontalAlignment(SwingConstants.RIGHT);
 		GridBagConstraints gbc_lblUser = new GridBagConstraints();
 		gbc_lblUser.insets = new Insets(0, 0, 5, 5);
@@ -110,11 +112,7 @@ public class Gui extends JFrame implements ActionListener {
 		gbc_lblUser.gridy = 0;
 		panel.add(lblUser, gbc_lblUser);
 		
-		JButton btnLogout = new JButton("LogOut");
-		btnLogout.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
+		JButton btnLogout = new LogOutButton(this, m);
 		GridBagConstraints gbc_btnLogout = new GridBagConstraints();
 		gbc_btnLogout.ipadx = 5;
 		gbc_btnLogout.anchor = GridBagConstraints.NORTHEAST;
@@ -158,13 +156,12 @@ public class Gui extends JFrame implements ActionListener {
 		contentPane.add(tabbedPane, gbc_tabbedPane);
 		
 		tabbedPane.addTab("tab1", new GroupTab(this,m));
-		
+		tabbedPane.addTab("tab2", new GroupTab(this,m));
 		setSize(1100, 700);
 		setVisible(true);
 	}
 
 
-	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		

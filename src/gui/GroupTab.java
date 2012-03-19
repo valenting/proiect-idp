@@ -34,6 +34,7 @@ public class GroupTab extends JPanel {
 	private static final long serialVersionUID = -163956933872151109L;
 	private JTextField textField;
 	public GroupTab(Gui g, Mediator m) {
+		super();
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{0, 0, 0};
 		gridBagLayout.rowHeights = new int[]{0, 0, 0, 0, 0, 0};
