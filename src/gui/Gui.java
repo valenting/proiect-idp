@@ -61,7 +61,7 @@ public class Gui extends JFrame {
 		JList list = new JList();
 		
 		list.setModel(new AbstractListModel() {
-			String[] values = new String[] {"User1", "User2", "User3","User1", "User2", "User3","User1", "User2", "User3"};
+			String[] values = new String[] {"User1", "User2"/*, "User3","User1", "User2", "User3","User1", "User2", "User3"*/};
 			public int getSize() {
 				return values.length;
 			}
