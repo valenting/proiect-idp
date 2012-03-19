@@ -24,7 +24,7 @@ public class LogOutButton extends JButton implements Command {
 	}
 
 	public void execute() {
-		// TODO: 
+		med.logOut();
 	}
 
 }

@@ -45,15 +45,19 @@ public class Gui extends JFrame implements ActionListener {
 	JPopupMenu groupMenu;
 	
 	private JPanel contentPane;
-	
-	
+	private JPanel loginPane;
+	private JLabel lblUser;
 	public Gui(Mediator m) {
 		super("Whiteboard");
+		med = m;
+		med.setGui(this);
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
+		loginPane = new Login(this, m);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		setContentPane(contentPane);
+		setContentPane(loginPane);
 		GridBagLayout gbl_contentPane = new GridBagLayout();
 		gbl_contentPane.columnWidths = new int[]{30, 0, 0};
 		gbl_contentPane.rowHeights = new int[]{0, 0, 0, 0};
@@ -105,7 +109,7 @@ public class Gui extends JFrame implements ActionListener {
 		panel.setLayout(gbl_panel);
 		
 		// Log Out button
-		JLabel lblUser = new JLabel("Connected User: username");
+		lblUser = new JLabel("Connected User: ");
 		lblUser.setHorizontalAlignment(SwingConstants.RIGHT);
 		GridBagConstraints gbc_lblUser = new GridBagConstraints();
 		gbc_lblUser.insets = new Insets(0, 0, 5, 5);
@@ -162,9 +166,21 @@ public class Gui extends JFrame implements ActionListener {
 		setVisible(true);
 	}
 
+	public void loginSuccessful(String username) {
+		setContentPane(contentPane);
+		lblUser.setText("Connected User: "+username);
+		this.validate();
+		
+	}
 
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		((Command)e.getSource()).execute();
+	}
+
+	public void logOut() {
+		setContentPane(loginPane);
+		validate();
+		
 	}
 }

@@ -5,6 +5,7 @@ import gui.buttons.CircleButton;
 import gui.buttons.LineButton;
 import gui.buttons.RectangleButton;
 import gui.buttons.SaveWorkButton;
+import gui.buttons.SendButton;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -78,8 +79,8 @@ public class GroupTab extends JPanel {
 		gbc_progressBar.gridy = 1;
 		add(progressBar, gbc_progressBar);
 		
-		JPanel panel = new JPanel();
-		panel.setBackground(Color.WHITE);
+		// Canvas - Drawing area
+		JPanel panel = new JCanvas(m);
 		GridBagConstraints gbc_panel = new GridBagConstraints();
 		gbc_panel.gridheight = 2;
 		gbc_panel.insets = new Insets(0, 0, 5, 5);
@@ -155,7 +156,7 @@ public class GroupTab extends JPanel {
 		add(textField, gbc_textField);
 		textField.setColumns(10);
 		
-		JButton btnSend = new JButton("Send");
+		JButton btnSend = new SendButton(g, m);
 		GridBagConstraints gbc_btnSend = new GridBagConstraints();
 		gbc_btnSend.gridx = 1;
 		gbc_btnSend.gridy = 5;
