@@ -20,6 +20,7 @@ import javax.swing.JProgressBar;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.border.MatteBorder;
 import java.awt.Color;
+import java.awt.Dimension;
 
 public class GroupTab extends JPanel {
 	private static final long serialVersionUID = -163956933872151109L;
@@ -40,17 +41,17 @@ public class GroupTab extends JPanel {
 		gbc_toolBar.gridy = 0;
 		add(toolBar, gbc_toolBar);
 		
-		JToggleButton tglbtnA = new JToggleButton(new ImageIcon("images/circle.jpg"));
+		
+		JToggleButton tglbtnA = new JToggleButton(new ImageIcon("src/gui/images/square.gif"));
 		toolBar.add(tglbtnA);
 		
-		JToggleButton tglbtnB = new JToggleButton(new ImageIcon("images/arrow.png"));
+		JToggleButton tglbtnB = new JToggleButton(new ImageIcon("src/gui/images/square.gif"));
 		toolBar.add(tglbtnB);
 		
-		ImageIcon i = new ImageIcon("images/line.png");
-		JToggleButton tglbtnC = new JToggleButton(i);
+		JToggleButton tglbtnC = new JToggleButton(new ImageIcon("src/gui/images/square.gif"));
 		toolBar.add(tglbtnC);
 		
-		JToggleButton tglbtnD = new JToggleButton(new ImageIcon("images/square.gif"));
+		JToggleButton tglbtnD = new JToggleButton(new ImageIcon("src/gui/images/square.gif"));
 		toolBar.add(tglbtnD);
 		
 		JButton btnSaveWork = new JButton("Save work");
