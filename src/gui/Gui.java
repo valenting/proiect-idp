@@ -30,6 +30,7 @@ import java.awt.event.ActionEvent;
 import java.awt.Dimension;
 import javax.swing.SwingConstants;
 
+import app.Command;
 
 /**
  * Graphical User Interface Implementation
@@ -164,6 +165,6 @@ public class Gui extends JFrame implements ActionListener {
 
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
-		
+		((Command)e.getSource()).execute();
 	}
 }

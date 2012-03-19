@@ -4,6 +4,7 @@ import gui.buttons.ArrowButton;
 import gui.buttons.CircleButton;
 import gui.buttons.LineButton;
 import gui.buttons.RectangleButton;
+import gui.buttons.SaveWorkButton;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -63,7 +64,7 @@ public class GroupTab extends JPanel {
 		JToggleButton tglbtnD = new LineButton(g, m);
 		toolBar.add(tglbtnD);
 		
-		JButton btnSaveWork = new JButton("Save work");
+		JButton btnSaveWork = new SaveWorkButton(g, m);
 		GridBagConstraints gbc_btnSaveWork = new GridBagConstraints();
 		gbc_btnSaveWork.insets = new Insets(0, 0, 5, 0);
 		gbc_btnSaveWork.gridx = 1;
