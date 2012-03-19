@@ -25,12 +25,14 @@ import sun.awt.VerticalBagLayout;
 import app.Mediator;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.Dimension;
+import javax.swing.SwingConstants;
 
 
 /**
  * Graphical User Interface Implementation
  */
-public class Gui extends JFrame {
+public class Gui extends JFrame implements ActionListener {
 	private static final long serialVersionUID = 1L;
 	Mediator med = null;
 	
@@ -79,14 +81,16 @@ public class Gui extends JFrame {
 		gbc_list.gridx = 0;
 		gbc_list.gridy = 0;
 		JScrollPane p = new JScrollPane(list);
+		p.setPreferredSize(new Dimension(0, 0));
 		p.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		contentPane.add(p, gbc_list);
 		
 		// Create Group & Log out button
 		JPanel panel = new JPanel();
 		GridBagConstraints gbc_panel = new GridBagConstraints();
+		gbc_panel.anchor = GridBagConstraints.EAST;
 		gbc_panel.insets = new Insets(0, 0, 5, 0);
-		gbc_panel.fill = GridBagConstraints.HORIZONTAL;
+		gbc_panel.fill = GridBagConstraints.VERTICAL;
 		gbc_panel.gridx = 1;
 		gbc_panel.gridy = 0;
 		contentPane.add(panel, gbc_panel);
@@ -99,6 +103,7 @@ public class Gui extends JFrame {
 		
 		// Log Out button
 		JLabel lblUser = new JLabel("User:");
+		lblUser.setHorizontalAlignment(SwingConstants.RIGHT);
 		GridBagConstraints gbc_lblUser = new GridBagConstraints();
 		gbc_lblUser.insets = new Insets(0, 0, 5, 5);
 		gbc_lblUser.gridx = 4;
@@ -111,6 +116,8 @@ public class Gui extends JFrame {
 			}
 		});
 		GridBagConstraints gbc_btnLogout = new GridBagConstraints();
+		gbc_btnLogout.ipadx = 5;
+		gbc_btnLogout.anchor = GridBagConstraints.NORTHEAST;
 		gbc_btnLogout.insets = new Insets(0, 0, 5, 0);
 		gbc_btnLogout.gridx = 5;
 		gbc_btnLogout.gridy = 0;
@@ -124,6 +131,7 @@ public class Gui extends JFrame {
 			}
 		});
 		GridBagConstraints gbc_btnCreateGroup = new GridBagConstraints();
+		gbc_btnCreateGroup.anchor = GridBagConstraints.WEST;
 		gbc_btnCreateGroup.insets = new Insets(0, 0, 5, 0);
 		gbc_btnCreateGroup.gridx = 5;
 		gbc_btnCreateGroup.gridy = 2;
@@ -149,9 +157,16 @@ public class Gui extends JFrame {
 		gbc_tabbedPane.gridy = 1;
 		contentPane.add(tabbedPane, gbc_tabbedPane);
 		
-		tabbedPane.addTab("tab1", new GroupTab());
+		tabbedPane.addTab("tab1", new GroupTab(this,m));
 		
 		setSize(1100, 700);
 		setVisible(true);
+	}
+
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 }
