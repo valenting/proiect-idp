@@ -1,5 +1,10 @@
 package gui;
 
+import gui.buttons.ArrowButton;
+import gui.buttons.CircleButton;
+import gui.buttons.LineButton;
+import gui.buttons.RectangleButton;
+
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import java.awt.GridBagLayout;
@@ -19,13 +24,16 @@ import javax.swing.JTextField;
 import javax.swing.JProgressBar;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.border.MatteBorder;
+
+import app.Mediator;
+
 import java.awt.Color;
 import java.awt.Dimension;
 
 public class GroupTab extends JPanel {
 	private static final long serialVersionUID = -163956933872151109L;
 	private JTextField textField;
-	public GroupTab() {
+	public GroupTab(Gui g, Mediator m) {
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{0, 0, 0};
 		gridBagLayout.rowHeights = new int[]{0, 0, 0, 0, 0, 0};
@@ -42,16 +50,16 @@ public class GroupTab extends JPanel {
 		add(toolBar, gbc_toolBar);
 		
 		
-		JToggleButton tglbtnA = new JToggleButton(new ImageIcon("src/gui/images/square.gif"));
+		JToggleButton tglbtnA = new CircleButton(g, m);
 		toolBar.add(tglbtnA);
 		
-		JToggleButton tglbtnB = new JToggleButton(new ImageIcon("src/gui/images/square.gif"));
+		JToggleButton tglbtnB = new RectangleButton(g, m);
 		toolBar.add(tglbtnB);
 		
-		JToggleButton tglbtnC = new JToggleButton(new ImageIcon("src/gui/images/square.gif"));
+		JToggleButton tglbtnC = new ArrowButton(g,m);
 		toolBar.add(tglbtnC);
 		
-		JToggleButton tglbtnD = new JToggleButton(new ImageIcon("src/gui/images/square.gif"));
+		JToggleButton tglbtnD = new LineButton(g, m);
 		toolBar.add(tglbtnD);
 		
 		JButton btnSaveWork = new JButton("Save work");
@@ -100,14 +108,16 @@ public class GroupTab extends JPanel {
 		
 		
 		// Discutii
-		JTextPane textPane = new JTextPane();
+		JTextPane txtpnHello = new JTextPane();
+		txtpnHello.setText("hello");
+		txtpnHello.setEditable(false);
 		GridBagConstraints gbc_textPane = new GridBagConstraints();
 		gbc_textPane.insets = new Insets(0, 0, 5, 0);
 		gbc_textPane.gridwidth = 2;
 		gbc_textPane.fill = GridBagConstraints.BOTH;
 		gbc_textPane.gridx = 0;
 		gbc_textPane.gridy = 3;
-		p = new JScrollPane(textPane);
+		p = new JScrollPane(txtpnHello);
 		p.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		add(p, gbc_textPane);
 		
