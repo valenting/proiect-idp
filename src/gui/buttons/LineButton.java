@@ -15,10 +15,10 @@ public class LineButton extends JToggleButton implements Command {
 	Mediator med;
 
 	public LineButton(ActionListener act, Mediator md) {
-		super(new ImageIcon("src/gui/images/square.gif"));
+		super(new ImageIcon("src/gui/images/line.gif"));
 		setSize(new Dimension(35, 35));
 		setBorderPainted(true);
-		setToolTipText("Draw circle");
+		setToolTipText("Draw line");
 		addActionListener(act);
 		med = md;
 	}

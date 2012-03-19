@@ -15,7 +15,7 @@ public class CircleButton extends JToggleButton implements Command {
 	Mediator med;
 
 	public CircleButton(ActionListener act, Mediator md) {
-		super(new ImageIcon("src/gui/images/square.gif"));
+		super(new ImageIcon("src/gui/images/circle.gif"));
 		setSize(new Dimension(35, 35));
 		setBorderPainted(true);
 		setToolTipText("Draw circle");

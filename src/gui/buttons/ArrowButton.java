@@ -15,10 +15,10 @@ public class ArrowButton extends JToggleButton implements Command {
 	Mediator med;
 
 	public ArrowButton(ActionListener act, Mediator md) {
-		super(new ImageIcon("src/gui/images/square.gif"));
+		super(new ImageIcon("src/gui/images/arrow.gif"));
 		setSize(new Dimension(35, 35));
 		setBorderPainted(true);
-		setToolTipText("Draw circle");
+		setToolTipText("Draw arrow");
 		addActionListener(act);
 		med = md;
 	}

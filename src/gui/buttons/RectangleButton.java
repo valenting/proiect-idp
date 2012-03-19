@@ -18,7 +18,7 @@ public class RectangleButton extends JToggleButton implements Command {
 		super(new ImageIcon("src/gui/images/square.gif"));
 		setSize(new Dimension(35, 35));
 		setBorderPainted(true);
-		setToolTipText("Draw circle");
+		setToolTipText("Draw rectangle");
 		addActionListener(act);
 		med = md;
 	}
