@@ -12,7 +12,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
-public class GroupTree extends JTree {
+public class GroupTree extends JTree implements ActionListener {
 	private static final long serialVersionUID = 1L;
 	DefaultMutableTreeNode root;
 	private JPopupMenu menu = new JPopupMenu("Popup");
@@ -30,22 +30,30 @@ public class GroupTree extends JTree {
 						System.out.println(tp);
 						setSelectionPath(tp);
 					}
+					
+					// TODO : eliminare setVisible(false)
 					menu.show(e.getComponent(), e.getX(), e.getY());
 				}
 			}
 		});
 
-		String letters = "ABCDEF";
+		JMenuItem item = new JMenuItem("Add User");
+		item.addActionListener(this);
+		menu.add(item);
+		
+		item = new JMenuItem("Join Group");
+		item.addActionListener(this);
+		menu.add(item);
+		
+		item = new JMenuItem("Leave Group");
+		item.addActionListener(this);
+		menu.add(item);
+		
+	}
 
-		for (final char letter : letters.toCharArray()) {
-			JMenuItem item = new JMenuItem(String.valueOf(letter));
-			item.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					JOptionPane.showMessageDialog(GroupTree.this, "abc" );
-				}
-			});
-			menu.add(item);
-		}
-
+	@Override
+	public void actionPerformed(ActionEvent arg0) {
+		// TODO
+		
 	}
 }
