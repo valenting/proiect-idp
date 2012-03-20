@@ -13,15 +13,15 @@ import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
+import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
 public class GroupTree extends JTree {
 	DefaultMutableTreeNode root;
 	private JPopupMenu menu = new JPopupMenu("Popup");
-	public GroupTree() {
-		super(new DefaultMutableTreeNode("Groups"));
-		root = (DefaultMutableTreeNode) this.getModel().getRoot();
+	public GroupTree(TreeModel model) {
+		super(model);
 		this.setToggleClickCount(1);
 		this.add(new JPopupMenu());
 		
@@ -50,21 +50,5 @@ public class GroupTree extends JTree {
             menu.add(item);
         }
 
-	}
-	
-	public void addGroup(String groupName) {
-		root.add(new DefaultMutableTreeNode(groupName, true));
-		setModel(new DefaultTreeModel(root));
-	}
-	
-	public void addUser(String group, String user) {
-		for (Enumeration<DefaultMutableTreeNode> e = root.children(); e.hasMoreElements();) {
-			DefaultMutableTreeNode t = e.nextElement();
-			if (t.getUserObject().equals(group)) {
-				t.add(new DefaultMutableTreeNode(user, false));
-				setModel(new DefaultTreeModel(root));
-				return;
-			}
-		}
 	}
 }

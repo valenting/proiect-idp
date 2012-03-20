@@ -62,7 +62,7 @@ public class GroupDialog extends JDialog {
 			lblStatus = new JLabel("");
 			GridBagConstraints gbc_lblStatus = new GridBagConstraints();
 			gbc_lblStatus.insets = new Insets(0, 0, 0, 5);
-			gbc_lblStatus.gridx = 3;
+			gbc_lblStatus.gridx = 2;
 			gbc_lblStatus.gridy = 7;
 			contentPanel.add(lblStatus, gbc_lblStatus);
 		}
@@ -80,10 +80,11 @@ public class GroupDialog extends JDialog {
 					public void actionPerformed(ActionEvent arg0) {
 						String t = textField.getText();
 						if (med.groupExists(t)) {
-							lblStatus = new JLabel("Group Exists");
+							lblStatus.setText("Group Exists");
 						} else {
 							System.out.println("group:"+t);
 							med.addGroup(t); 
+							dispose();
 						}
 						
 					}
@@ -97,8 +98,7 @@ public class GroupDialog extends JDialog {
 					
 					@Override
 					public void actionPerformed(ActionEvent e) {
-						// TODO Auto-generated method stub
-						
+						dispose();
 					}
 				});
 			}

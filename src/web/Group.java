@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.util.Hashtable;
 import java.util.Vector;
 
+import javax.swing.DefaultListModel;
+
 
 public class Group {
 	String name;
@@ -11,6 +13,11 @@ public class Group {
 	Vector<String> users;
 	Hashtable<String, Color> colors;
 	private static Color[] available = { Color.BLUE, Color.CYAN, Color.DARK_GRAY, Color.GRAY, Color.GREEN, Color.LIGHT_GRAY, Color.MAGENTA, Color.ORANGE, Color.PINK, Color.RED };
+	
+	
+	
+	DefaultListModel userColorModel; // TODO
+	
 	public Group(String name, String user) {
 		this.name = name; 
 		users = new Vector<String>();

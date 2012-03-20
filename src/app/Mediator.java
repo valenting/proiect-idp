@@ -10,6 +10,7 @@ import java.util.Vector;
 import javax.swing.DefaultListModel;
 import javax.swing.JTree;
 import javax.swing.ListModel;
+import javax.swing.tree.TreeModel;
 
 import gui.GroupTab;
 import gui.GroupTree;
@@ -21,9 +22,8 @@ public class Mediator {
 	Authenticator a;
 	Communicator comm;
 	Gui gui;
-	DefaultListModel userListModel;
 	Hashtable<Object, GroupTab> groupTab;
-	GroupTree groupTree;
+	//GroupTree groupTree;
 	GroupManager man;
 	String username;
 	public Mediator() {
@@ -62,14 +62,8 @@ public class Mediator {
 		gui.loginSuccessful(user);
 		this.username = user;
 		man.connectUser(user);
-		for (String usr: man.getConnectedUsers())
-			userListModel.addElement(usr);
+
 		
-		for (Group g: man.getGroups()) {
-			groupTree.addGroup(g.getName()); 
-			for (String usr: g.users())
-				groupTree.addUser(g.getName(), usr);
-		}
 	}
 
 	public void loginError() {
@@ -87,9 +81,6 @@ public class Mediator {
 		gui.logOut();
 	}
 
-	public void setUserModel(DefaultListModel mod) {
-		userListModel = mod;
-	}
 
 	public void addGroupElement(Object o, GroupTab t) {
 		groupTab.put(o, t);
@@ -110,9 +101,6 @@ public class Mediator {
 		gui.groupDialog();
 	}
 
-	public void registerGroupTree (GroupTree tree) {
-		groupTree = tree;
-	}
 
 	public boolean groupExists(String t) {
 		return man.groupExists(t);
@@ -121,9 +109,14 @@ public class Mediator {
 	public void addGroup(String t) {
 		System.out.println(username);
 		man.addGroup(t, username); 
-		
-		groupTree.addGroup(t); // TODO: watch events
-		groupTree.addUser(t, username);
+	}
+	
+	public TreeModel getTreeModel() {
+		return man.getTreeModel();
+	}
+	
+	public ListModel getListModel() {
+		return man.getListModel();
 	}
 }
 
