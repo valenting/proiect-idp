@@ -1,7 +1,9 @@
 package app;
 import web.Authenticator;
 import web.Communicator;
+import web.GroupManager;
 
+import web.Group;
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -22,12 +24,15 @@ public class Mediator {
 	DefaultListModel userListModel;
 	Hashtable<Object, GroupTab> groupTab;
 	GroupTree groupTree;
+	GroupManager man;
+	String username;
 	public Mediator() {
 		drawings = new Vector<Drawing>();
 		stateMgr = new StateManager(this);
 		a = new Authenticator(this);
 		groupTab = new Hashtable<Object, GroupTab>();
 		comm = new Communicator();
+		man = new GroupManager();
 	}
 	
 	public void addDrawing(Drawing d) {
@@ -55,7 +60,16 @@ public class Mediator {
 
 	public void loginSuccessful(String user) {
 		gui.loginSuccessful(user);
-		userListModel.addElement(user); // TODO authenticator/communicator should do this
+		this.username = user;
+		man.connectUser(user);
+		for (String usr: man.getConnectedUsers())
+			userListModel.addElement(usr);
+		
+		for (Group g: man.getGroups()) {
+			groupTree.addGroup(g.getName()); 
+			for (String usr: g.users())
+				groupTree.addUser(g.getName(), usr);
+		}
 	}
 
 	public void loginError() {
@@ -64,11 +78,12 @@ public class Mediator {
 	}
 
 	public void setGui(Gui gui2) {
-		// TODO Auto-generated method stub
 		gui = gui2;
 	}
 
 	public void logOut() {
+		for (Group g: man.getGroups())
+			g.delUser(username);
 		gui.logOut();
 	}
 
@@ -89,16 +104,26 @@ public class Mediator {
 		GroupTab t = getGroupTab(o);
 		t.popOthers(o);
 		// TODO - set state pe stateMgr al tabului
-		
 	}
 
 	public void createGroup() {
-		groupTree.addGroup("kjdnfladksjn");
-		groupTree.addUser("next", "test");
+		gui.groupDialog();
 	}
 
 	public void registerGroupTree (GroupTree tree) {
 		groupTree = tree;
+	}
+
+	public boolean groupExists(String t) {
+		return man.groupExists(t);
+	}
+
+	public void addGroup(String t) {
+		System.out.println(username);
+		man.addGroup(t, username); 
+		
+		groupTree.addGroup(t); // TODO: watch events
+		groupTree.addUser(t, username);
 	}
 }
 

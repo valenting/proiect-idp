@@ -111,8 +111,6 @@ public class GeneralGui extends JPanel {
 		
 		// Group list
 		GroupTree tree = new GroupTree();
-		tree.addGroup("test");
-		tree.addGroup("next");
 		GridBagConstraints gbc_tree = new GridBagConstraints();
 		gbc_tree.insets = new Insets(0, 0, 0, 5);
 		gbc_tree.fill = GridBagConstraints.BOTH;

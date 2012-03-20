@@ -49,4 +49,11 @@ public class Gui extends JFrame implements ActionListener {
 		validate();
 		loginPane.textField.requestFocus(); // TODO Create function in Login.java?
 	}
+	
+	public void groupDialog() {
+		GroupDialog d = new GroupDialog(med);
+		d.setSize(200,200);
+		d.setLocationRelativeTo(null);
+		d.setVisible(true);
+	}
 }
