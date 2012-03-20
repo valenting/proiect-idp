@@ -17,13 +17,19 @@ import javax.swing.JTabbedPane;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
+import javax.swing.tree.DefaultMutableTreeNode;
 
 
 public class GeneralGui extends JPanel {
 	private static final long serialVersionUID = 1L;
 
 	public JLabel lblUsername;
+	JList list;
+	GroupTree tree;
 	public GeneralGui(Gui g, Mediator m) {
+		
+		m.setGeneralGui(this);
+		
 		this.setBorder(new EmptyBorder(5, 5, 5, 5));
 		GridBagLayout gbl_contentPane = new GridBagLayout();
 		gbl_contentPane.columnWidths = new int[]{30, 0, 0};
@@ -34,7 +40,7 @@ public class GeneralGui extends JPanel {
 
 
 		// User List
-		JList list = new JList(m.getListModel());
+		list = new JList(m.getListModel());
 		GridBagConstraints gbc_list = new GridBagConstraints();
 		gbc_list.gridheight = 2;
 		gbc_list.insets = new Insets(0, 0, 30, 30);
@@ -101,7 +107,7 @@ public class GeneralGui extends JPanel {
 
 
 		// Group list
-		GroupTree tree = new GroupTree(m.getTreeModel());
+		tree = new GroupTree(m.getTreeModel(),m);
 		GridBagConstraints gbc_tree = new GridBagConstraints();
 		gbc_tree.insets = new Insets(0, 0, 0, 5);
 		gbc_tree.fill = GridBagConstraints.BOTH;
@@ -124,5 +130,13 @@ public class GeneralGui extends JPanel {
 		//TODO - remove them
 		tabbedPane.addTab("tab1", new GroupTab(g,m) );
 		tabbedPane.addTab("tab2", new GroupTab(g,m) );
+	}
+	
+	public String getSelectedUser() {
+		return (String) list.getSelectedValue();
+	}
+	
+	public DefaultMutableTreeNode getSelectedGroup() {
+		return (DefaultMutableTreeNode) tree.getSelectionPath().getLastPathComponent();
 	}
 }

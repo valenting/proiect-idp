@@ -5,12 +5,14 @@ import java.util.Vector;
 
 import javax.swing.DefaultListModel;
 import javax.swing.ListModel;
+import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeModel;
 
 import web.Authenticator;
 import web.Communicator;
 import web.GroupManager;
 import web.Group;
+import gui.GeneralGui;
 import gui.GroupTab;
 import gui.Gui;
 import gui.drawings.Drawing;
@@ -22,10 +24,9 @@ public class Mediator {
 	Communicator comm;
 	Gui gui;
 	Hashtable<Object, GroupTab> groupTab;
-	//GroupTree groupTree;
 	GroupManager man;
 	String username;
-
+	GeneralGui gg;
 	public Mediator() {
 		drawings = new Vector<Drawing>();
 		stateMgr = new StateManager(this);
@@ -46,9 +47,8 @@ public class Mediator {
 	}
 
 	public void logOut() {
-		for (Group g: man.getGroups())
-			g.delUser(username);
-				gui.logOut();
+		man.logOffUser(username);
+		gui.logOut();
 	}
 
 	public void createGroup() {
@@ -74,7 +74,6 @@ public class Mediator {
 	public boolean login(String user, String pass) {
 		return a.authenticate(user, pass);
 	}
-
 
 
 	//TODO - managementul pe taburi
@@ -121,5 +120,40 @@ public class Mediator {
 		// TODO return legendModel from groupmanager
 		return new DefaultListModel();
 	}
+
+
+
+	public void setGeneralGui(GeneralGui generalGui) {
+		gg = generalGui;
+	}
+
+	/****** RIGHT CLICK MENU ******/
+	
+	public void addUserCommand() {
+		String addedUser = gg.getSelectedUser();
+		DefaultMutableTreeNode group = gg.getSelectedGroup();
+		if (group==null || addedUser==null || group.isLeaf() || group.isRoot()) {
+			; // TODO show error 
+			return;
+		}
+		man.addUserCommand(username, addedUser,(String) group.getUserObject());
+	}
+	
+	public void joinGroupCommand() {
+		DefaultMutableTreeNode group = gg.getSelectedGroup();
+		if (group == null) {
+			// TODO show error
+		}
+		man.joinGroupCommand(username,(String) group.getUserObject()); 
+		
+	}
+
+	public void leaveGroupCommand() {
+		DefaultMutableTreeNode group = gg.getSelectedGroup();
+		if (group == null) {
+			// TODO show error
+		}
+		man.leaveGroupCommand(username, (String) group.getUserObject());
+	} 
 }
 

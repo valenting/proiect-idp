@@ -1,6 +1,7 @@
 package web;
 
 import java.awt.Color;
+import java.util.Iterator;
 import java.util.Vector;
 import javax.swing.DefaultListModel;
 import javax.swing.ListModel;
@@ -20,6 +21,7 @@ public class GroupManager {
 		groups = new Vector<Group>();
 		users = new Vector<String>();
 		userModel = new DefaultListModel();
+		userModel.addElement("phony");
 		groupModel = new DefaultTreeModel(new DefaultMutableTreeNode("Groups"));
 	}
 
@@ -52,12 +54,36 @@ public class GroupManager {
 		for (Group g : groups)
 			if (g.getName().equals(group))
 				return false;
-				groups.add(new Group(group,username));
-				DefaultMutableTreeNode t = new DefaultMutableTreeNode(group);
-				groupModel.insertNodeInto(t, (MutableTreeNode) groupModel.getRoot(), ((DefaultMutableTreeNode)groupModel.getRoot()).getChildCount());
-				groupModel.insertNodeInto(new DefaultMutableTreeNode(username), t, 0);
+		groups.add(new Group(group,username));
+		DefaultMutableTreeNode t = new DefaultMutableTreeNode(group);
+		groupModel.insertNodeInto(t, (MutableTreeNode) groupModel.getRoot(), ((DefaultMutableTreeNode)groupModel.getRoot()).getChildCount());
+		groupModel.insertNodeInto(new DefaultMutableTreeNode(username), t, 0);
 
-				return true;
+		return true;
+	}
+
+	public boolean logOffUser(String username) {
+		for (Group g : groups) {
+			g.delUser(username);
+		}
+		DefaultMutableTreeNode root = (DefaultMutableTreeNode)groupModel.getRoot();
+
+		for (int i=0;i<root.getChildCount();i++) {
+			DefaultMutableTreeNode n = (DefaultMutableTreeNode) root.getChildAt(i);
+			for (int j=0;j<n.getChildCount();j++) {
+				DefaultMutableTreeNode t = (DefaultMutableTreeNode) n.getChildAt(j);
+				if (t.getUserObject().equals(username)) {
+					groupModel.removeNodeFromParent(t);
+					break;
+				}
+			}
+			if (n.getChildCount()==0) {
+				groupModel.removeNodeFromParent(n);
+				i--;
+			}
+		}
+
+		return true;
 	}
 
 	public boolean addUser(String group, String username, Color c) {
@@ -73,14 +99,64 @@ public class GroupManager {
 		for (Group g : groups)
 			if (g.getName().equals(group)) 
 				return g.userInGroup(username);
-				return false;
+		return false;
 	}
 
 	public boolean groupExists(String group) {
 		for (Group g: groups)
 			if (g.getName().equals(group))
 				return true;
-				return false;
+		return false;
+	}
+
+	private DefaultMutableTreeNode getGroupNode(String name) {
+		DefaultMutableTreeNode root = (DefaultMutableTreeNode)groupModel.getRoot();
+		for (int i=0;i<root.getChildCount();i++) {
+			DefaultMutableTreeNode n = (DefaultMutableTreeNode) root.getChildAt(i);
+			if (n.getUserObject().equals(name))
+				return n;
+		}
+		return null;
+	}
+	
+	private DefaultMutableTreeNode getUserNode(String name, String group) {
+		DefaultMutableTreeNode n = getGroupNode(group);
+		if (n==null)
+			return null;
+		
+		for (int j=0;j<n.getChildCount();j++) {
+			DefaultMutableTreeNode t = (DefaultMutableTreeNode) n.getChildAt(j);
+			if (t.getUserObject().equals(name))
+				return t;
+		}
+		
+		return null;
+	}
+	
+	private Group getGroup(String name) {
+		for (Group g : groups)
+			if (g.getName().equals(name))
+				return g;
+		return null; 
+	}
+	
+	public void addUserCommand(String username, String addedUser, String group) {
+		Group g = getGroup(group);
+		System.out.println("adding user:"+addedUser+" to:"+group);
+		if (g!=null && username!=null && addedUser!=null && g.createdBy.equals(username) && !g.userInGroup(addedUser)) {
+			g.addUser(addedUser, Color.CYAN);
+			groupModel.insertNodeInto(new DefaultMutableTreeNode(addedUser), getGroupNode(group), getGroupNode(group).getChildCount());
+		}
+	}
+
+	public void joinGroupCommand(String username, String userObject) {
+		// TODO Auto-generated method stub
+		 
+	}
+
+	public void leaveGroupCommand(String username, String userObject) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
