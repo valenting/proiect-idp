@@ -19,7 +19,7 @@ public class CreateGroup extends JButton implements Command {
 		setToolTipText("Create Group button");
 	}
 	public void execute() {
-		// TODO: med.createGroup();
+		med.createGroup(); 
 	}
 
 }

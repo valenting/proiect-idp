@@ -110,7 +110,9 @@ public class GeneralGui extends JPanel {
 		
 		
 		// Group list
-		JTree tree = new JTree();
+		GroupTree tree = new GroupTree();
+		tree.addGroup("test");
+		tree.addGroup("next");
 		GridBagConstraints gbc_tree = new GridBagConstraints();
 		gbc_tree.insets = new Insets(0, 0, 0, 5);
 		gbc_tree.fill = GridBagConstraints.BOTH;
@@ -119,6 +121,7 @@ public class GeneralGui extends JPanel {
 		p = new JScrollPane(tree);
 		p.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		this.add(p, gbc_tree);
+		m.registerGroupTree(tree);
 		
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		GridBagConstraints gbc_tabbedPane = new GridBagConstraints();

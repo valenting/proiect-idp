@@ -1,27 +1,33 @@
 package app;
 import web.Authenticator;
+import web.Communicator;
 
 import java.util.Hashtable;
 import java.util.Vector;
 
 import javax.swing.DefaultListModel;
+import javax.swing.JTree;
 import javax.swing.ListModel;
 
 import gui.GroupTab;
+import gui.GroupTree;
 import gui.Gui;
 import gui.drawings.Drawing;
 public class Mediator {
 	Vector<Drawing> drawings;
 	StateManager stateMgr;
 	Authenticator a;
+	Communicator comm;
 	Gui gui;
 	DefaultListModel userListModel;
 	Hashtable<Object, GroupTab> groupTab;
+	GroupTree groupTree;
 	public Mediator() {
 		drawings = new Vector<Drawing>();
 		stateMgr = new StateManager(this);
 		a = new Authenticator(this);
 		groupTab = new Hashtable<Object, GroupTab>();
+		comm = new Communicator();
 	}
 	
 	public void addDrawing(Drawing d) {
@@ -84,6 +90,15 @@ public class Mediator {
 		t.popOthers(o);
 		// TODO - set state pe stateMgr al tabului
 		
+	}
+
+	public void createGroup() {
+		groupTree.addGroup("kjdnfladksjn");
+		groupTree.addUser("next", "test");
+	}
+
+	public void registerGroupTree (GroupTree tree) {
+		groupTree = tree;
 	}
 }
 
