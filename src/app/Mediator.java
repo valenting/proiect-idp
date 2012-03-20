@@ -82,6 +82,8 @@ public class Mediator {
 		System.out.println("menu selection");
 		GroupTab t = getGroupTab(o);
 		t.popOthers(o);
+		// TODO - set state pe stateMgr al tabului
+		
 	}
 }
 

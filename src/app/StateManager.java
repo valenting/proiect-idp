@@ -17,26 +17,6 @@ public class StateManager {
 		ls = new LineState(med);
 		currentState = ss;
 	}
-	
-	public void setSquareState() {
-		//set current state as square state
-		currentState = ss;
-	}
-
-	public void setCircleState() {
-		//set current state as circle state
-		currentState = cs;
-	}
-	
-	public void setLineState() {
-		//set current state as line state
-		currentState = ls;
-	}
-	
-	public void setArrowState() {
-		//set current state as arrow state
-		currentState = as;
-	}
 
 	public void mouseClick(int x, int y) {
 		//perform mouseClick on the currentState of the manager
@@ -54,5 +34,30 @@ public class StateManager {
 	
 	public void SetStateLoggedOut() {
 		
+	}
+	
+	public void setState(int type) {
+		switch(type) {
+		case State.CIRCLE:
+			// set current state as circle state
+			currentState = cs;
+			break;
+		case State.ARROW:
+			// set current state as arrow state
+			currentState = as;
+			break;
+		case State.LINE:
+			// set current state as line state
+			currentState = ls;
+			break;
+		case State.SQUARE:
+			// set current state as square state
+			currentState = ss;
+			break;
+		default:
+			System.out.println("Invalid state " + type);
+			currentState = ss;
+			break;
+		}
 	}
 }

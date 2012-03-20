@@ -88,15 +88,12 @@ public class Login extends JPanel {
 		add(btnLogin, gbc_btnLogin);
 		
 		passwordField.addKeyListener(new KeyListener() {
-			@Override
 			public void keyTyped(KeyEvent arg0) { }
-			@Override
 			public void keyPressed(KeyEvent arg0) { }
 			
 			/**
 			 * Pressing enter clicks the button
 			 */
-			@Override
 			public void keyReleased(KeyEvent arg0) {
 				if (arg0.getKeyCode() == KeyEvent.VK_ENTER) 
 					btnLogin.doClick(10);

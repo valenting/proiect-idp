@@ -13,7 +13,7 @@ public class SendButton extends JButton implements Command {
 
 	private static final long serialVersionUID = 1L;
 	Mediator med;
-	 JTextField textField;
+	JTextField textField;
 	public SendButton(ActionListener act, Mediator m, JTextField textField) {
 		super("Send");
 		addActionListener(act); 

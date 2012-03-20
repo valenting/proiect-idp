@@ -1,5 +1,6 @@
 package gui;
 
+import gui.buttons.CreateGroup;
 import gui.buttons.LogOutButton;
 
 import java.awt.Dimension;
@@ -23,6 +24,8 @@ import javax.swing.border.EmptyBorder;
 import app.Mediator;
 
 public class GeneralGui extends JPanel {
+	private static final long serialVersionUID = 1L;
+	
 	public JLabel lblUsername;
 	public GeneralGui(Gui g, Mediator m) {
 		this.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -96,7 +99,7 @@ public class GeneralGui extends JPanel {
 		
 		
 		// Create Group Button
-		JButton btnCreateGroup = new JButton("Create Group");
+		JButton btnCreateGroup = new CreateGroup(g, m);
 
 		GridBagConstraints gbc_btnCreateGroup = new GridBagConstraints();
 		gbc_btnCreateGroup.anchor = GridBagConstraints.WEST;

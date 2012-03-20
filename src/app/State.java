@@ -6,6 +6,11 @@ import gui.drawings.Line;
 import gui.drawings.Square;
 
 public class State {
+	public final static int CIRCLE = 1;
+	public final static int SQUARE = 2;
+	public final static int LINE = 3;
+	public final static int ARROW = 4; 
+	
 	public void mouseClick(int x, int y) {
 	}
 

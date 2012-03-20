@@ -177,11 +177,8 @@ public class GroupTab extends JPanel {
 		add(btnSend, gbc_btnSend);
 
 		textField.addKeyListener(new KeyListener() {
-			@Override
 			public void keyTyped(KeyEvent e) { }
-			@Override
 			public void keyPressed(KeyEvent e) { }
-			@Override
 			public void keyReleased(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER)
 					btnSend.doClick(10);

@@ -2,6 +2,7 @@ package gui.buttons;
 import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
 import app.Mediator;
+import app.State;
 
 public class CircleButton extends ToolbarButton {
 	private static final long serialVersionUID = -4564644149844515769L;
@@ -9,5 +10,6 @@ public class CircleButton extends ToolbarButton {
 		super(act,md);
 		this.setIcon(new ImageIcon("src/gui/images/circle.gif"));
 		setToolTipText("Draw circle");
+		this.type = State.CIRCLE;
 	}
 }
