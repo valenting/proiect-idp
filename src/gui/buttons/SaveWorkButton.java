@@ -15,7 +15,7 @@ public class SaveWorkButton extends JButton implements Command {
 		addActionListener(act);
 		setToolTipText("Export image");
 	}
-	
+
 	public void execute() {
 		// TODO 
 		System.out.println("Save Work");

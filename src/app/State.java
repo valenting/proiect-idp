@@ -10,7 +10,7 @@ public class State {
 	public final static int SQUARE = 2;
 	public final static int LINE = 3;
 	public final static int ARROW = 4; 
-	
+
 	public void mouseClick(int x, int y) {
 	}
 
@@ -39,7 +39,7 @@ class SquareState extends State {
 class CircleState extends State {
 	private Mediator med;
 	private Circle c;
-	
+
 	public CircleState(Mediator m) {
 		med = m;
 		c = null;

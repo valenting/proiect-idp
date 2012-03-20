@@ -1,6 +1,5 @@
 package web;
 
-import java.beans.PropertyChangeSupport;
 import java.util.Vector;
 
 /**
@@ -12,11 +11,11 @@ public class Communicator {
 		//super(null); // TODO
 		groups = new Vector<String>();
 	}
-	
+
 	public void createGroup() {
 		groups.add("group"+groups.size());
 	}
-	
-	
+
+
 
 }

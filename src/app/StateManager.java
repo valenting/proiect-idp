@@ -3,12 +3,12 @@ package app;
 public class StateManager {
 	private Mediator med = null;
 	private State currentState;
-	
+
 	private CircleState cs = null;
 	private SquareState ss = null;
 	private ArrowState as = null;
 	private LineState ls = null;
-	
+
 	public StateManager(Mediator m) {
 		med = m;
 		cs = new CircleState(med);
@@ -27,15 +27,15 @@ public class StateManager {
 		//perform mouseUp on the currentState of the manager
 		currentState.mouseMove(x, y);
 	}
-	
+
 	public void SetStateLoggedIn() {
-		
+
 	}
-	
+
 	public void SetStateLoggedOut() {
-		
+
 	}
-	
+
 	public void setState(int type) {
 		switch(type) {
 		case State.CIRCLE:

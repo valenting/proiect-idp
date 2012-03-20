@@ -6,6 +6,7 @@ import gui.buttons.LineButton;
 import gui.buttons.RectangleButton;
 import gui.buttons.SaveWorkButton;
 import gui.buttons.SendButton;
+import app.Mediator;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -15,12 +16,8 @@ import java.awt.GridBagConstraints;
 import javax.swing.JToggleButton;
 import javax.swing.JLabel;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-
-import javax.swing.AbstractListModel;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
@@ -29,7 +26,6 @@ import javax.swing.JTextField;
 import javax.swing.JProgressBar;
 import javax.swing.ScrollPaneConstants;
 
-import app.Mediator;
 
 public class GroupTab extends JPanel {
 	private static final long serialVersionUID = -163956933872151109L;
@@ -38,6 +34,7 @@ public class GroupTab extends JPanel {
 	JProgressBar progressBar;
 	JPanel panel;
 	JList userLegend;
+
 	public GroupTab(Gui g, Mediator m) {
 		super();
 		GridBagLayout gridBagLayout = new GridBagLayout();
@@ -102,15 +99,7 @@ public class GroupTab extends JPanel {
 		m.addGroupElement(panel, this);
 
 		userLegend = new JList();
-		userLegend.setModel(new AbstractListModel() {
-			String[] values = new String[] {"User1", "User2", "User3","User1", "User2", "User3","User1", "User2", "User3"};
-			public int getSize() {
-				return values.length;
-			}
-			public Object getElementAt(int index) {
-				return values[index];
-			}
-		});
+		userLegend.setModel(m.getLegendModel());
 
 		GridBagConstraints gbc_list = new GridBagConstraints();
 		gbc_list.insets = new Insets(0, 0, 5, 0);
@@ -135,8 +124,6 @@ public class GroupTab extends JPanel {
 		p = new JScrollPane(txtpnHello);
 		p.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		add(p, gbc_textPane);
-
-
 
 		JToolBar toolBar2 = new JToolBar();
 		toolBar2.setFloatable(false);
@@ -167,8 +154,6 @@ public class GroupTab extends JPanel {
 		gbc_textField.gridy = 5;
 		add(textField, gbc_textField);
 		textField.setColumns(10);
-		
-		
 
 		final JButton btnSend = new SendButton(g, m, textField);
 		GridBagConstraints gbc_btnSend = new GridBagConstraints();

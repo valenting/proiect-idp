@@ -2,7 +2,6 @@ package gui;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
-
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
@@ -11,15 +10,15 @@ import java.awt.GridBagLayout;
 import javax.swing.JLabel;
 import java.awt.GridBagConstraints;
 import javax.swing.JTextField;
-
-import app.Mediator;
-
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class GroupDialog extends JDialog {
+import app.Mediator;
 
+
+public class GroupDialog extends JDialog implements ActionListener {
+	private static final long serialVersionUID = 1L;
 	private final JPanel contentPanel = new JPanel();
 	private JTextField textField;
 
@@ -74,34 +73,31 @@ public class GroupDialog extends JDialog {
 				JButton okButton = new JButton("OK");
 				buttonPane.add(okButton);
 				getRootPane().setDefaultButton(okButton);
-				okButton.addActionListener(new ActionListener() {
-					
-					@Override
-					public void actionPerformed(ActionEvent arg0) {
-						String t = textField.getText();
-						if (med.groupExists(t)) {
-							lblStatus.setText("Group Exists");
-						} else {
-							System.out.println("group:"+t);
-							med.addGroup(t); 
-							dispose();
-						}
-						
-					}
-				});
+				okButton.setActionCommand("OK");
+				okButton.addActionListener(this);
 			}
 			{
 				JButton cancelButton = new JButton("Cancel");
 				cancelButton.setActionCommand("Cancel");
 				buttonPane.add(cancelButton);
-				cancelButton.addActionListener(new ActionListener() {
-					
-					@Override
-					public void actionPerformed(ActionEvent e) {
-						dispose();
-					}
-				});
+				cancelButton.addActionListener(this);
 			}
+		}
+	}
+
+	public void actionPerformed(ActionEvent e) {
+		String command = e.getActionCommand();
+
+		if (command.equals("OK")) {
+			String t = textField.getText();
+			if (med.groupExists(t)) {
+				lblStatus.setText("Group Exists");
+			} else {
+				med.addGroup(t); 
+				dispose();
+			}
+		} else if (command.equals("Cancel")){
+			dispose();
 		}
 	}
 

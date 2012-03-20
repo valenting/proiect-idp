@@ -2,30 +2,26 @@ package gui;
 
 import gui.buttons.CreateGroup;
 import gui.buttons.LogOutButton;
+import app.Mediator;
 
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-
-import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
-import javax.swing.JTree;
-import javax.swing.ListModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
-import app.Mediator;
 
 public class GeneralGui extends JPanel {
 	private static final long serialVersionUID = 1L;
-	
+
 	public JLabel lblUsername;
 	public GeneralGui(Gui g, Mediator m) {
 		this.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -35,12 +31,10 @@ public class GeneralGui extends JPanel {
 		gbl_contentPane.columnWeights = new double[]{0.15, 1.0, Double.MIN_VALUE};
 		gbl_contentPane.rowWeights = new double[]{0.05, 1.0, 5.0, Double.MIN_VALUE};
 		this.setLayout(gbl_contentPane);
-		
-		
+
+
 		// User List
 		JList list = new JList(m.getListModel());
-		
-		
 		GridBagConstraints gbc_list = new GridBagConstraints();
 		gbc_list.gridheight = 2;
 		gbc_list.insets = new Insets(0, 0, 30, 30);
@@ -52,7 +46,7 @@ public class GeneralGui extends JPanel {
 		p.setPreferredSize(new Dimension(0, 0));
 		p.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		this.add(p, gbc_list);
-		
+
 		// Create Group & Log out button
 		JPanel panel = new JPanel();
 		GridBagConstraints gbc_panel = new GridBagConstraints();
@@ -68,7 +62,7 @@ public class GeneralGui extends JPanel {
 		gbl_panel.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		gbl_panel.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		panel.setLayout(gbl_panel);
-		
+
 		// Log Out button
 		JLabel lblUser = new JLabel("Connected User: ");
 		lblUser.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -77,14 +71,14 @@ public class GeneralGui extends JPanel {
 		gbc_lblUser.gridx = 4;
 		gbc_lblUser.gridy = 0;
 		panel.add(lblUser, gbc_lblUser);
-		
+
 		lblUsername = new JLabel("username");
 		GridBagConstraints gbc_lblUsername = new GridBagConstraints();
 		gbc_lblUsername.insets = new Insets(0, 0, 5, 5);
 		gbc_lblUsername.gridx = 5;
 		gbc_lblUsername.gridy = 0;
 		panel.add(lblUsername, gbc_lblUsername);
-		
+
 		JButton btnLogout = new LogOutButton(g, m);
 		GridBagConstraints gbc_btnLogout = new GridBagConstraints();
 		gbc_btnLogout.ipadx = 5;
@@ -93,8 +87,8 @@ public class GeneralGui extends JPanel {
 		gbc_btnLogout.gridx = 6;
 		gbc_btnLogout.gridy = 0;
 		panel.add(btnLogout, gbc_btnLogout);
-		
-		
+
+
 		// Create Group Button
 		JButton btnCreateGroup = new CreateGroup(g, m);
 
@@ -104,8 +98,8 @@ public class GeneralGui extends JPanel {
 		gbc_btnCreateGroup.gridx = 6;
 		gbc_btnCreateGroup.gridy = 2;
 		panel.add(btnCreateGroup, gbc_btnCreateGroup);
-		
-		
+
+
 		// Group list
 		GroupTree tree = new GroupTree(m.getTreeModel());
 		GridBagConstraints gbc_tree = new GridBagConstraints();
@@ -117,7 +111,8 @@ public class GeneralGui extends JPanel {
 		p.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		this.add(p, gbc_tree);
 		//m.registerGroupTree(tree);
-		
+
+		// TabbedPane
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		GridBagConstraints gbc_tabbedPane = new GridBagConstraints();
 		gbc_tabbedPane.gridheight = 2;
@@ -125,7 +120,8 @@ public class GeneralGui extends JPanel {
 		gbc_tabbedPane.gridx = 1;
 		gbc_tabbedPane.gridy = 1;
 		this.add(tabbedPane, gbc_tabbedPane);
-		
+
+		//TODO - remove them
 		tabbedPane.addTab("tab1", new GroupTab(g,m) );
 		tabbedPane.addTab("tab2", new GroupTab(g,m) );
 	}

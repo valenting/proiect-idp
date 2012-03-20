@@ -1,20 +1,18 @@
 package gui;
 
-import gui.buttons.LoginButton;
-
 import javax.swing.JPanel;
-
-import app.Mediator;
 import java.awt.GridBagLayout;
 import javax.swing.JLabel;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.JPasswordField;
+
+import gui.buttons.LoginButton;
+import app.Mediator;
 
 public class Login extends JPanel {
 	private static final long serialVersionUID = 1L;
@@ -31,7 +29,7 @@ public class Login extends JPanel {
 		gridBagLayout.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, Double.MIN_VALUE};
 		gridBagLayout.rowWeights = new double[]{0.1, 0.0, 0.005, 0.0, 0.005, 0.0, 0.0, 0.0, 0.0, 0.0, 0.2, Double.MIN_VALUE};
 		setLayout(gridBagLayout);
-		
+
 		JLabel lblNewLabel = new JLabel("Please insert username and password");
 		GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
 		gbc_lblNewLabel.gridwidth = 4;
@@ -39,7 +37,7 @@ public class Login extends JPanel {
 		gbc_lblNewLabel.gridx = 5;
 		gbc_lblNewLabel.gridy = 1;
 		add(lblNewLabel, gbc_lblNewLabel);
-		
+
 		JLabel lblUs = new JLabel("Username: ");
 		GridBagConstraints gbc_lblUs = new GridBagConstraints();
 		gbc_lblUs.gridwidth = 2;
@@ -48,8 +46,8 @@ public class Login extends JPanel {
 		gbc_lblUs.gridx = 4;
 		gbc_lblUs.gridy = 3;
 		add(lblUs, gbc_lblUs);
-		
-		
+
+
 		textField = new JTextField();
 		GridBagConstraints gbc_textField = new GridBagConstraints();
 		gbc_textField.anchor = GridBagConstraints.SOUTHWEST;
@@ -59,7 +57,7 @@ public class Login extends JPanel {
 		add(textField, gbc_textField);
 		textField.setColumns(10);
 		textField.requestFocus();
-		
+
 		JLabel lblPassword = new JLabel("Password:");
 		GridBagConstraints gbc_lblPassword = new GridBagConstraints();
 		gbc_lblPassword.anchor = GridBagConstraints.NORTHEAST;
@@ -67,7 +65,7 @@ public class Login extends JPanel {
 		gbc_lblPassword.gridx = 5;
 		gbc_lblPassword.gridy = 5;
 		add(lblPassword, gbc_lblPassword);
-		
+
 		passwordField = new JPasswordField();
 		passwordField.setColumns(10);
 		GridBagConstraints gbc_passwordField = new GridBagConstraints();
@@ -76,9 +74,8 @@ public class Login extends JPanel {
 		gbc_passwordField.gridx = 6;
 		gbc_passwordField.gridy = 5;
 		add(passwordField, gbc_passwordField);
-		
-		
-		
+
+
 		final JButton btnLogin = new LoginButton(g, m, textField, passwordField);
 		GridBagConstraints gbc_btnLogin = new GridBagConstraints();
 		gbc_btnLogin.anchor = GridBagConstraints.WEST;
@@ -86,11 +83,11 @@ public class Login extends JPanel {
 		gbc_btnLogin.gridx = 6;
 		gbc_btnLogin.gridy = 6;
 		add(btnLogin, gbc_btnLogin);
-		
+
 		passwordField.addKeyListener(new KeyListener() {
 			public void keyTyped(KeyEvent arg0) { }
 			public void keyPressed(KeyEvent arg0) { }
-			
+
 			/**
 			 * Pressing enter clicks the button
 			 */
@@ -99,7 +96,7 @@ public class Login extends JPanel {
 					btnLogin.doClick(10);
 			}
 		});
-		
+
 		JLabel lblStatusNotConnected = new JLabel("Status: Not Connected");
 		GridBagConstraints gbc_lblStatusNotConnected = new GridBagConstraints();
 		gbc_lblStatusNotConnected.insets = new Insets(0, 0, 0, 5);

@@ -2,7 +2,6 @@ package gui.buttons;
 
 import java.awt.Dimension;
 import java.awt.event.ActionListener;
-
 import javax.swing.JToggleButton;
 
 import app.Command;
@@ -24,11 +23,11 @@ public class ToolbarButton extends JToggleButton implements Command {
 	public Dimension getPreferredSize() {
 		return new Dimension(40, 40);
 	}
-	
+
 	public void execute() {
 		med.menuSelection(this);
 	}
-	
+
 	public int getType() {
 		return type;
 	}

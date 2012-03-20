@@ -21,7 +21,7 @@ public class SendButton extends JButton implements Command {
 		this.textField = textField;
 		setToolTipText("Send button");
 	}
-	
+
 	public void execute() {
 		// TODO Auto-generated method stub
 		System.out.println(textField.getText());
