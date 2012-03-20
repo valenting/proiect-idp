@@ -19,6 +19,8 @@ public class MouseApp extends MouseAdapter {
 	public void mouseReleased(MouseEvent e) {
 		med.mouseMove(e.getX(), e.getY());
 	}
+	
+	// TODO mouseDragged
 }
 
 class MouseMoveApp extends MouseMotionAdapter {

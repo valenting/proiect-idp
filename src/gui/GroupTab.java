@@ -15,6 +15,10 @@ import java.awt.GridBagConstraints;
 import javax.swing.JToggleButton;
 import javax.swing.JLabel;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 import javax.swing.AbstractListModel;
 import javax.swing.JList;
@@ -30,6 +34,10 @@ import app.Mediator;
 public class GroupTab extends JPanel {
 	private static final long serialVersionUID = -163956933872151109L;
 	private JTextField textField;
+	JToolBar toolBar;
+	JProgressBar progressBar;
+	JPanel panel;
+	JList userLegend;
 	public GroupTab(Gui g, Mediator m) {
 		super();
 		GridBagLayout gridBagLayout = new GridBagLayout();
@@ -38,44 +46,52 @@ public class GroupTab extends JPanel {
 		gridBagLayout.columnWeights = new double[]{1.0, 0.1, Double.MIN_VALUE};
 		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 1.0, 0.5, Double.MIN_VALUE, 0.0};
 		setLayout(gridBagLayout);
-		
-		JToolBar toolBar = new JToolBar();
+
+		toolBar = new JToolBar();
 		toolBar.setFloatable(false);
 		GridBagConstraints gbc_toolBar = new GridBagConstraints();
 		gbc_toolBar.insets = new Insets(0, 0, 5, 5);
 		gbc_toolBar.gridx = 0;
 		gbc_toolBar.gridy = 0;
 		add(toolBar, gbc_toolBar);
-		
-		
+
+
 		JToggleButton tglbtnA = new CircleButton(g, m);
+		tglbtnA.setSelected(true);
 		toolBar.add(tglbtnA);
-		
+
 		JToggleButton tglbtnB = new RectangleButton(g, m);
 		toolBar.add(tglbtnB);
-		
+
 		JToggleButton tglbtnC = new ArrowButton(g,m);
 		toolBar.add(tglbtnC);
-		
+
 		JToggleButton tglbtnD = new LineButton(g, m);
 		toolBar.add(tglbtnD);
-		
+
+		m.addGroupElement(tglbtnA, this);
+		m.addGroupElement(tglbtnB, this);
+		m.addGroupElement(tglbtnC, this);
+		m.addGroupElement(tglbtnD, this);
+
 		JButton btnSaveWork = new SaveWorkButton(g, m);
 		GridBagConstraints gbc_btnSaveWork = new GridBagConstraints();
 		gbc_btnSaveWork.insets = new Insets(0, 0, 5, 0);
 		gbc_btnSaveWork.gridx = 1;
 		gbc_btnSaveWork.gridy = 0;
 		add(btnSaveWork, gbc_btnSaveWork);
-		
-		JProgressBar progressBar = new JProgressBar();
+		m.addGroupElement(btnSaveWork, this);
+
+		progressBar = new JProgressBar();
 		GridBagConstraints gbc_progressBar = new GridBagConstraints();
 		gbc_progressBar.insets = new Insets(0, 0, 5, 0);
 		gbc_progressBar.gridx = 1;
 		gbc_progressBar.gridy = 1;
 		add(progressBar, gbc_progressBar);
-		
+		m.addGroupElement(progressBar, this);
+
 		// Canvas - Drawing area
-		JPanel panel = new JCanvas(m);
+		panel = new JCanvas(m);
 		GridBagConstraints gbc_panel = new GridBagConstraints();
 		gbc_panel.gridheight = 2;
 		gbc_panel.insets = new Insets(0, 0, 5, 5);
@@ -83,9 +99,10 @@ public class GroupTab extends JPanel {
 		gbc_panel.gridx = 0;
 		gbc_panel.gridy = 1;
 		add(panel, gbc_panel);
-		
-		JList list = new JList();
-		list.setModel(new AbstractListModel() {
+		m.addGroupElement(panel, this);
+
+		userLegend = new JList();
+		userLegend.setModel(new AbstractListModel() {
 			String[] values = new String[] {"User1", "User2", "User3","User1", "User2", "User3","User1", "User2", "User3"};
 			public int getSize() {
 				return values.length;
@@ -94,17 +111,17 @@ public class GroupTab extends JPanel {
 				return values[index];
 			}
 		});
-		
+
 		GridBagConstraints gbc_list = new GridBagConstraints();
 		gbc_list.insets = new Insets(0, 0, 5, 0);
 		gbc_list.fill = GridBagConstraints.BOTH;
 		gbc_list.gridx = 1;
 		gbc_list.gridy = 2;
-		JScrollPane p = new JScrollPane(list);
+		JScrollPane p = new JScrollPane(userLegend);
 		p.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		add(p, gbc_list);
-		
-		
+
+
 		// Discutii
 		JTextPane txtpnHello = new JTextPane();
 		txtpnHello.setText("hello");
@@ -118,9 +135,9 @@ public class GroupTab extends JPanel {
 		p = new JScrollPane(txtpnHello);
 		p.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		add(p, gbc_textPane);
-		
-		
-		
+
+
+
 		JToolBar toolBar2 = new JToolBar();
 		toolBar2.setFloatable(false);
 		toolBar.setFloatable(false);
@@ -129,19 +146,19 @@ public class GroupTab extends JPanel {
 		gbc_toolBar2.gridx = 0;
 		gbc_toolBar2.gridy = 4;
 		add(toolBar2, gbc_toolBar2);
-		
+
 		JLabel lblFont = new JLabel("Font:");
 		toolBar2.add(lblFont);
-		
-		JComboBox comboBox = new JComboBox();
+
+		JComboBox comboBox = new JComboBox(); 
 		toolBar2.add(comboBox);
-		
+
 		JLabel lblColour = new JLabel("Colour:");
 		toolBar2.add(lblColour);
-		
+
 		JComboBox comboBox_1 = new JComboBox();
 		toolBar2.add(comboBox_1);
-		
+
 		textField = new JTextField();
 		GridBagConstraints gbc_textField = new GridBagConstraints();
 		gbc_textField.insets = new Insets(0, 0, 0, 5);
@@ -151,12 +168,39 @@ public class GroupTab extends JPanel {
 		add(textField, gbc_textField);
 		textField.setColumns(10);
 		
-		JButton btnSend = new SendButton(g, m);
+		
+
+		final JButton btnSend = new SendButton(g, m, textField);
 		GridBagConstraints gbc_btnSend = new GridBagConstraints();
 		gbc_btnSend.gridx = 1;
 		gbc_btnSend.gridy = 5;
 		add(btnSend, gbc_btnSend);
-		
+
+		textField.addKeyListener(new KeyListener() {
+			@Override
+			public void keyTyped(KeyEvent e) { }
+			@Override
+			public void keyPressed(KeyEvent e) { }
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER)
+					btnSend.doClick(10);
+			}
+		});
 	}
-	
+
+	/**
+	 * Used to pop the other selected buttons
+	 * @param The clicked button
+	 */
+	public void popOthers(Object o) {
+		for (int i=0;i<toolBar.getComponentCount();i++) {
+			JToggleButton b = (JToggleButton) toolBar.getComponent(i);
+			if (!b.equals(o))
+				b.setSelected(false);
+			else
+				b.setSelected(true);
+		}
+	}
+
 }

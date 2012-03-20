@@ -9,13 +9,16 @@ import java.awt.GridBagLayout;
 import javax.swing.JLabel;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.JPasswordField;
 
 public class Login extends JPanel {
 	private static final long serialVersionUID = 1L;
-	private JTextField textField;
+	public JTextField textField; 
 	private JPasswordField passwordField;
 
 	/**
@@ -46,6 +49,7 @@ public class Login extends JPanel {
 		gbc_lblUs.gridy = 3;
 		add(lblUs, gbc_lblUs);
 		
+		
 		textField = new JTextField();
 		GridBagConstraints gbc_textField = new GridBagConstraints();
 		gbc_textField.anchor = GridBagConstraints.SOUTHWEST;
@@ -54,6 +58,7 @@ public class Login extends JPanel {
 		gbc_textField.gridy = 3;
 		add(textField, gbc_textField);
 		textField.setColumns(10);
+		textField.requestFocus();
 		
 		JLabel lblPassword = new JLabel("Password:");
 		GridBagConstraints gbc_lblPassword = new GridBagConstraints();
@@ -72,13 +77,31 @@ public class Login extends JPanel {
 		gbc_passwordField.gridy = 5;
 		add(passwordField, gbc_passwordField);
 		
-		JButton btnLogin = new LoginButton(g, m, textField, passwordField);
+		
+		
+		final JButton btnLogin = new LoginButton(g, m, textField, passwordField);
 		GridBagConstraints gbc_btnLogin = new GridBagConstraints();
 		gbc_btnLogin.anchor = GridBagConstraints.WEST;
 		gbc_btnLogin.insets = new Insets(0, 0, 5, 5);
 		gbc_btnLogin.gridx = 6;
 		gbc_btnLogin.gridy = 6;
 		add(btnLogin, gbc_btnLogin);
+		
+		passwordField.addKeyListener(new KeyListener() {
+			@Override
+			public void keyTyped(KeyEvent arg0) { }
+			@Override
+			public void keyPressed(KeyEvent arg0) { }
+			
+			/**
+			 * Pressing enter clicks the button
+			 */
+			@Override
+			public void keyReleased(KeyEvent arg0) {
+				if (arg0.getKeyCode() == KeyEvent.VK_ENTER) 
+					btnLogin.doClick(10);
+			}
+		});
 		
 		JLabel lblStatusNotConnected = new JLabel("Status: Not Connected");
 		GridBagConstraints gbc_lblStatusNotConnected = new GridBagConstraints();

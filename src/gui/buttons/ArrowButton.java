@@ -10,29 +10,11 @@ import javax.swing.JToggleButton;
 import app.Command;
 import app.Mediator;
 
-public class ArrowButton extends JToggleButton implements Command {
-	private static final long serialVersionUID = -1934805925856773261L;
-	Mediator med;
-
+public class ArrowButton extends ToolbarButton {
+	private static final long serialVersionUID = -4564644149844515769L;
 	public ArrowButton(ActionListener act, Mediator md) {
-		super(new ImageIcon("src/gui/images/arrow.gif"));
-		setSize(new Dimension(35, 35));
-		setBorderPainted(true);
+		super(act,md);
+		this.setIcon(new ImageIcon("src/gui/images/arrow.gif"));
 		setToolTipText("Draw arrow");
-		addActionListener(act);
-		med = md;
 	}
-
-	public Dimension getPreferredSize() {
-		return new Dimension(35, 35);
-	}
-
-	public void paint(Graphics g) {
-		super.paint(g);
-	}
-
-	public void execute() {
-		// TODO: 
-	}
-
 }

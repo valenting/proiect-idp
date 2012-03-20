@@ -15,6 +15,6 @@ public class Authenticator {
 		// TODO connect to network by mediator and check if authenticated
 		if (user.equals("user") && password.equals("pass"))
 			return true;
-		return true; // TODO false;
+		return false;
 	}
 }
