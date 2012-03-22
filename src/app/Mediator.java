@@ -56,6 +56,7 @@ public class Mediator {
 
 	public void createGroup() {
 		gui.groupDialog();
+		
 	}
 
 	public boolean groupExists(String t) {
@@ -64,6 +65,7 @@ public class Mediator {
 
 	public void addGroup(String t) {
 		man.addGroup(t, username); 
+		gg.addTab(t);
 	}
 
 	public TreeModel getTreeModel() {
@@ -171,7 +173,7 @@ public class Mediator {
 
 	public void joinGroupCommand(String user, String group, Color c) {
 		man.joinGroupCommand(user, group,c);
-		 
+		gg.addTab(group);
 	} 
 }
 

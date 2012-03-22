@@ -27,8 +27,10 @@ public class GeneralGui extends JPanel {
 	JList list;
 	GroupTree tree;
 	Mediator med;
+	JTabbedPane tabbedPane;
+	Gui gg;
 	public GeneralGui(Gui g, Mediator m) {
-		
+		gg = g;
 		m.setGeneralGui(this);
 		med = m;
 		this.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -120,7 +122,7 @@ public class GeneralGui extends JPanel {
 		//m.registerGroupTree(tree);
 
 		// TabbedPane
-		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		GridBagConstraints gbc_tabbedPane = new GridBagConstraints();
 		gbc_tabbedPane.gridheight = 2;
 		gbc_tabbedPane.fill = GridBagConstraints.BOTH;
@@ -129,8 +131,12 @@ public class GeneralGui extends JPanel {
 		this.add(tabbedPane, gbc_tabbedPane);
 
 		//TODO - remove them
-		tabbedPane.addTab("tab1", new GroupTab(g,m) );
-		tabbedPane.addTab("tab2", new GroupTab(g,m) );
+		//tabbedPane.addTab("tab1", new GroupTab(g,m) );
+		//tabbedPane.addTab("tab2", new GroupTab(g,m) );
+	}
+	
+	public void addTab(String group) {
+		tabbedPane.addTab(group, new GroupTab(gg,med));
 	}
 	
 	public String getSelectedUser() {
