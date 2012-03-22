@@ -8,6 +8,8 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -136,12 +138,13 @@ public class GeneralGui extends JPanel {
 		//tabbedPane.addTab("tab2", new GroupTab(g,m) );
 	}
 	
-	public GroupTab addTab(String group) {
+	public GroupTab addTab(String group, DefaultListModel l) {
 		GroupTab tb = new GroupTab(gg,med);
+		tb.setLegendModel(l);
 		tabbedPane.addTab(group, tb);
 		return tb;
 	}
-	
+	 
 	public void logOut() {
 		tabbedPane.removeAll();
 	}

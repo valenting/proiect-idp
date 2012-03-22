@@ -7,10 +7,10 @@ public class Pair<K,V> {
 		this.k = k;
 		this.v = v;
 	}
-	K getK() {
+	public K getK() {
 		return k;
 	}
-	V getV() { 
+	public V getV() { 
 		return v;
 	}
 }

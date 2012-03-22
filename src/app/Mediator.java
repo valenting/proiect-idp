@@ -68,9 +68,10 @@ public class Mediator {
 
 	public void addGroup(String t) {
 		man.addGroup(t, username); 
-		GroupTab tb = gg.addTab(t);
+		DefaultListModel l = man.getGroupLegend(t);
+		GroupTab tb = gg.addTab(t,l);
 		
-	}
+	}  
 
 	public TreeModel getTreeModel() {
 		return man.getTreeModel();
@@ -125,13 +126,6 @@ public class Mediator {
 
 	}
 
-	public ListModel getLegendModel() {
-		// TODO return legendModel from groupmanager
-		return new DefaultListModel();
-	}
-
-
-
 	public void setGeneralGui(GeneralGui generalGui) {
 		gg = generalGui;
 	}
@@ -177,7 +171,8 @@ public class Mediator {
 
 	public void joinGroupCommand(String user, String group, Color c) {
 		man.joinGroupCommand(user, group,c);
-		gg.addTab(group);
+		DefaultListModel l = man.getGroupLegend(group);
+		gg.addTab(group,l);
 	}
 
 	public void sendText(String text, int fontSize, Color fontColor,

@@ -7,11 +7,13 @@ import gui.buttons.RectangleButton;
 import gui.buttons.SaveWorkButton;
 import gui.buttons.SendButton;
 import app.Mediator;
+import app.Pair;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.GridBagLayout;
 import javax.swing.JToolBar;
 import java.awt.GridBagConstraints;
@@ -23,6 +25,9 @@ import java.awt.event.AdjustmentListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+import javax.swing.DefaultListCellRenderer;
+import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
 import javax.swing.JEditorPane;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
@@ -30,6 +35,7 @@ import javax.swing.JTextPane;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
 import javax.swing.JProgressBar;
+import javax.swing.JTree;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -39,6 +45,8 @@ import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 import javax.swing.text.StyledDocument;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.DefaultComboBoxModel;
 
 
@@ -117,8 +125,7 @@ public class GroupTab extends JPanel {
 		m.addGroupElement(panel, this);
 
 		userLegend = new JList();
-		userLegend.setModel(m.getLegendModel());
-
+		
 		GridBagConstraints gbc_list = new GridBagConstraints();
 		gbc_list.insets = new Insets(0, 0, 5, 0);
 		gbc_list.fill = GridBagConstraints.BOTH;
@@ -212,11 +219,11 @@ public class GroupTab extends JPanel {
 		textField.setText("");
 		return t;
 	}
-	
+	 
 	public int getFontSize() {
 		return Integer.parseInt(comboBox.getSelectedItem().toString());
 	}
-	
+	 
 	public Color getFontColor() {
 		return cls[comboBox_1.getSelectedIndex()];
 	}
@@ -240,5 +247,32 @@ public class GroupTab extends JPanel {
 		txtpnHello.setDocument(doc);
 		txtpnHello.setCaretPosition(txtpnHello.getText().length());
 	}
+
+	public void setLegendModel(DefaultListModel l) {
+		userLegend.setModel(l);
+		userLegend.setCellRenderer(new CustomListCellRenderer());
+	}
+
+}
+
+
+class CustomListCellRenderer extends DefaultListCellRenderer{
+
+	private static final long serialVersionUID = 1L;
+	
+
+    public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+
+        Component ret = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+
+        JLabel label = (JLabel) ret ;
+        Pair<String, Color> p = (Pair<String, Color>)(value);  
+        System.out.println(p.getK()+"|"+p.getV());
+        label.setText(p.getK()); 
+        
+        label.setForeground(p.getV());
+        return label;
+    }
+
 
 }

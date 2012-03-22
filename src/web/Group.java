@@ -24,8 +24,10 @@ public class Group {
 		colors = new Hashtable<String, Color>();
 		users.add(user);
 		colors.put(user, Color.BLACK);
-		createdBy = user;
 		userColorModel = new DefaultListModel();
+		userColorModel.addElement(new Pair<String,Color>(user,Color.black)); // TODO choose color needed?
+		createdBy = user;
+		
 	}
 
 	public void addUser(String user, Color c) {
@@ -58,6 +60,10 @@ public class Group {
 	
 	public Vector<String> users() {
 		return users;
+	}
+	
+	public DefaultListModel getLegendModel() {
+		return userColorModel;
 	}
 	
 }
