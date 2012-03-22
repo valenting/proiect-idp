@@ -5,12 +5,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Enumeration;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -26,7 +24,8 @@ public class GroupTree extends JTree implements ActionListener {
 	private JPopupMenu menu = new JPopupMenu("Popup");
 	Mediator m;
 	CustomTreeCellRenderer r;
-	public GroupTree(TreeModel model, Mediator m) {
+	String user;
+	public GroupTree(TreeModel model, final Mediator m) {
 		super(model);
 		this.m = m;
 		this.setToggleClickCount(1);
@@ -37,7 +36,25 @@ public class GroupTree extends JTree implements ActionListener {
 		r = new CustomTreeCellRenderer();
 		this.setCellRenderer(r);
 		r.setRendererIcon(new ImageIcon("src/gui/images/member.gif"));
+		
+		final JMenuItem item_add = new JMenuItem("Add User");
+		item_add.addActionListener(this);
+		menu.add(item_add);
+		
+		final JMenuItem item_join = new JMenuItem("Join Group");
+		item_join.addActionListener(this);
+		menu.add(item_join);
+		
+		final JMenuItem item_leave = new JMenuItem("Leave Group");
+		item_leave.addActionListener(this);
+		menu.add(item_leave);
+		
 		this.addMouseListener(new MouseAdapter() {
+			public void mousePressed(MouseEvent e) {
+				item_add.setVisible(true);
+				item_join.setVisible(true);
+				item_leave.setVisible(true);
+			}
 			public void mouseReleased(MouseEvent e) {
 				if (e.getButton()==MouseEvent.BUTTON3) {
 					TreePath tp = getClosestPathForLocation(e.getX(),e.getY());
@@ -45,29 +62,28 @@ public class GroupTree extends JTree implements ActionListener {
 						System.out.println(tp);
 						setSelectionPath(tp);
 					}
-					
-					// TODO : eliminare setVisible(false)
+					DefaultMutableTreeNode t = (DefaultMutableTreeNode) tp.getLastPathComponent();
+					if (t.isRoot() || t.isLeaf()) {
+						item_add.setVisible(false);
+						item_join.setVisible(false);
+						item_leave.setVisible(false);
+					} else {
+						if (m.userInGroup(user, (String) t.getUserObject())) {
+							item_join.setVisible(false);
+						} else
+							item_leave.setVisible(false);
+					}
 					menu.show(e.getComponent(), e.getX(), e.getY());
 				}
 			}
 		});
 
-		JMenuItem item = new JMenuItem("Add User");
-		item.addActionListener(this);
-		menu.add(item);
-		
-		item = new JMenuItem("Join Group");
-		item.addActionListener(this);
-		menu.add(item);
-		
-		item = new JMenuItem("Leave Group");
-		item.addActionListener(this);
-		menu.add(item);
 		
 	}
 	
-	public void setCurrentUser(String user) {
+	public 	void setCurrentUser(String user) {
 		r.setUser(user);
+		this.user = user;
 	}
 
 	@Override
@@ -84,7 +100,8 @@ public class GroupTree extends JTree implements ActionListener {
 
 class CustomTreeCellRenderer extends DefaultTreeCellRenderer{
 
-    ImageIcon rendererIcon;
+	private static final long serialVersionUID = 1L;
+	ImageIcon rendererIcon;
     String username;
     
     public void setRendererIcon(ImageIcon myIcon){

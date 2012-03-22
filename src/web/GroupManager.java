@@ -79,12 +79,14 @@ public class GroupManager {
 			}
 			if (n.getChildCount()==0) {
 				groupModel.removeNodeFromParent(n);
+				groups.remove(this.getGroup((String) n.getUserObject()));
 				i--;
 			}
 		}
 
 		return true;
 	}
+	
 
 	public boolean addUser(String group, String username, Color c) {
 		for (Group g : groups)
@@ -141,34 +143,42 @@ public class GroupManager {
 		return null; 
 	}
 	
+	public Vector<Color> getAvailableColors(String group) {
+		return getGroup(group).availableColors();
+	}
 	
 	/*** COMMANDS ***/
 
 	public void addUserCommand(String username, String addedUser, String group) {
 		Group g = getGroup(group);
 		System.out.println("adding user:"+addedUser+" to:"+group);
-		if (g!=null && username!=null && addedUser!=null && g.createdBy.equals(username) && !g.userInGroup(addedUser)) {
-			g.addUser(addedUser, Color.CYAN);
+		if (g!=null && username!=null && addedUser!=null && g.userInGroup(username) && !g.userInGroup(addedUser)) {
+			g.addUser(addedUser, Color.CYAN); // TODO choose color
 			groupModel.insertNodeInto(new DefaultMutableTreeNode(addedUser), getGroupNode(group), getGroupNode(group).getChildCount());
 		}
 	}
 
-	public void joinGroupCommand(String username, String group) {
+	public void joinGroupCommand(String username, String group, Color c) {
 		Group g = getGroup(group);
 		if (g!=null) 
 			if (!g.userInGroup(username)) {
-				g.addUser(username, Color.cyan); // TODO choose color
+				g.addUser(username, c); 
 				groupModel.insertNodeInto(new DefaultMutableTreeNode(username), getGroupNode(group), getGroupNode(group).getChildCount());
 			}
 
 	}
-
+ 
 	public void leaveGroupCommand(String username, String group) {
 		Group g = getGroup(group);
 		if (g!=null)
 			if (g.userInGroup(username)) {
 				g.delUser(username);
+				DefaultMutableTreeNode p = (DefaultMutableTreeNode) getUserNode(username, group).getParent();
 				groupModel.removeNodeFromParent(getUserNode(username, group));
+				if (p.isLeaf())  { // TODO Stage2: do this for all leave group events  
+					groupModel.removeNodeFromParent(p);
+					groups.remove(this.getGroup((String) p.getUserObject()));
+				}
 			}
 	}
 	

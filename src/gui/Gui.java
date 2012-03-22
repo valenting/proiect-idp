@@ -2,6 +2,8 @@ package gui;
 
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
@@ -54,5 +56,9 @@ public class Gui extends JFrame implements ActionListener {
 		d.setSize(200,200);
 		d.setLocationRelativeTo(null);
 		d.setVisible(true);
+	}
+	
+	public void error(String message) {
+		JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
 	}
 }

@@ -1,5 +1,6 @@
 package app;
 
+import java.awt.Color;
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -12,6 +13,7 @@ import web.Authenticator;
 import web.Communicator;
 import web.GroupManager;
 import web.Group;
+import gui.ColorChooser;
 import gui.GeneralGui;
 import gui.GroupTab;
 import gui.Gui;
@@ -127,14 +129,23 @@ public class Mediator {
 	public void setGeneralGui(GeneralGui generalGui) {
 		gg = generalGui;
 	}
+	
+	public boolean userInGroup(String user, String group) {
+		return man.inGroup(group, user);
+	}
 
 	/****** RIGHT CLICK MENU ******/
 	
 	public void addUserCommand() {
 		String addedUser = gg.getSelectedUser();
 		DefaultMutableTreeNode group = gg.getSelectedGroup();
-		if (group==null || addedUser==null || group.isLeaf() || group.isRoot()) {
-			; // TODO show error 
+		
+		if (group == null) {
+			gui.error("No group selected");
+			return;
+		}
+		if (addedUser==null) {
+			gui.error("No user selected");
 			return;
 		}
 		man.addUserCommand(username, addedUser,(String) group.getUserObject());
@@ -143,19 +154,24 @@ public class Mediator {
 	public void joinGroupCommand() {
 		DefaultMutableTreeNode group = gg.getSelectedGroup();
 		if (group == null) {
-			// TODO show error
+			gui.error("No group selected");
+			return;
 		}
-		// TODO choose color?
-		man.joinGroupCommand(username,(String) group.getUserObject()); 
-		
+		new ColorChooser(man.getAvailableColors(group.toString()), this, username, group.toString());
 	}
 
 	public void leaveGroupCommand() {
 		DefaultMutableTreeNode group = gg.getSelectedGroup();
 		if (group == null) {
-			// TODO show error
+			gui.error("No group selected");
+			return;
 		}
 		man.leaveGroupCommand(username, (String) group.getUserObject());
+	}
+
+	public void joinGroupCommand(String user, String group, Color c) {
+		man.joinGroupCommand(user, group,c);
+		 
 	} 
 }
 

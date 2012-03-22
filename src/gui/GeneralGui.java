@@ -26,10 +26,11 @@ public class GeneralGui extends JPanel {
 	public JLabel lblUsername;
 	JList list;
 	GroupTree tree;
+	Mediator med;
 	public GeneralGui(Gui g, Mediator m) {
 		
 		m.setGeneralGui(this);
-		
+		med = m;
 		this.setBorder(new EmptyBorder(5, 5, 5, 5));
 		GridBagLayout gbl_contentPane = new GridBagLayout();
 		gbl_contentPane.columnWidths = new int[]{30, 0, 0};
