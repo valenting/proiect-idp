@@ -29,6 +29,7 @@ public class Mediator {
 	GroupManager man;
 	String username;
 	GeneralGui gg;
+	Tab tabs;
 	public Mediator() {
 		drawings = new Vector<Drawing>();
 		stateMgr = new StateManager(this);
@@ -52,6 +53,8 @@ public class Mediator {
 	public void logOut() {
 		man.logOffUser(username);
 		gui.logOut();
+		gg.logOut();
+		// tabs.empty?
 	}
 
 	public void createGroup() {
@@ -65,7 +68,8 @@ public class Mediator {
 
 	public void addGroup(String t) {
 		man.addGroup(t, username); 
-		gg.addTab(t);
+		GroupTab tb = gg.addTab(t);
+		
 	}
 
 	public TreeModel getTreeModel() {
@@ -174,6 +178,16 @@ public class Mediator {
 	public void joinGroupCommand(String user, String group, Color c) {
 		man.joinGroupCommand(user, group,c);
 		gg.addTab(group);
+	}
+
+	public void sendText(String text, int fontSize, Color fontColor,
+			GroupTab tab) {
+		if (text.length()==0)
+			return; 
+		// TODO send to communicator
+		System.out.println("not 0");
+		tab.printText(username+": "+text+"\n",fontSize,fontColor);
+		
 	} 
 }
 

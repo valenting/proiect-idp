@@ -67,7 +67,11 @@ public class GroupManager {
 			g.delUser(username);
 		}
 		DefaultMutableTreeNode root = (DefaultMutableTreeNode)groupModel.getRoot();
-
+		for (int i=0;i<userModel.getSize();i++)
+			if (userModel.get(i).toString().equals(username)) {
+				userModel.remove(i);
+				break;
+			}
 		for (int i=0;i<root.getChildCount();i++) {
 			DefaultMutableTreeNode n = (DefaultMutableTreeNode) root.getChildAt(i);
 			for (int j=0;j<n.getChildCount();j++) {

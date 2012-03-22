@@ -30,6 +30,8 @@ public class GroupDialog extends JDialog implements ActionListener {
 	public GroupDialog(Mediator m) {
 		med = m;
 		setBounds(100, 100, 450, 300);
+		setLocationRelativeTo(null);
+		//setSize(250, 200);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
@@ -92,6 +94,8 @@ public class GroupDialog extends JDialog implements ActionListener {
 			String t = textField.getText();
 			if (med.groupExists(t)) {
 				lblStatus.setText("Group Exists");
+			} else if (t.length()==0) {
+				lblStatus.setText("Empty field");
 			} else {
 				med.addGroup(t); 
 				dispose();

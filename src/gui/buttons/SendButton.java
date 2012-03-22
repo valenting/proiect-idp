@@ -1,6 +1,8 @@
 package gui.buttons;
 
 
+import gui.GroupTab;
+
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
@@ -13,19 +15,18 @@ public class SendButton extends JButton implements Command {
 
 	private static final long serialVersionUID = 1L;
 	Mediator med;
-	JTextField textField;
-	public SendButton(ActionListener act, Mediator m, JTextField textField) {
+	GroupTab tab;
+	public SendButton(ActionListener act, Mediator m, GroupTab tab) {
 		super("Send");
 		addActionListener(act); 
 		med = m;
-		this.textField = textField;
+		this.tab = tab;
 		setToolTipText("Send button");
 	}
 
 	public void execute() {
 		// TODO Auto-generated method stub
-		System.out.println(textField.getText());
-		textField.setText("");
+		med.sendText(tab.getText(), tab.getFontSize(), tab.getFontColor(), tab); 
 	}
 
 }

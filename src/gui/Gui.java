@@ -33,6 +33,7 @@ public class Gui extends JFrame implements ActionListener {
 
 		setSize(1100, 700);
 		setVisible(true);
+		setLocationRelativeTo(null);
 	}
 
 	public void loginSuccessful(String username) {

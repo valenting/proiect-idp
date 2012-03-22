@@ -6,6 +6,8 @@ import java.util.Vector;
 
 import javax.swing.DefaultListModel;
 
+import app.Pair;
+
 
 public class Group {
 	String name;
@@ -13,8 +15,6 @@ public class Group {
 	Vector<String> users;
 	Hashtable<String, Color> colors;
 	private static Color[] available = { Color.BLUE, Color.CYAN, Color.DARK_GRAY, Color.GRAY, Color.GREEN, Color.LIGHT_GRAY, Color.MAGENTA, Color.ORANGE, Color.PINK, Color.RED };
-	
-	
 	
 	DefaultListModel userColorModel; // TODO
 	
@@ -25,11 +25,13 @@ public class Group {
 		users.add(user);
 		colors.put(user, Color.BLACK);
 		createdBy = user;
+		userColorModel = new DefaultListModel();
 	}
 
 	public void addUser(String user, Color c) {
 		users.add(user);
 		colors.put(user, c);
+		userColorModel.addElement(new Pair<String,Color>(user,c));
 	}
 
 	public void delUser(String user) { 

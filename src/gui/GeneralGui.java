@@ -56,6 +56,7 @@ public class GeneralGui extends JPanel {
 		p.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		this.add(p, gbc_list);
 
+		
 		// Create Group & Log out button
 		JPanel panel = new JPanel();
 		GridBagConstraints gbc_panel = new GridBagConstraints();
@@ -135,8 +136,14 @@ public class GeneralGui extends JPanel {
 		//tabbedPane.addTab("tab2", new GroupTab(g,m) );
 	}
 	
-	public void addTab(String group) {
-		tabbedPane.addTab(group, new GroupTab(gg,med));
+	public GroupTab addTab(String group) {
+		GroupTab tb = new GroupTab(gg,med);
+		tabbedPane.addTab(group, tb);
+		return tb;
+	}
+	
+	public void logOut() {
+		tabbedPane.removeAll();
 	}
 	
 	public String getSelectedUser() {

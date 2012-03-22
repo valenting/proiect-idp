@@ -10,14 +10,20 @@ import app.Mediator;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
+
+import java.awt.Color;
 import java.awt.GridBagLayout;
 import javax.swing.JToolBar;
 import java.awt.GridBagConstraints;
 import javax.swing.JToggleButton;
 import javax.swing.JLabel;
 import java.awt.Insets;
+import java.awt.event.AdjustmentEvent;
+import java.awt.event.AdjustmentListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+
+import javax.swing.JEditorPane;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
@@ -25,6 +31,15 @@ import javax.swing.JComboBox;
 import javax.swing.JTextField;
 import javax.swing.JProgressBar;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultStyledDocument;
+import javax.swing.text.Style;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyleContext;
+import javax.swing.text.StyledDocument;
+import javax.swing.DefaultComboBoxModel;
 
 
 public class GroupTab extends JPanel {
@@ -34,7 +49,10 @@ public class GroupTab extends JPanel {
 	JProgressBar progressBar;
 	JPanel panel;
 	JList userLegend;
-
+	JComboBox comboBox;
+	JComboBox comboBox_1;
+	JTextPane txtpnHello;
+	private static Color cls[] = {Color.black, Color.green, Color.blue, Color.yellow, Color.red, Color.pink};
 	public GroupTab(Gui g, Mediator m) {
 		super();
 		GridBagLayout gridBagLayout = new GridBagLayout();
@@ -112,9 +130,10 @@ public class GroupTab extends JPanel {
 
 
 		// Discutii
-		JTextPane txtpnHello = new JTextPane();
-		txtpnHello.setText("hello");
+		txtpnHello = new JTextPane();
 		txtpnHello.setEditable(false);
+		
+		
 		GridBagConstraints gbc_textPane = new GridBagConstraints();
 		gbc_textPane.insets = new Insets(0, 0, 5, 0);
 		gbc_textPane.gridwidth = 2;
@@ -123,6 +142,7 @@ public class GroupTab extends JPanel {
 		gbc_textPane.gridy = 3;
 		p = new JScrollPane(txtpnHello);
 		p.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+
 		add(p, gbc_textPane);
 
 		JToolBar toolBar2 = new JToolBar();
@@ -137,13 +157,15 @@ public class GroupTab extends JPanel {
 		JLabel lblFont = new JLabel("Font:");
 		toolBar2.add(lblFont);
 
-		JComboBox comboBox = new JComboBox(); 
+		comboBox = new JComboBox(); 
+		comboBox.setModel(new DefaultComboBoxModel(new String[] {"16", "20", "24", "30", "36"}));
 		toolBar2.add(comboBox);
 
 		JLabel lblColour = new JLabel("Colour:");
 		toolBar2.add(lblColour);
 
-		JComboBox comboBox_1 = new JComboBox();
+		comboBox_1 = new JComboBox();
+		comboBox_1.setModel(new DefaultComboBoxModel(new String[] {"Black", "Green", "Blue", "Yellow", "Red", "Pink"}));
 		toolBar2.add(comboBox_1);
 
 		textField = new JTextField();
@@ -155,7 +177,7 @@ public class GroupTab extends JPanel {
 		add(textField, gbc_textField);
 		textField.setColumns(10);
 
-		final JButton btnSend = new SendButton(g, m, textField);
+		final JButton btnSend = new SendButton(g, m, this);
 		GridBagConstraints gbc_btnSend = new GridBagConstraints();
 		gbc_btnSend.gridx = 1;
 		gbc_btnSend.gridy = 5;
@@ -183,6 +205,40 @@ public class GroupTab extends JPanel {
 			else
 				b.setSelected(true);
 		}
+	}
+	
+	public String getText() {
+		String t =  new String(textField.getText());
+		textField.setText("");
+		return t;
+	}
+	
+	public int getFontSize() {
+		return Integer.parseInt(comboBox.getSelectedItem().toString());
+	}
+	
+	public Color getFontColor() {
+		return cls[comboBox_1.getSelectedIndex()];
+	}
+
+	public void printText(String string, int fontSize, Color fontColor) {
+		// TODO: username with same font all the time??
+		StyleContext ctx = new StyleContext();
+		StyledDocument doc = txtpnHello.getStyledDocument();
+		
+		Style st = ctx.getStyle(StyleContext.DEFAULT_STYLE);
+		StyleConstants.setFontSize(st, fontSize);
+		StyleConstants.setForeground(st, fontColor);
+		
+		
+		try {
+			doc.insertString(doc.getLength(), string, st);
+		} catch (BadLocationException e1) {
+			
+		}
+		
+		txtpnHello.setDocument(doc);
+		txtpnHello.setCaretPosition(txtpnHello.getText().length());
 	}
 
 }
