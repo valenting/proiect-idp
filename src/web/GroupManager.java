@@ -90,6 +90,7 @@ public class GroupManager {
 		for (Group g : groups)
 			if (g.getName().equals(group)) {
 				g.addUser(username, c);
+				// TODO add to group Model
 				return true;
 			}
 		return false;
@@ -118,21 +119,21 @@ public class GroupManager {
 		}
 		return null;
 	}
-	
+
 	private DefaultMutableTreeNode getUserNode(String name, String group) {
 		DefaultMutableTreeNode n = getGroupNode(group);
 		if (n==null)
 			return null;
-		
+
 		for (int j=0;j<n.getChildCount();j++) {
 			DefaultMutableTreeNode t = (DefaultMutableTreeNode) n.getChildAt(j);
 			if (t.getUserObject().equals(name))
 				return t;
 		}
-		
+
 		return null;
 	}
-	
+
 	private Group getGroup(String name) {
 		for (Group g : groups)
 			if (g.getName().equals(name))
@@ -140,6 +141,9 @@ public class GroupManager {
 		return null; 
 	}
 	
+	
+	/*** COMMANDS ***/
+
 	public void addUserCommand(String username, String addedUser, String group) {
 		Group g = getGroup(group);
 		System.out.println("adding user:"+addedUser+" to:"+group);
@@ -149,15 +153,43 @@ public class GroupManager {
 		}
 	}
 
-	public void joinGroupCommand(String username, String userObject) {
-		// TODO Auto-generated method stub
-		 
+	public void joinGroupCommand(String username, String group) {
+		Group g = getGroup(group);
+		if (g!=null) 
+			if (!g.userInGroup(username)) {
+				g.addUser(username, Color.cyan); // TODO choose color
+				groupModel.insertNodeInto(new DefaultMutableTreeNode(username), getGroupNode(group), getGroupNode(group).getChildCount());
+			}
+
 	}
 
-	public void leaveGroupCommand(String username, String userObject) {
-		// TODO Auto-generated method stub
+	public void leaveGroupCommand(String username, String group) {
+		Group g = getGroup(group);
+		if (g!=null)
+			if (g.userInGroup(username)) {
+				g.delUser(username);
+				groupModel.removeNodeFromParent(getUserNode(username, group));
+			}
+	}
+	
+	
+	
+	/*** STUBS ***/
+	
+	public void connectedUserEvent() {
+		
+	}
+	
+	public void disconnectedUserEvent() {
+		
+	}
+	
+	public void joinGroupEvent() {
 		
 	}
 
+	public void leaveGroupEvent() {
+		
+	}
 }
 

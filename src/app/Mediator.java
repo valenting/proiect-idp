@@ -40,6 +40,7 @@ public class Mediator {
 		gui.loginSuccessful(user);
 		this.username = user;
 		man.connectUser(user);
+		gg.setUser(user);
 	}
 
 	public void setGui(Gui gui2) {
@@ -144,6 +145,7 @@ public class Mediator {
 		if (group == null) {
 			// TODO show error
 		}
+		// TODO choose color?
 		man.joinGroupCommand(username,(String) group.getUserObject()); 
 		
 	}

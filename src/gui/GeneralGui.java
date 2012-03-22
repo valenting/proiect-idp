@@ -139,4 +139,8 @@ public class GeneralGui extends JPanel {
 	public DefaultMutableTreeNode getSelectedGroup() {
 		return (DefaultMutableTreeNode) tree.getSelectionPath().getLastPathComponent();
 	}
+	
+	public void setUser(String user) {
+		tree.setCurrentUser(user);
+	}
 }

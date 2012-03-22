@@ -25,7 +25,7 @@ public class GroupTree extends JTree implements ActionListener {
 	DefaultMutableTreeNode root;
 	private JPopupMenu menu = new JPopupMenu("Popup");
 	Mediator m;
-	
+	CustomTreeCellRenderer r;
 	public GroupTree(TreeModel model, Mediator m) {
 		super(model);
 		this.m = m;
@@ -34,7 +34,7 @@ public class GroupTree extends JTree implements ActionListener {
 		
 		
 		
-		CustomTreeCellRenderer r = new CustomTreeCellRenderer();
+		r = new CustomTreeCellRenderer();
 		this.setCellRenderer(r);
 		r.setRendererIcon(new ImageIcon("src/gui/images/member.gif"));
 		this.addMouseListener(new MouseAdapter() {
@@ -65,6 +65,10 @@ public class GroupTree extends JTree implements ActionListener {
 		menu.add(item);
 		
 	}
+	
+	public void setCurrentUser(String user) {
+		r.setUser(user);
+	}
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
@@ -81,12 +85,15 @@ public class GroupTree extends JTree implements ActionListener {
 class CustomTreeCellRenderer extends DefaultTreeCellRenderer{
 
     ImageIcon rendererIcon;
-
-
+    String username;
+    
     public void setRendererIcon(ImageIcon myIcon){
          this.rendererIcon = myIcon;
     };
 
+    public void setUser(String user) {
+    	username = user;
+    }
 
     public Component getTreeCellRendererComponent(JTree tree,
         Object value, boolean selected, boolean expanded,
@@ -101,7 +108,7 @@ class CustomTreeCellRenderer extends DefaultTreeCellRenderer{
         if (n.getParent()!=null) 
         	for (int i=0;i<n.getChildCount();i++) {
         		DefaultMutableTreeNode c = (DefaultMutableTreeNode) n.getChildAt(i);
-        		if (c.getUserObject().equals("user")) {
+        		if (c.getUserObject().equals(username)) {
         			label.setIcon( rendererIcon );
         		}
         	}
