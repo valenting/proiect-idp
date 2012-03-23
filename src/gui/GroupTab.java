@@ -44,6 +44,7 @@ import javax.swing.DefaultComboBoxModel;
 
 public class GroupTab extends JPanel {
 	private static final long serialVersionUID = -163956933872151109L;
+	private static final int MAX_LINE_CHARS = 40;
 	private JTextField textField;
 	JToolBar toolBar;
 	JProgressBar progressBar;
@@ -53,7 +54,7 @@ public class GroupTab extends JPanel {
 	JComboBox comboBox_1;
 	JTextPane txtpnHello;
 	private static Color cls[] = {Color.black, Color.green, Color.blue, Color.yellow, Color.red, Color.pink};
-	
+
 	public GroupTab(Gui g, final Mediator m) {
 		super();
 		GridBagLayout gridBagLayout = new GridBagLayout();
@@ -84,10 +85,10 @@ public class GroupTab extends JPanel {
 
 		JToggleButton tglbtnD = new LineButton(g, m);
 		toolBar.add(tglbtnD);
-		
+
 		JToggleButton tglbtnE = new FreeButton(g, m);
 		toolBar.add(tglbtnE);
-		
+
 		JToggleButton tglbtnF = new StarButton(g, m);
 		toolBar.add(tglbtnF);
 
@@ -127,8 +128,8 @@ public class GroupTab extends JPanel {
 		panel.addMouseListener(new MouseApp(m));
 		panel.addMouseMotionListener(new MouseApp(m));
 		userLegend = new JList();
-		
-		
+
+
 		GridBagConstraints gbc_list = new GridBagConstraints();
 		gbc_list.insets = new Insets(0, 0, 5, 0);
 		gbc_list.fill = GridBagConstraints.BOTH;
@@ -142,8 +143,8 @@ public class GroupTab extends JPanel {
 		// Discutii
 		txtpnHello = new JTextPane();
 		txtpnHello.setEditable(false);
-		
-		
+
+
 		GridBagConstraints gbc_textPane = new GridBagConstraints();
 		gbc_textPane.insets = new Insets(0, 0, 5, 0);
 		gbc_textPane.gridwidth = 2;
@@ -201,7 +202,7 @@ public class GroupTab extends JPanel {
 					btnSend.doClick(10);
 			}
 		});
-		
+
 	}
 
 	/**
@@ -217,37 +218,62 @@ public class GroupTab extends JPanel {
 				b.setSelected(true);
 		}
 	}
-	
+
 	public String getText() {
 		String t =  new String(textField.getText());
 		textField.setText("");
 		return t;
 	}
-	 
+
 	public int getFontSize() {
 		return Integer.parseInt(comboBox.getSelectedItem().toString());
 	}
-	 
+
 	public Color getFontColor() {
 		return cls[comboBox_1.getSelectedIndex()];
 	}
 
+	// functie de afisare a unui text mai mare, restrans la MAX_LINE_CHARS pe linie
+	private String prettyPrinting(String s) {
+		int buckets = s.length() / MAX_LINE_CHARS;
+		String newS = "";
+		for (int i = 0; i < buckets; i++) {
+			if (i == 0) {
+				newS = newS.concat(" " + s.substring(i * MAX_LINE_CHARS, (i + 1) * MAX_LINE_CHARS) + "\n");
+			} else
+				newS = newS.concat("   " + s.substring(i * MAX_LINE_CHARS, (i + 1) * MAX_LINE_CHARS) + "\n");
+		}
+		if (buckets == 0)
+			newS = newS.concat(" ");
+		else
+			newS = newS.concat("   ");
+		newS = newS.concat(s.substring(buckets * MAX_LINE_CHARS) + "\n");
+		return newS;
+	}
+
 	public void printText(String username, String string, int fontSize, Color fontColor) {
-		// TODO: username with same font all the time??
 		StyleContext ctx = new StyleContext();
 		StyledDocument doc = txtpnHello.getStyledDocument();
-		
+
 		Style st = ctx.getStyle(StyleContext.DEFAULT_STYLE);
-		StyleConstants.setFontSize(st, fontSize);
-		StyleConstants.setForeground(st, fontColor);
-		
+		StyleConstants.setBold(st, true);
 		
 		try {
-			doc.insertString(doc.getLength(), string+"\n", st);
+			doc.insertString(doc.getLength(), username + ":", st);
 		} catch (BadLocationException e1) {
-			
+
 		}
 		
+		StyleConstants.setBold(st, false);
+		StyleConstants.setFontSize(st, fontSize);
+		StyleConstants.setForeground(st, fontColor);
+
+		try {
+			doc.insertString(doc.getLength(), prettyPrinting(string), st);
+		} catch (BadLocationException e1) {
+
+		}
+
 		txtpnHello.setDocument(doc);
 		txtpnHello.setCaretPosition(txtpnHello.getText().length());
 	}
@@ -263,21 +289,21 @@ public class GroupTab extends JPanel {
 class CustomListCellRenderer extends DefaultListCellRenderer{
 
 	private static final long serialVersionUID = 1L;
-	
 
-    public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
 
-        Component ret = super.getListCellRendererComponent(list, value, index, false, false); // List is not selectable
+	public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
 
-        JLabel label = (JLabel) ret ;
-        @SuppressWarnings("unchecked")
+		Component ret = super.getListCellRendererComponent(list, value, index, false, false); // List is not selectable
+
+		JLabel label = (JLabel) ret ;
+		@SuppressWarnings("unchecked")
 		Pair<String, Color> p = (Pair<String, Color>)(value);  
-        System.out.println(p.getK()+"|"+p.getV());
-        label.setText(p.getK()); 
-        
-        label.setForeground(p.getV());
-        return label;
-    }
+		System.out.println(p.getK()+"|"+p.getV());
+		label.setText(p.getK()); 
+
+		label.setForeground(p.getV());
+		return label;
+	}
 
 
 }

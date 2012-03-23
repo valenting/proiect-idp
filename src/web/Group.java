@@ -14,7 +14,7 @@ public class Group {
 	String createdBy;
 	Vector<String> users;
 	Hashtable<String, Color> colors;
-	private static Color[] available = { Color.BLUE, Color.CYAN, Color.DARK_GRAY, Color.GRAY, Color.GREEN, Color.LIGHT_GRAY, Color.MAGENTA, Color.ORANGE, Color.PINK, Color.RED };
+	private static Color[] available = { Color.BLUE, Color.CYAN, Color.DARK_GRAY, Color.GRAY, Color.GREEN, Color.LIGHT_GRAY, Color.MAGENTA, Color.ORANGE, Color.PINK, Color.RED, Color.YELLOW };
 	
 	DefaultListModel userColorModel; // TODO
 	
