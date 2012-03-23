@@ -14,9 +14,9 @@ public class Group {
 	String createdBy;
 	Vector<String> users;
 	Hashtable<String, Color> colors;
-	private static Color[] available = { Color.BLUE, Color.CYAN, Color.DARK_GRAY, Color.GRAY, Color.GREEN, Color.LIGHT_GRAY, Color.MAGENTA, Color.ORANGE, Color.PINK, Color.RED, Color.YELLOW };
+	private static Color[] available = { Color.BLACK, Color.BLUE, Color.CYAN, Color.DARK_GRAY, Color.GRAY, Color.GREEN, Color.LIGHT_GRAY, Color.MAGENTA, Color.ORANGE, Color.PINK, Color.RED, Color.YELLOW };
 	
-	DefaultListModel userColorModel; // TODO
+	DefaultListModel userColorModel;
 	
 	public Group(String name, String user) {
 		this.name = name; 
@@ -25,7 +25,8 @@ public class Group {
 		users.add(user);
 		colors.put(user, Color.BLACK);
 		userColorModel = new DefaultListModel();
-		userColorModel.addElement(new Pair<String,Color>(user,Color.black)); // TODO choose color needed?
+		// creator always has color black - convention
+		userColorModel.addElement(new Pair<String,Color>(user,Color.black));
 		createdBy = user;
 		
 	}

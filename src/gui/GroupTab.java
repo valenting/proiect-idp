@@ -298,7 +298,6 @@ class CustomListCellRenderer extends DefaultListCellRenderer{
 		JLabel label = (JLabel) ret ;
 		@SuppressWarnings("unchecked")
 		Pair<String, Color> p = (Pair<String, Color>)(value);  
-		System.out.println(p.getK()+"|"+p.getV());
 		label.setText(p.getK()); 
 
 		label.setForeground(p.getV());

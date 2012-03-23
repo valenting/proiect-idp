@@ -6,7 +6,7 @@ Grupa:	341C3
 Email:	emma.mirica@gmail.com
 		valentin.gosu@gmail.com
 ---------------------------------
-Echipa:	(*NULL)
+Echipa:	*(NULL)
 
 ##################################################
 #                Tema 1 - GUI                    #
@@ -25,6 +25,19 @@ Echipa:	(*NULL)
 
 	Au fost folosite patternurile Model-View-Controller, State,
 Command si Mediator.
+	Sursele sunt impartite in pachete pentru o mai buna modularizare
+a codului.
+	
+	2.1 Butoanele de executie comenzi
+		A fost extins un buton de tip JButton si pentru executia lor
+	se foloseste patternul Command.
+	
+	2.2. Zona de discutii
+		Afisarea se face folosind StyledDocument si Style, iar textul
+	introdus este limitat la un numar maxim de caractere pe linie
+	pentru o mai buna intelegere a mesajului. De asemenea, numele
+	userului este mereu scris la fel.
+		
 	
 	
 ==============================================================
@@ -33,4 +46,4 @@ Command si Mediator.
 
 	Au fost implementate urmatoarele bonusuri:
 		- posibilitatea de desenare la mouseClick si mouseMove
-		- 	
+		- desenarea altor forme: free drawing si stea

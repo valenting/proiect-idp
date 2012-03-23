@@ -57,7 +57,6 @@ public class GroupTree extends JTree implements ActionListener {
 				if (e.getButton()==MouseEvent.BUTTON3) {
 					TreePath tp = getClosestPathForLocation(e.getX(),e.getY());
 					if (tp != null) {
-						System.out.println(tp);
 						setSelectionPath(tp);
 					}
 					DefaultMutableTreeNode t = (DefaultMutableTreeNode) tp.getLastPathComponent();
@@ -86,7 +85,6 @@ public class GroupTree extends JTree implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		System.out.println(arg0.getActionCommand());
 		if (arg0.getActionCommand().equals("Add User"))
 			m.addUserCommand();
 		if (arg0.getActionCommand().equals("Join Group"))
@@ -118,7 +116,6 @@ class CustomTreeCellRenderer extends DefaultTreeCellRenderer{
         selected, expanded, leaf, row, hasFocus);
 
         JLabel label = (JLabel) ret ;
-        System.out.println(""+value.getClass().getName());
         DefaultMutableTreeNode n = (DefaultMutableTreeNode) value;
         if (n.getParent()!=null) 
         	for (int i=0;i<n.getChildCount();i++) {
