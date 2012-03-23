@@ -31,8 +31,6 @@ public class GroupTree extends JTree implements ActionListener {
 		this.setToggleClickCount(1);
 		this.add(new JPopupMenu());
 		
-		
-		
 		r = new CustomTreeCellRenderer();
 		this.setCellRenderer(r);
 		r.setRendererIcon(new ImageIcon("src/gui/images/member.gif"));

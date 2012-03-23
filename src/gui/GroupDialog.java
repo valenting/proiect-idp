@@ -27,11 +27,11 @@ public class GroupDialog extends JDialog implements ActionListener {
 	 */
 	Mediator med;
 	JLabel lblStatus;
+	
 	public GroupDialog(Mediator m) {
 		med = m;
 		setBounds(100, 100, 450, 300);
 		setLocationRelativeTo(null);
-		//setSize(250, 200);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);

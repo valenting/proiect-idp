@@ -14,10 +14,8 @@ public class JCanvas extends JPanel {
 
 	public JCanvas(Mediator md) {
 		med = md;
-		//med.registerCanvas(this);
 		setBackground(Color.white);
 	}
-	
 
 	public void paint(Graphics g) {
 		super.paint(g);

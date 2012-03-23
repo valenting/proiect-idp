@@ -13,6 +13,7 @@ public class LoginButton extends JButton implements Command {
 	Mediator med;
 	JTextField user;
 	JPasswordField pass;
+	
 	public LoginButton(ActionListener act, Mediator md, JTextField username, JPasswordField password) {
 		super("Log In");
 		addActionListener(act);
@@ -22,7 +23,6 @@ public class LoginButton extends JButton implements Command {
 	}
 
 	public void execute() {
-		// System.out.println(user.getText()+" | " + String.copyValueOf(pass.getPassword()));
 		String username = user.getText();
 		String password = String.copyValueOf(pass.getPassword());
 		user.setText("");

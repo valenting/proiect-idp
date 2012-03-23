@@ -15,7 +15,8 @@ public class StateManager {
 		ss = new SquareState(med);
 		as = new ArrowState(med);
 		ls = new LineState(med);
-		currentState = ss;
+		// Default shape - circle
+		currentState = cs;
 	}
 
 	public void mousePressed(int x, int y) {
@@ -25,7 +26,7 @@ public class StateManager {
 	public void mouseDragged(int x, int y) {
 		currentState.mouseDragged(x, y);
 	}
-	
+
 	public void mouseReleased(int x, int y) {
 		currentState.mouseReleased(x, y);
 	}
@@ -50,7 +51,7 @@ public class StateManager {
 			break;
 		default:
 			System.out.println("Invalid state " + type);
-			currentState = ss;
+			currentState = cs;
 			break;
 		}
 	}

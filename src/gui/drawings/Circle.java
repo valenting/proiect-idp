@@ -20,6 +20,7 @@ public class Circle extends Drawing {
 		int x2 = Math.max(start.x, end.x);
 		int y2 = Math.max(start.y, end.y);
 		
+		g.setColor(color);
 		g.drawArc(x1, y1, x2-x1, y2-y1, 0 , 360);
 	}
 

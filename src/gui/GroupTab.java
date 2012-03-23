@@ -21,35 +21,22 @@ import java.awt.GridBagConstraints;
 import javax.swing.JToggleButton;
 import javax.swing.JLabel;
 import java.awt.Insets;
-import java.awt.event.AdjustmentEvent;
-import java.awt.event.AdjustmentListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
-import javax.swing.ImageIcon;
-import javax.swing.JEditorPane;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
 import javax.swing.JProgressBar;
-import javax.swing.JTree;
 import javax.swing.ScrollPaneConstants;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
-import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 import javax.swing.text.StyledDocument;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.DefaultComboBoxModel;
 
 
@@ -64,6 +51,7 @@ public class GroupTab extends JPanel {
 	JComboBox comboBox_1;
 	JTextPane txtpnHello;
 	private static Color cls[] = {Color.black, Color.green, Color.blue, Color.yellow, Color.red, Color.pink};
+	
 	public GroupTab(Gui g, final Mediator m) {
 		super();
 		GridBagLayout gridBagLayout = new GridBagLayout();
@@ -272,7 +260,8 @@ class CustomListCellRenderer extends DefaultListCellRenderer{
         Component ret = super.getListCellRendererComponent(list, value, index, false, false); // List is not selectable
 
         JLabel label = (JLabel) ret ;
-        Pair<String, Color> p = (Pair<String, Color>)(value);  
+        @SuppressWarnings("unchecked")
+		Pair<String, Color> p = (Pair<String, Color>)(value);  
         System.out.println(p.getK()+"|"+p.getV());
         label.setText(p.getK()); 
         

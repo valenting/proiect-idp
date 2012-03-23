@@ -14,6 +14,7 @@ public class Line extends Drawing {
 	}
 	
 	public void draw(Graphics g) {
+		g.setColor(color);
 		g.drawLine(start.x, start.y, end.x, end.y);
 	}
 }

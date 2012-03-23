@@ -8,9 +8,6 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -36,6 +33,7 @@ public class GeneralGui extends JPanel {
 	Mediator med;
 	JTabbedPane tabbedPane;
 	Gui gg;
+	
 	public GeneralGui(Gui g, final Mediator m) {
 		gg = g;
 		m.setGeneralGui(this);
@@ -47,7 +45,6 @@ public class GeneralGui extends JPanel {
 		gbl_contentPane.columnWeights = new double[]{0.15, 1.0, Double.MIN_VALUE};
 		gbl_contentPane.rowWeights = new double[]{0.05, 1.0, 5.0, Double.MIN_VALUE};
 		this.setLayout(gbl_contentPane);
-
 
 		// User List
 		list = new JList(m.getListModel());
@@ -63,7 +60,6 @@ public class GeneralGui extends JPanel {
 		p.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		this.add(p, gbc_list);
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-
 		
 		// Create Group & Log out button
 		JPanel panel = new JPanel();
@@ -128,7 +124,6 @@ public class GeneralGui extends JPanel {
 		p = new JScrollPane(tree);
 		p.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		this.add(p, gbc_tree);
-		//m.registerGroupTree(tree);
 
 		// TabbedPane
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
@@ -138,11 +133,6 @@ public class GeneralGui extends JPanel {
 		gbc_tabbedPane.gridx = 1;
 		gbc_tabbedPane.gridy = 1;
 		this.add(tabbedPane, gbc_tabbedPane);
-
-		//TODO - remove them
-		//tabbedPane.addTab("tab1", new GroupTab(g,m) );
-		//tabbedPane.addTab("tab2", new GroupTab(g,m) );
-		
 		
 		tabbedPane.addChangeListener(new ChangeListener() {
 			

@@ -9,6 +9,7 @@ import app.Mediator;
 public class SaveWorkButton extends JButton implements Command {
 	private static final long serialVersionUID = 1L;
 	Mediator med;
+	
 	public SaveWorkButton(ActionListener act, Mediator m) {
 		super("Save Work");
 		med = m;
@@ -17,8 +18,7 @@ public class SaveWorkButton extends JButton implements Command {
 	}
 
 	public void execute() {
-		// TODO 
-		System.out.println("Save Work");
+		med.saveWork();
 	}
 
 }

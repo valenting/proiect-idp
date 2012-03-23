@@ -4,7 +4,6 @@ import gui.GroupTab;
 import gui.JCanvas;
 import gui.drawings.Drawing;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.util.Vector;
 
@@ -16,6 +15,7 @@ public class Tab {
 	Vector<Drawing> drawings;
 	Mediator med;
 	JCanvas jc;
+	
 	public Tab(String name, Mediator m) {
 		this.name = name;
 		med  = m;
@@ -26,8 +26,6 @@ public class Tab {
 	public String getName() {
 		return name;
 	}
-	
-	
 	
 	public void addDrawing(Drawing d) {
 		drawings.addElement(d);
@@ -53,7 +51,6 @@ public class Tab {
 	}
 
 	public void reDraw(Graphics g) {
-		g.setColor(Color.black);
 		for (int i = 0; i < drawings.size(); i++) {
 			Drawing v = (Drawing) drawings.elementAt(i);
 			v.draw(g);

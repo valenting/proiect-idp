@@ -13,7 +13,6 @@ import javax.swing.tree.TreeModel;
 import web.Authenticator;
 import web.Communicator;
 import web.GroupManager;
-import web.Group;
 import gui.ColorChooser;
 import gui.GeneralGui;
 import gui.GroupTab;
@@ -230,6 +229,9 @@ public class Mediator {
 		
 	}
 
+	public void saveWork() {
+		// TODO Auto-generated method stub 
+	}
 	
 }
 
