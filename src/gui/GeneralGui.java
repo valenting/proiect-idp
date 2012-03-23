@@ -133,17 +133,6 @@ public class GeneralGui extends JPanel {
 		gbc_tabbedPane.gridx = 1;
 		gbc_tabbedPane.gridy = 1;
 		this.add(tabbedPane, gbc_tabbedPane);
-		
-		tabbedPane.addChangeListener(new ChangeListener() {
-			
-			@Override
-			public void stateChanged(ChangeEvent arg0) {
-				JTabbedPane pan = ((JTabbedPane)arg0.getSource());
-				System.out.println("REPAINT"+pan.getSelectedIndex());
-				//med.setCurrentTab((GroupTab) ((JTabbedPane)arg0.getSource()).getSelectedComponent());
-				//med.repaint();
-			}
-		});
 	}
 	
 	public GroupTab addTab(String group, DefaultListModel l) {

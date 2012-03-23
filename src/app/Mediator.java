@@ -30,8 +30,7 @@ public class Mediator {
 	String username;
 	GeneralGui gg;
 	Vector<Tab> tabs;
-	Tab currentTab;
-	
+		
 	public Mediator() {
 		a = new Authenticator(this);
 		groupTab = new Hashtable<Object, GroupTab>();
@@ -55,6 +54,7 @@ public class Mediator {
 		man.logOffUser(username);
 		gui.logOut();
 		gg.logOut();
+		tabs.removeAllElements();
 	}
 
 	public void createGroup() {
@@ -66,15 +66,13 @@ public class Mediator {
 		return man.groupExists(t);
 	}
 
-	
-	
 	public void addGroup(String t) {
 		man.addGroup(t, username); 
 		DefaultListModel l = man.getGroupLegend(t);
 		GroupTab tb = gg.addTab(t,l);
-		currentTab = new Tab(t,this);
-		currentTab.jc = tb.panel;
-		currentTab.tab = tb;
+		Tab currentTab = new Tab(t,this);
+		currentTab.setCanvas(tb.panel);
+		currentTab.setGroupTab(tb);
 		tabs.add(currentTab);
 	}  
 
@@ -104,39 +102,29 @@ public class Mediator {
 		return null;
 	}
 	
+	
 	//TODO - managementul pe taburi
 	public void addDrawing(Drawing d) {
-		getCurrentTab().drawings.addElement(d);
+		getCurrentTab().addDrawing(d);
 	}
 
 	public void mousePressed(int x, int y) {
-		getCurrentTab().stateMgr.mousePressed(x, y);
-		repaint();
+		getCurrentTab().mousePressed(x, y);
+		getCurrentTab().repaint();
 	} 
 
 	public void mouseDragged(int x, int y) {
-		getCurrentTab().stateMgr.mouseDragged(x, y);
-		repaint();
+		getCurrentTab().mouseDragged(x, y);
+		getCurrentTab().repaint();
 	}
 	
 	public void mouseReleased(int x, int y) {
-		getCurrentTab().stateMgr.mouseReleased(x, y);
-		repaint();
+		getCurrentTab().mouseReleased(x, y);
+		getCurrentTab().repaint();
 	}
 
-	public void repaint(){
-		if (getCurrentTab()!=null)
-			getCurrentTab().jc.repaint();
-		else
-			System.out.println("NULL");
-	}
-	
-	public void repaintSelected(int index) {
-		tabs.get(index).repaint();
-	}
 
 	public void reDraw(Graphics g) {
-		System.out.println(currentTab.getName());
 		getCurrentTab().reDraw(g);
 	}
 	

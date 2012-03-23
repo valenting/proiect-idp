@@ -45,10 +45,6 @@ public class GroupManager {
 		return users;
 	}
 
-	public Vector<Group> getGroups() {
-		return groups;
-	}
-
 	public DefaultListModel getGroupLegend(String group) {
 		Group g = getGroup(group);
 		return g.getLegendModel();
@@ -95,17 +91,6 @@ public class GroupManager {
 		return true;
 	}
 	
-/*
-	public boolean addUser(String group, String username, Color c) {
-		for (Group g : groups)
-			if (g.getName().equals(group)) {
-				g.addUser(username, c);
-				// TODO add to group Model
-				return true;
-			}
-		return false;
-	}
-*/
 	
 	public boolean inGroup(String group, String username) {
 		for (Group g : groups)
