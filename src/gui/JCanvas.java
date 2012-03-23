@@ -17,9 +17,10 @@ public class JCanvas extends JPanel {
 		//med.registerCanvas(this);
 		setBackground(Color.white);
 	}
+	
 
 	public void paint(Graphics g) {
 		super.paint(g);
-		//med.reDraw(g);
+		med.reDraw(g);
 	}
 }

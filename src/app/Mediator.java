@@ -1,6 +1,7 @@
 package app;
 
 import java.awt.Color;
+import java.awt.Graphics;
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -17,6 +18,8 @@ import gui.ColorChooser;
 import gui.GeneralGui;
 import gui.GroupTab;
 import gui.Gui;
+import gui.JCanvas;
+import gui.buttons.ToolbarButton;
 import gui.drawings.Drawing;
 
 public class Mediator {
@@ -66,11 +69,13 @@ public class Mediator {
 		return man.groupExists(t);
 	}
 
+	JCanvas jc;
+	
 	public void addGroup(String t) {
 		man.addGroup(t, username); 
 		DefaultListModel l = man.getGroupLegend(t);
 		GroupTab tb = gg.addTab(t,l);
-		
+		jc = tb.panel;
 	}  
 
 	public TreeModel getTreeModel() {
@@ -91,20 +96,33 @@ public class Mediator {
 		drawings.addElement(d);
 	}
 
-	public void mouseClick(int x, int y) {
-		stateMgr.mouseClick(x, y);
+	public void mousePressed(int x, int y) {
+		stateMgr.mousePressed(x, y);
 		repaint();
 	} 
 
-	public void mouseMove(int x, int y) {
-		stateMgr.mouseMove(x, y);
+	public void mouseDragged(int x, int y) {
+		stateMgr.mouseDragged(x, y);
+		repaint();
+	}
+	
+	public void mouseReleased(int x, int y) {
+		stateMgr.mouseReleased(x, y);
 		repaint();
 	}
 
 	private void repaint(){
-		//TODO
+		jc.repaint();
 	}
 
+	public void reDraw(Graphics g) {
+		g.setColor(Color.black);
+		for (int i = 0; i < drawings.size(); i++) {
+			Drawing v = (Drawing) drawings.elementAt(i);
+			v.draw(g);
+		}
+	}
+	
 	public void addGroupElement(Object o, GroupTab t) {
 		groupTab.put(o, t);
 	}
@@ -117,6 +135,7 @@ public class Mediator {
 		System.out.println("menu selection");
 		GroupTab t = getGroupTab(o);
 		t.popOthers(o);
+		stateMgr.setState(((ToolbarButton)o).getType());
 		// TODO - set state pe stateMgr al tabului
 	}
 

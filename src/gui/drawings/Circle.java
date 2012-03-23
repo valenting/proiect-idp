@@ -1,18 +1,27 @@
 package gui.drawings;
 
 import java.awt.Graphics;
+import java.awt.Point;
 
 public class Circle extends Drawing {
 
-	public Circle(int xpt, int ypt) {
-		x = xpt;
-		y = ypt;
-		w = 40;
-		h = 30;
-		saveAsRect();
+	public Circle(int x, int y) {
+		super(x, y);
 	}
 
-	public void draw(Graphics g) {
-		g.drawArc(x, y, w, h, 0, 360);
+	public Circle(Point start) {
+		super(start);
 	}
+	
+	public void draw(Graphics g) {
+		
+		int x1 = Math.min(start.x, end.x);
+		int y1 = Math.min(start.y, end.y);
+		int x2 = Math.max(start.x, end.x);
+		int y2 = Math.max(start.y, end.y);
+		
+		g.drawArc(x1, y1, x2-x1, y2-y1, 0 , 360);
+	}
+
+	
 }

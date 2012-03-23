@@ -13,21 +13,17 @@ public class MouseApp extends MouseAdapter {
 	}
 
 	public void mousePressed(MouseEvent e) {
-		med.mouseClick(e.getX(), e.getY());
+		System.out.println("press");
+		med.mousePressed(e.getX(), e.getY());
 	}
 
 	public void mouseReleased(MouseEvent e) {
-		med.mouseMove(e.getX(), e.getY());
+		System.out.println("release");
+		med.mouseReleased(e.getX(), e.getY());
 	}
 
-	// TODO mouseDragged
-}
-
-class MouseMoveApp extends MouseMotionAdapter {
-	Mediator med;
-
-	public MouseMoveApp(Mediator md) {
-		super();
-		med = md;
+	public void mouseDragged(MouseEvent e) {
+		System.out.println("drag");
+		med.mouseDragged(e.getX(), e.getY());
 	}
 }

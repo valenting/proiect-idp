@@ -1,28 +1,31 @@
 package gui.drawings;
+import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.geom.Point2D;
 
 public class Drawing {
 
-	protected int x, y, w, h;
-
-	protected Rectangle rect;
-
+	protected Point start;
+	protected Point end;
+	
+	public Drawing(Point start) {
+		this.start = new Point(start);
+		this.end = new Point(end);
+	}
+	
+	public Drawing(int x, int y) {
+		this.start = new Point(x,y);
+		this.end = new Point(x,y);
+	}
+	
 	public void draw(Graphics g) {
 	}
 
-	public void move(int xpt, int ypt) {
-		x = xpt;
-		y = ypt;
+	public void move(int x, int y) {
+		end.x = x;
+		end.y = y;
 	}
-
-	public boolean contains(int x, int y) {
-		return rect.contains(x, y);
-	}
-
-	protected void saveAsRect() {
-		rect = new Rectangle(x - w / 2, y - h / 2, w, h);
-	}
-
 
 }

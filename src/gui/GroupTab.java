@@ -7,6 +7,7 @@ import gui.buttons.RectangleButton;
 import gui.buttons.SaveWorkButton;
 import gui.buttons.SendButton;
 import app.Mediator;
+import app.MouseApp;
 import app.Pair;
 
 import javax.swing.JButton;
@@ -55,7 +56,7 @@ public class GroupTab extends JPanel {
 	private JTextField textField;
 	JToolBar toolBar;
 	JProgressBar progressBar;
-	JPanel panel;
+	public JCanvas panel;
 	JList userLegend;
 	JComboBox comboBox;
 	JComboBox comboBox_1;
@@ -123,7 +124,8 @@ public class GroupTab extends JPanel {
 		gbc_panel.gridy = 1;
 		add(panel, gbc_panel);
 		m.addGroupElement(panel, this);
-
+		panel.addMouseListener(new MouseApp(m));
+		panel.addMouseMotionListener(new MouseApp(m));
 		userLegend = new JList();
 		
 		GridBagConstraints gbc_list = new GridBagConstraints();

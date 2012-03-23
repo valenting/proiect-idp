@@ -18,22 +18,16 @@ public class StateManager {
 		currentState = ss;
 	}
 
-	public void mouseClick(int x, int y) {
-		//perform mouseClick on the currentState of the manager
-		currentState.mouseClick(x, y);
+	public void mousePressed(int x, int y) {
+		currentState.mousePressed(x, y);
 	}
 
-	public void mouseMove(int x, int y) {
-		//perform mouseUp on the currentState of the manager
-		currentState.mouseMove(x, y);
+	public void mouseDragged(int x, int y) {
+		currentState.mouseDragged(x, y);
 	}
-
-	public void SetStateLoggedIn() {
-
-	}
-
-	public void SetStateLoggedOut() {
-
+	
+	public void mouseReleased(int x, int y) {
+		currentState.mouseReleased(x, y);
 	}
 
 	public void setState(int type) {
