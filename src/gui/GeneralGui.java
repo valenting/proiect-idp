@@ -140,8 +140,8 @@ public class GeneralGui extends JPanel {
 			public void stateChanged(ChangeEvent arg0) {
 				JTabbedPane pan = ((JTabbedPane)arg0.getSource());
 				System.out.println("REPAINT"+pan.getSelectedIndex());
-				med.setCurrentTab((GroupTab) ((JTabbedPane)arg0.getSource()).getSelectedComponent());
-				med.repaint();
+				//med.setCurrentTab((GroupTab) ((JTabbedPane)arg0.getSource()).getSelectedComponent());
+				//med.repaint();
 			}
 		});
 	}
@@ -150,8 +150,11 @@ public class GeneralGui extends JPanel {
 		GroupTab tb = new GroupTab(gg,med);
 		tb.setLegendModel(l);
 		tabbedPane.addTab(group, tb);
-		
 		return tb;
+	}
+	
+	public void closeTab(GroupTab g) {
+		tabbedPane.remove(g);
 	}
 	
 	public GroupTab getActiveTab() {

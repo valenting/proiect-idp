@@ -22,8 +22,6 @@ import gui.buttons.ToolbarButton;
 import gui.drawings.Drawing;
 
 public class Mediator {
-	Vector<Drawing> drawings;
-	StateManager stateMgr;
 	Authenticator a;
 	Communicator comm;
 	Gui gui;
@@ -32,12 +30,9 @@ public class Mediator {
 	String username;
 	GeneralGui gg;
 	Vector<Tab> tabs;
-	JCanvas jc;
 	Tab currentTab;
 	
 	public Mediator() {
-		drawings = new Vector<Drawing>();
-		stateMgr = new StateManager(this);
 		a = new Authenticator(this);
 		groupTab = new Hashtable<Object, GroupTab>();
 		comm = new Communicator();
@@ -77,7 +72,6 @@ public class Mediator {
 		man.addGroup(t, username); 
 		DefaultListModel l = man.getGroupLegend(t);
 		GroupTab tb = gg.addTab(t,l);
-		jc = tb.panel;
 		currentTab = new Tab(t,this);
 		currentTab.jc = tb.panel;
 		currentTab.tab = tb;
@@ -104,14 +98,10 @@ public class Mediator {
 	}
 	
 	private Tab getCurrentTab() {
-		return currentTab;
-	}
-
-	public void setCurrentTab(GroupTab gt) {
 		for (Tab t: tabs)
-			if (t.tab.equals(gt))
-					currentTab = t;
-			
+			if (t.tab.equals(gg.getActiveTab()))
+					return t;
+		return null;
 	}
 	
 	//TODO - managementul pe taburi
@@ -212,7 +202,11 @@ public class Mediator {
 			gui.error("No group selected");
 			return;
 		}
+		
+		
 		man.leaveGroupCommand(username, (String) group.getUserObject());
+		gg.closeTab(this.getTab((String) group.getUserObject()).tab);
+		tabs.remove(this.getTab((String) group.getUserObject()));
 	}
 
 	public void joinGroupCommand(String user, String group, Color c) {
