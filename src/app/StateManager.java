@@ -8,13 +8,15 @@ public class StateManager {
 	private SquareState ss = null;
 	private ArrowState as = null;
 	private LineState ls = null;
-
+	private FreeState fs = null;
+	
 	public StateManager(Mediator m) {
 		med = m;
 		cs = new CircleState(med);
 		ss = new SquareState(med);
 		as = new ArrowState(med);
 		ls = new LineState(med);
+		fs = new FreeState(med);
 		// Default shape - circle
 		currentState = cs;
 	}
@@ -48,6 +50,10 @@ public class StateManager {
 		case State.SQUARE:
 			// set current state as square state
 			currentState = ss;
+			break;
+		case State.FREE:
+			// set current state as free drawing state
+			currentState = fs;
 			break;
 		default:
 			System.out.println("Invalid state " + type);

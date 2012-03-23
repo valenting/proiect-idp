@@ -2,15 +2,18 @@ package app;
 
 import gui.drawings.Arrow;
 import gui.drawings.Circle;
+import gui.drawings.FreeDrawing;
 import gui.drawings.Line;
 import gui.drawings.Square;
+import gui.drawings.Star;
 
 public class State {
 	public final static int CIRCLE = 1;
 	public final static int SQUARE = 2;
 	public final static int LINE = 3;
 	public final static int ARROW = 4; 
-
+	public final static int FREE = 5;
+	
 	public void mousePressed(int x, int y) {
 	}
 
@@ -59,7 +62,7 @@ class CircleState extends State {
 
 class LineState extends State {
 	private Mediator med;
-	private Line l;
+	private Star l;
 
 	public LineState(Mediator m) {
 		med = m;
@@ -67,7 +70,7 @@ class LineState extends State {
 	}
 
 	public void mousePressed(int x, int y) {
-		med.addDrawing(l = new Line(x,y));
+		med.addDrawing(l = new Star(x,y));
 	}
 
 	public void mouseDragged(int x, int y) {
@@ -86,6 +89,24 @@ class ArrowState extends State {
 
 	public void mousePressed(int x, int y) {
 		med.addDrawing(a = new Arrow(x,y));
+	}
+
+	public void mouseDragged(int x, int y) {
+		a.move(x, y);
+	}
+}
+
+class FreeState extends State {
+	private Mediator med;
+	private FreeDrawing a;
+
+	public FreeState(Mediator m) {
+		med = m;
+		a = null;
+	}
+
+	public void mousePressed(int x, int y) {
+		med.addDrawing(a = new FreeDrawing(x,y));
 	}
 
 	public void mouseDragged(int x, int y) {
