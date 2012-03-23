@@ -13,6 +13,7 @@ public class State {
 	public final static int LINE = 3;
 	public final static int ARROW = 4; 
 	public final static int FREE = 5;
+	public final static int STAR = 6;
 	
 	public void mousePressed(int x, int y) {
 	}
@@ -62,7 +63,7 @@ class CircleState extends State {
 
 class LineState extends State {
 	private Mediator med;
-	private Star l;
+	private Line l;
 
 	public LineState(Mediator m) {
 		med = m;
@@ -70,7 +71,7 @@ class LineState extends State {
 	}
 
 	public void mousePressed(int x, int y) {
-		med.addDrawing(l = new Star(x,y));
+		med.addDrawing(l = new Line(x,y));
 	}
 
 	public void mouseDragged(int x, int y) {
@@ -114,4 +115,20 @@ class FreeState extends State {
 	}
 }
 
-//TODO - add other shapes
+class StarState extends State {
+	private Mediator med;
+	private Star a;
+
+	public StarState(Mediator m) {
+		med = m;
+		a = null;
+	}
+
+	public void mousePressed(int x, int y) {
+		med.addDrawing(a = new Star(x,y));
+	}
+
+	public void mouseDragged(int x, int y) {
+		a.move(x, y);
+	}
+}

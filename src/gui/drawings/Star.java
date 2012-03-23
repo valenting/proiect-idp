@@ -2,7 +2,6 @@ package gui.drawings;
 
 import java.awt.Graphics;
 import java.awt.Point;
-import java.util.Vector;
 
 public class Star extends Drawing {
 
@@ -20,7 +19,7 @@ public class Star extends Drawing {
 		int y1 = Math.min(start.y, end.y);
 		int x2 = Math.max(start.x, end.x);
 		int y2 = Math.max(start.y, end.y);
-		drawStar(g,5,x1,y1,x2-x1,y2-y1);
+		drawStar(g, 5, x1, y1, x2 - x1, y2 - y1);
 	}
 
 	public double circleX(int sides, int angle) {

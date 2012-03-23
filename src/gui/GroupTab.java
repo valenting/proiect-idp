@@ -2,10 +2,12 @@ package gui;
 
 import gui.buttons.ArrowButton;
 import gui.buttons.CircleButton;
+import gui.buttons.FreeButton;
 import gui.buttons.LineButton;
 import gui.buttons.RectangleButton;
 import gui.buttons.SaveWorkButton;
 import gui.buttons.SendButton;
+import gui.buttons.StarButton;
 import app.Mediator;
 import app.MouseApp;
 import app.Pair;
@@ -82,11 +84,19 @@ public class GroupTab extends JPanel {
 
 		JToggleButton tglbtnD = new LineButton(g, m);
 		toolBar.add(tglbtnD);
+		
+		JToggleButton tglbtnE = new FreeButton(g, m);
+		toolBar.add(tglbtnE);
+		
+		JToggleButton tglbtnF = new StarButton(g, m);
+		toolBar.add(tglbtnF);
 
 		m.addGroupElement(tglbtnA, this);
 		m.addGroupElement(tglbtnB, this);
 		m.addGroupElement(tglbtnC, this);
 		m.addGroupElement(tglbtnD, this);
+		m.addGroupElement(tglbtnE, this);
+		m.addGroupElement(tglbtnF, this);
 
 		JButton btnSaveWork = new SaveWorkButton(g, m);
 		GridBagConstraints gbc_btnSaveWork = new GridBagConstraints();

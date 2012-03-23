@@ -9,6 +9,7 @@ public class StateManager {
 	private ArrowState as = null;
 	private LineState ls = null;
 	private FreeState fs = null;
+	private StarState sts = null;
 	
 	public StateManager(Mediator m) {
 		med = m;
@@ -17,6 +18,7 @@ public class StateManager {
 		as = new ArrowState(med);
 		ls = new LineState(med);
 		fs = new FreeState(med);
+		sts = new StarState(med);
 		// Default shape - circle
 		currentState = cs;
 	}
@@ -54,6 +56,10 @@ public class StateManager {
 		case State.FREE:
 			// set current state as free drawing state
 			currentState = fs;
+			break;
+		case State.STAR:
+			// set current state as star state
+			currentState = sts;
 			break;
 		default:
 			System.out.println("Invalid state " + type);

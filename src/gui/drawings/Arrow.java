@@ -56,6 +56,5 @@ public class Arrow extends Drawing {
 		g.setColor(color);
 		g.drawLine(start.x, start.y, (int) baseX, (int) baseY);
 		g.fillPolygon(xPoints, yPoints, 3);
-		
 	}
 }
