@@ -232,7 +232,7 @@ public class GroupTab extends JPanel {
 		return cls[comboBox_1.getSelectedIndex()];
 	}
 
-	public void printText(String string, int fontSize, Color fontColor) {
+	public void printText(String username, String string, int fontSize, Color fontColor) {
 		// TODO: username with same font all the time??
 		StyleContext ctx = new StyleContext();
 		StyledDocument doc = txtpnHello.getStyledDocument();
@@ -243,7 +243,7 @@ public class GroupTab extends JPanel {
 		
 		
 		try {
-			doc.insertString(doc.getLength(), string, st);
+			doc.insertString(doc.getLength(), string+"\n", st);
 		} catch (BadLocationException e1) {
 			
 		}

@@ -167,7 +167,7 @@ public class Mediator {
 
 
 	public void loginError() {
-		// TODO Auto-generated method stub
+		gui.error("Invalid credentials");
 	}
 
 	public void setGeneralGui(GeneralGui generalGui) {
@@ -192,7 +192,9 @@ public class Mediator {
 			gui.error("No user selected");
 			return;
 		}
-		man.addUserCommand(username, addedUser,(String) group.getUserObject());
+		String ret = man.addUserCommand(username, addedUser,(String) group.getUserObject());
+		if (ret!=null)
+			gui.error(ret);
 	}
 	
 	public void joinGroupCommand() {
@@ -225,7 +227,7 @@ public class Mediator {
 			return; 
 		// TODO send to communicator
 		System.out.println("not 0");
-		tab.printText(username+": "+text+"\n",fontSize,fontColor);
+		tab.printText(username,text,fontSize,fontColor);
 		
 	}
 

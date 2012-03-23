@@ -34,7 +34,6 @@ public class ColorChooser extends JFrame {
 		setVisible(true);
 		setLocationRelativeTo(null);
 		setSize(400, 100);
-		
 		box.addActionListener(new ActionListener() {
 			
 			@Override
