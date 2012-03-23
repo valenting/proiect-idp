@@ -1,36 +1,36 @@
-	Nume: 	Mirica Emma - Camelia
-		  	Gosu Valentin
-	---------------------------------
-	Grupa:	341C3
-	---------------------------------
-	Email:	emma.mirica@gmail.com
-			valentin.gosu@gmail.com
-	---------------------------------
-	Echipa:	(*NULL)
+Nume: 	Mirica Emma - Camelia
+	  	Gosu Valentin
+---------------------------------
+Grupa:	341C3
+---------------------------------
+Email:	emma.mirica@gmail.com
+		valentin.gosu@gmail.com
+---------------------------------
+Echipa:	(*NULL)
+
+##################################################
+#                Tema 1 - GUI                    #
+##################################################
+
+1. Continut arhiva
+
+	- src/ - folderul cu sursele
+	- build.xml - fisierul pentru rularea cu ant
+	- README - fisierul cu explicatiile aferente
+	- Use case-uri - fisierul cu cateva cazuri de utilizare
 	
-	##################################################
-	#					Tema 1 - GUI				 #
-	##################################################
+=============================================================
 	
-	1. Continut arhiva
+2. Implementare
+
+	Au fost folosite patternurile Model-View-Controller, State,
+Command si Mediator.
 	
-		- src/ - folderul cu sursele
-		- build.xml - fisierul pentru rularea cu ant
-		- README - fisierul cu explicatiile aferente
-		- Use case-uri - fisierul cu cateva cazuri de utilizare
-		
-	=============================================================
-		
-	2. Implementare
 	
-		Au fost folosite patternurile Model-View-Controller, State,
-	Command si Mediator.
-		
-		
-	==============================================================
-	
-	3. Bonus
-	
-		Au fost implementate urmatoarele bonusuri:
-			- posibilitatea de desenare la mouseClick si mouseMove
-			- 	
+==============================================================
+
+3. Bonus
+
+	Au fost implementate urmatoarele bonusuri:
+		- posibilitatea de desenare la mouseClick si mouseMove
+		- 	
