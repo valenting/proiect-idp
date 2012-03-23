@@ -1,0 +1,66 @@
+Login: (practic + evenimente)
+	- nu e in niciun grup
+	- nu apare niciun tab
+	- se verifica user/pass
+	- mesaj eroare la "Wrong pass/user" //TODO
+	- nu se poate loga de mai multe ori
+	
+Logout: (practic + evenimente)
+	- iese din toate grupurile
+	- se sterg toate taburile
+	- ramane culoarea asignata
+	- ramane si in legenda tabului
+	
+Create group: (practic + evenimente)
+	- Nume: sa nu existe, sa nu fie empty
+	- apare grup in tree model si userul care l-a creat se adauga automat la el
+	- devine creator - automat culoare neagra (conventie, si asa se stie cine l-a creat)
+	- iconita diferita la grup caci face parte din el
+	- se deschide tabul pt grupul creat: deocamdata e gol canvasul si doar userul care l-a creat e in legenda
+	
+Add user: (practic + evenimente)
+	- sa fie un nume selectat din useri conectati, altfel msg eroare
+	- sa nu mai existe userul in grup -> mesaj eroare //TODO
+	- selectare culoare pentru userul adaugat / se asigneaza automat culoarea
+	- sa apara in legenda cu culoarea asignata
+	- lui sa-i apara tabul deschis si legenda
+	- eveniment: sa ma adauge cineva la grup
+	- nu apare meniul daca se selecteaza root sau o frunza din tree
+	- cand adauga cineva din grup un user nu mai e nevoie de accept
+	
+Leave Group: (practic + evenimente)
+	- nu apare daca nu faci parte din grup
+	- se inchide tabul cu grupul respectiv // TODO
+	- ramane in legenda
+	- se schimba iconita in iconita ca nu face parte din grup
+	
+Join Group: (practic + evenimente)
+	- nu apare daca esti deja in grup
+	- intreaba utilizatorul cel mai longeviv din grup, adica primul copil din tree //TODO (bonus)
+	- isi alege culoare. Ii apare acele culori disponibile din grup
+	- TODO: pe prima pozitie sa nu fie culoare, ci un string "Choose color...", si sa apara numele culorilor mai frumos
+	
+Taburi: (practic + evenimente)
+	- un event pentru scriere/desenat
+	Zona de discutii:
+		- isi alege culoare si dimensiune font
+		- TODO: sa apara scris frumos "username: .. "
+		- la enter se da send
+	Zona de desenat:
+		- TODO: problema la desenat cand se schimba tabul
+		- sa fie selectate butoanele cum trebuie - vz statemgr (TODO)
+		- desenare cu culori //TODO
+		- legenda: la rejoin grup sa isi ia culoare noua si aia veche ramane available SAU ia culoarea veche
+		- legenda : nonselectable
+		- desenarea se face la mouse click and dragged (Bonus)
+	Save Work:
+		- todo
+		
+Lista cu useri conectati:
+	- selectarea single
+
+TODO: Bonus:
+	- mentinere label cu status: "x joined y group", "x left y group" etc
+	- alte modele de desenat: stea, linie libera ??
+	
+	
