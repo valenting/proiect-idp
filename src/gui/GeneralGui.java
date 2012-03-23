@@ -8,6 +8,8 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -16,9 +18,12 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 
@@ -31,7 +36,7 @@ public class GeneralGui extends JPanel {
 	Mediator med;
 	JTabbedPane tabbedPane;
 	Gui gg;
-	public GeneralGui(Gui g, Mediator m) {
+	public GeneralGui(Gui g, final Mediator m) {
 		gg = g;
 		m.setGeneralGui(this);
 		med = m;
@@ -57,6 +62,7 @@ public class GeneralGui extends JPanel {
 		p.setPreferredSize(new Dimension(0, 0));
 		p.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		this.add(p, gbc_list);
+		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
 		
 		// Create Group & Log out button
@@ -136,14 +142,32 @@ public class GeneralGui extends JPanel {
 		//TODO - remove them
 		//tabbedPane.addTab("tab1", new GroupTab(g,m) );
 		//tabbedPane.addTab("tab2", new GroupTab(g,m) );
+		
+		
+		tabbedPane.addChangeListener(new ChangeListener() {
+			
+			@Override
+			public void stateChanged(ChangeEvent arg0) {
+				JTabbedPane pan = ((JTabbedPane)arg0.getSource());
+				System.out.println("REPAINT"+pan.getSelectedIndex());
+				med.setCurrentTab((GroupTab) ((JTabbedPane)arg0.getSource()).getSelectedComponent());
+				med.repaint();
+			}
+		});
 	}
 	
 	public GroupTab addTab(String group, DefaultListModel l) {
 		GroupTab tb = new GroupTab(gg,med);
 		tb.setLegendModel(l);
 		tabbedPane.addTab(group, tb);
+		
 		return tb;
 	}
+	
+	public GroupTab getActiveTab() {
+		return (GroupTab) tabbedPane.getSelectedComponent();
+	}
+	 
 	 
 	public void logOut() {
 		tabbedPane.removeAll();

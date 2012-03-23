@@ -12,12 +12,12 @@ public class Drawing {
 	
 	public Drawing(Point start) {
 		this.start = new Point(start);
-		this.end = new Point(end);
+		this.end = new Point(start.x+1,start.y+1);
 	}
 	
 	public Drawing(int x, int y) {
 		this.start = new Point(x,y);
-		this.end = new Point(x,y);
+		this.end = new Point(x+1,y+1);
 	}
 	
 	public void draw(Graphics g) {

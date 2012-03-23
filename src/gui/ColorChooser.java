@@ -3,6 +3,8 @@ package gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
@@ -22,6 +24,8 @@ public class ColorChooser extends JFrame {
 	/**
 	 * Create the frame.
 	 */
+	
+	// TODO : choose color mus be the first option in the list
 	public ColorChooser(Vector<Color> colors, final Mediator m, final String user, final String group) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
@@ -36,12 +40,12 @@ public class ColorChooser extends JFrame {
 		setLocationRelativeTo(null);
 		setSize(400, 100);
 		
-		box.addItemListener(new ItemListener() {
+		box.addActionListener(new ActionListener() {
 			
 			@Override
-			public void itemStateChanged(ItemEvent arg0) {
+			public void actionPerformed(ActionEvent arg0) {
 				Color c = (Color) box.getSelectedItem(); 
-				m.joinGroupCommand(user,group,c); 	
+				m.joinGroupCommand(user,group,c);
 				dispose();
 			}
 		});

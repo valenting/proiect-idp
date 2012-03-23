@@ -32,7 +32,10 @@ public class Mediator {
 	GroupManager man;
 	String username;
 	GeneralGui gg;
-	Tab tabs;
+	Vector<Tab> tabs;
+	JCanvas jc;
+	Tab currentTab;
+	
 	public Mediator() {
 		drawings = new Vector<Drawing>();
 		stateMgr = new StateManager(this);
@@ -40,6 +43,7 @@ public class Mediator {
 		groupTab = new Hashtable<Object, GroupTab>();
 		comm = new Communicator();
 		man = new GroupManager();
+		tabs = new Vector<Tab>();
 	}
 
 	public void loginSuccessful(String user) {
@@ -57,7 +61,6 @@ public class Mediator {
 		man.logOffUser(username);
 		gui.logOut();
 		gg.logOut();
-		// tabs.empty?
 	}
 
 	public void createGroup() {
@@ -69,13 +72,17 @@ public class Mediator {
 		return man.groupExists(t);
 	}
 
-	JCanvas jc;
+	
 	
 	public void addGroup(String t) {
 		man.addGroup(t, username); 
 		DefaultListModel l = man.getGroupLegend(t);
 		GroupTab tb = gg.addTab(t,l);
 		jc = tb.panel;
+		currentTab = new Tab(t,this);
+		currentTab.jc = tb.panel;
+		currentTab.tab = tb;
+		tabs.add(currentTab);
 	}  
 
 	public TreeModel getTreeModel() {
@@ -90,37 +97,58 @@ public class Mediator {
 		return a.authenticate(user, pass);
 	}
 
+	private Tab getTab(String name) {
+		for (Tab t: tabs)
+			if (t.getName().equals(name))
+				return t;
+		return null;
+	}
+	
+	private Tab getCurrentTab() {
+		return currentTab;
+	}
 
+	public void setCurrentTab(GroupTab gt) {
+		for (Tab t: tabs)
+			if (t.tab.equals(gt))
+					currentTab = t;
+			
+	}
+	
 	//TODO - managementul pe taburi
 	public void addDrawing(Drawing d) {
-		drawings.addElement(d);
+		getCurrentTab().drawings.addElement(d);
 	}
 
 	public void mousePressed(int x, int y) {
-		stateMgr.mousePressed(x, y);
+		getCurrentTab().stateMgr.mousePressed(x, y);
 		repaint();
 	} 
 
 	public void mouseDragged(int x, int y) {
-		stateMgr.mouseDragged(x, y);
+		getCurrentTab().stateMgr.mouseDragged(x, y);
 		repaint();
 	}
 	
 	public void mouseReleased(int x, int y) {
-		stateMgr.mouseReleased(x, y);
+		getCurrentTab().stateMgr.mouseReleased(x, y);
 		repaint();
 	}
 
-	private void repaint(){
-		jc.repaint();
+	public void repaint(){
+		if (getCurrentTab()!=null)
+			getCurrentTab().jc.repaint();
+		else
+			System.out.println("NULL");
+	}
+	
+	public void repaintSelected(int index) {
+		tabs.get(index).repaint();
 	}
 
 	public void reDraw(Graphics g) {
-		g.setColor(Color.black);
-		for (int i = 0; i < drawings.size(); i++) {
-			Drawing v = (Drawing) drawings.elementAt(i);
-			v.draw(g);
-		}
+		System.out.println(currentTab.getName());
+		getCurrentTab().reDraw(g);
 	}
 	
 	public void addGroupElement(Object o, GroupTab t) {
@@ -135,14 +163,12 @@ public class Mediator {
 		System.out.println("menu selection");
 		GroupTab t = getGroupTab(o);
 		t.popOthers(o);
-		stateMgr.setState(((ToolbarButton)o).getType());
-		// TODO - set state pe stateMgr al tabului
+		getCurrentTab().stateMgr.setState(((ToolbarButton)o).getType());
 	}
 
 
 	public void loginError() {
 		// TODO Auto-generated method stub
-
 	}
 
 	public void setGeneralGui(GeneralGui generalGui) {
@@ -202,6 +228,8 @@ public class Mediator {
 		System.out.println("not 0");
 		tab.printText(username+": "+text+"\n",fontSize,fontColor);
 		
-	} 
+	}
+
+	
 }
 

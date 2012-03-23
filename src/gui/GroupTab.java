@@ -23,6 +23,8 @@ import javax.swing.JLabel;
 import java.awt.Insets;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -62,7 +64,7 @@ public class GroupTab extends JPanel {
 	JComboBox comboBox_1;
 	JTextPane txtpnHello;
 	private static Color cls[] = {Color.black, Color.green, Color.blue, Color.yellow, Color.red, Color.pink};
-	public GroupTab(Gui g, Mediator m) {
+	public GroupTab(Gui g, final Mediator m) {
 		super();
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{0, 0, 0};
@@ -127,6 +129,7 @@ public class GroupTab extends JPanel {
 		panel.addMouseListener(new MouseApp(m));
 		panel.addMouseMotionListener(new MouseApp(m));
 		userLegend = new JList();
+		
 		
 		GridBagConstraints gbc_list = new GridBagConstraints();
 		gbc_list.insets = new Insets(0, 0, 5, 0);
@@ -200,6 +203,7 @@ public class GroupTab extends JPanel {
 					btnSend.doClick(10);
 			}
 		});
+		
 	}
 
 	/**
@@ -265,7 +269,7 @@ class CustomListCellRenderer extends DefaultListCellRenderer{
 
     public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
 
-        Component ret = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+        Component ret = super.getListCellRendererComponent(list, value, index, false, false); // List is not selectable
 
         JLabel label = (JLabel) ret ;
         Pair<String, Color> p = (Pair<String, Color>)(value);  
