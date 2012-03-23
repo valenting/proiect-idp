@@ -31,6 +31,14 @@ public class Tab {
 		drawings.addElement(d);
 	}
 
+	public void setCanvas(JCanvas canvas) {
+		jc = canvas;
+	}
+	
+	public void setGroupTab(GroupTab t) {
+		tab = t;
+	}
+	
 	public void mousePressed(int x, int y) {
 		stateMgr.mousePressed(x, y);
 		repaint();
