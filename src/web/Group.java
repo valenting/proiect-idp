@@ -1,10 +1,13 @@
 package web;
 
+import gui.drawings.Drawing;
+
 import java.awt.Color;
 import java.util.Hashtable;
 import java.util.Vector;
 
 import javax.swing.DefaultListModel;
+import javax.swing.text.DefaultStyledDocument;
 
 import app.Pair;
 
@@ -14,6 +17,8 @@ public class Group {
 	String createdBy;
 	Vector<String> users;
 	Hashtable<String, Color> colors;
+	Vector<Drawing> drawings;
+	DefaultStyledDocument doc;
 	private static Color[] available = { Color.BLACK, Color.BLUE, Color.CYAN, Color.DARK_GRAY, Color.GRAY, Color.GREEN, Color.LIGHT_GRAY, Color.MAGENTA, Color.ORANGE, Color.PINK, Color.RED, Color.YELLOW };
 	
 	DefaultListModel userColorModel;
@@ -28,7 +33,8 @@ public class Group {
 		// creator always has color black - convention
 		userColorModel.addElement(new Pair<String,Color>(user,Color.black));
 		createdBy = user;
-		
+		drawings = new Vector<Drawing>(); 
+		doc = new DefaultStyledDocument();
 	}
 
 	public void addUser(String user, Color c) {
@@ -36,7 +42,15 @@ public class Group {
 		colors.put(user, c);
 		userColorModel.addElement(new Pair<String,Color>(user,c));
 	}
+	
+	public Vector<Drawing> getDrawings() {
+		return drawings;
+	}
 
+	public DefaultStyledDocument getDocument() {
+		return doc;
+	}
+	
 	public void delUser(String user) { 
 		users.remove(user);
 	}
@@ -65,6 +79,10 @@ public class Group {
 	
 	public DefaultListModel getLegendModel() {
 		return userColorModel;
+	}
+
+	public Color getUserColor(String username) {
+		return colors.get(username);
 	}
 	
 }

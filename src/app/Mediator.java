@@ -13,6 +13,7 @@ import javax.swing.tree.TreeModel;
 import web.Authenticator;
 import web.Communicator;
 import web.GroupManager;
+import worker.Tester;
 import gui.ColorChooser;
 import gui.GeneralGui;
 import gui.GroupTab;
@@ -35,8 +36,9 @@ public class Mediator {
 		a = new Authenticator(this);
 		groupTab = new Hashtable<Object, GroupTab>();
 		comm = new Communicator();
-		man = new GroupManager();
+		man = new GroupManager(this);
 		tabs = new Vector<Tab>();
+		(new Tester(man)).start();
 	}
 
 	public void loginSuccessful(String user) {
@@ -73,6 +75,8 @@ public class Mediator {
 		Tab currentTab = new Tab(t,this);
 		currentTab.setCanvas(tb.panel);
 		currentTab.setGroupTab(tb);
+		currentTab.setDrawings(man.getDrawings(t));
+		tb.setDocument(man.getDocument(t));
 		tabs.add(currentTab);
 	}  
 
@@ -105,6 +109,7 @@ public class Mediator {
 	
 	//TODO - managementul pe taburi
 	public void addDrawing(Drawing d) {
+		d.setColor(man.getColor(username, getCurrentTab().name));
 		getCurrentTab().addDrawing(d);
 	}
 
@@ -191,7 +196,6 @@ public class Mediator {
 			return;
 		}
 		
-		
 		man.leaveGroupCommand(username, (String) group.getUserObject());
 		gg.closeTab(this.getTab((String) group.getUserObject()).tab);
 		tabs.remove(this.getTab((String) group.getUserObject()));
@@ -200,7 +204,13 @@ public class Mediator {
 	public void joinGroupCommand(String user, String group, Color c) {
 		man.joinGroupCommand(user, group,c);
 		DefaultListModel l = man.getGroupLegend(group);
-		gg.addTab(group,l);
+		GroupTab tb = gg.addTab(group,l);
+		Tab currentTab = new Tab(group,this);
+		currentTab.setCanvas(tb.panel);
+		currentTab.setGroupTab(tb);
+		currentTab.setDrawings(man.getDrawings(group));
+		tb.setDocument(man.getDocument(group));
+		tabs.add(currentTab);
 	}
 
 	public void sendText(String text, int fontSize, Color fontColor,
@@ -215,6 +225,11 @@ public class Mediator {
 
 	public void saveWork() {
 		// TODO Auto-generated method stub 
+	}
+	
+	public void addUserEvent(String user, String group) {
+		if (user.equals(this.username))
+			joinGroupCommand(user,group,man.getAvailableColors(group.toString()).firstElement());
 	}
 	
 }

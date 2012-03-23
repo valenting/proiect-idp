@@ -1,5 +1,7 @@
 package web;
 
+import java.util.Hashtable;
+
 import app.Mediator;
 
 /**
@@ -7,15 +9,20 @@ import app.Mediator;
  */
 public class Authenticator {
 	Mediator med;
+	Hashtable<String, String> passwords;
+	
 	public Authenticator(Mediator med) {
 		this.med = med;
+		passwords = new Hashtable<String, String>();
+		passwords.put("user", "pass");
+		passwords.put("me","test");
+		passwords.put("bla","mypass");
+		passwords.put("qwe","rty");
 	}
 	
 	public boolean authenticate(String user, String password) {
-		// TODO connect to network by mediator and check if authenticated
-		if (user.equals("user") && password.equals("pass"))
-			return true;
-		if (user.equals("me") && password.equals("test"))
+		String ps = passwords.get(user);
+		if (password.equals(ps))
 			return true;
 		return false;
 	}

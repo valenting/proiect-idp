@@ -1,13 +1,18 @@
 package web;
 
+import gui.drawings.Drawing;
+
 import java.awt.Color;
 import java.util.Vector;
 import javax.swing.DefaultListModel;
 import javax.swing.ListModel;
+import javax.swing.text.DefaultStyledDocument;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeModel;
+
+import app.Mediator;
 
 public class GroupManager {
 	Vector<Group> groups;
@@ -15,12 +20,15 @@ public class GroupManager {
 
 	DefaultListModel userModel;
 	DefaultTreeModel groupModel;
-
-	public GroupManager() {
+	Mediator med;
+	public GroupManager(Mediator med) {
+		this.med = med;
 		groups = new Vector<Group>();
 		users = new Vector<String>();
 		userModel = new DefaultListModel();
 		userModel.addElement("phony");
+		userModel.addElement("someone");
+
 		groupModel = new DefaultTreeModel(new DefaultMutableTreeNode("Groups"));
 	}
 
@@ -37,9 +45,6 @@ public class GroupManager {
 		userModel.addElement(user);
 	}
 
-	public void disconnectUser(String user) {
-		users.remove(user);
-	}
 
 	public Vector<String> getConnectedUsers() {
 		return users;
@@ -49,7 +54,7 @@ public class GroupManager {
 		Group g = getGroup(group);
 		return g.getLegendModel();
 	}
-	
+
 	public boolean addGroup(String group, String username) {
 		for (Group g : groups)
 			if (g.getName().equals(group))
@@ -90,8 +95,8 @@ public class GroupManager {
 
 		return true;
 	}
-	
-	
+
+
 	public boolean inGroup(String group, String username) {
 		for (Group g : groups)
 			if (g.getName().equals(group)) 
@@ -136,25 +141,30 @@ public class GroupManager {
 				return g;
 		return null; 
 	}
-	
+
 	public Vector<Color> getAvailableColors(String group) {
 		return getGroup(group).availableColors();
 	}
-	
+
 	/*** COMMANDS ***/
 
 	public String addUserCommand(String username, String addedUser, String group) {
 		Group g = getGroup(group);
-		
+
 		if (!g.userInGroup(username))
 			return "You are not allowed to add users. Try JOIN";
-		
+
 		if (g.userInGroup(addedUser))
 			return "User already in group";
-		
+
 		if (g!=null && username!=null && addedUser!=null && g.userInGroup(username) && !g.userInGroup(addedUser)) {
-			g.addUser(addedUser, Color.CYAN); // TODO choose color
-			groupModel.insertNodeInto(new DefaultMutableTreeNode(addedUser), getGroupNode(group), getGroupNode(group).getChildCount());
+			try {
+				Color c = getAvailableColors(group).firstElement();
+				g.addUser(addedUser, c);
+				groupModel.insertNodeInto(new DefaultMutableTreeNode(addedUser), getGroupNode(group), getGroupNode(group).getChildCount());
+			} catch (Exception e) {
+				return "No more colors available";
+			}	
 		}
 		return null;
 	}
@@ -168,7 +178,7 @@ public class GroupManager {
 			}
 
 	}
- 
+
 	public void leaveGroupCommand(String username, String group) {
 		Group g = getGroup(group);
 		if (g!=null)
@@ -182,25 +192,54 @@ public class GroupManager {
 				}
 			}
 	}
-	
-	
-	
-	/*** STUBS ***/
-	
-	public void connectedUserEvent() {
-		
-	}
-	
-	public void disconnectedUserEvent() {
-		
-	}
-	
-	public void joinGroupEvent() {
-		
+
+	public Color getColor(String username, String group) {
+		return getGroup(group).getUserColor(username);
 	}
 
-	public void leaveGroupEvent() {
-		
+	public DefaultStyledDocument getDocument(String group) {
+		return getGroup(group).getDocument();
+	}
+
+	public Vector<Drawing> getDrawings(String group) {
+		return getGroup(group).getDrawings();
+	}
+
+	/*** STUBS ***/
+
+	public void connectedUserEvent(String username) {
+		connectUser(username);
+	}
+
+	public void disconnectedUserEvent(String username) {
+		logOffUser(username);
+	}
+
+	public boolean createGroupEvent(String username,String group) {
+		return addGroup(group, username);
+	}
+	
+	public void joinGroupEvent(String username, String group) {
+		try {
+			Color c =getAvailableColors(group).firstElement();
+			joinGroupCommand(username, group, c);
+		} catch (Exception e) {
+
+		}
+	}
+	
+	public void addUserEvent(String by, String username, String group) {
+		med.addUserEvent(username, group);
+		if (!inGroup(group, username))
+			addUserCommand(by, username, group);
+	}
+
+	public void leaveGroupEvent(String username, String group) {
+		leaveGroupCommand(username, group);
+	}
+	
+	public String getFirstUser() {
+		return users.firstElement();
 	}
 }
 
