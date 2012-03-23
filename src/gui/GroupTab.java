@@ -23,8 +23,13 @@ import java.awt.GridBagConstraints;
 import javax.swing.JToggleButton;
 import javax.swing.JLabel;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
@@ -40,6 +45,8 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 import javax.swing.text.StyledDocument;
 import javax.swing.DefaultComboBoxModel;
+
+import worker.ExportTask;
 
 
 public class GroupTab extends JPanel {
@@ -107,7 +114,29 @@ public class GroupTab extends JPanel {
 		add(btnSaveWork, gbc_btnSaveWork);
 		m.addGroupElement(btnSaveWork, this);
 
-		progressBar = new JProgressBar();
+		final ExportTask export = new ExportTask();
+		
+		progressBar = new JProgressBar(0,10);
+		btnSaveWork.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				export.execute();
+			}
+		});
+		
+		export.addPropertyChangeListener(new PropertyChangeListener() {
+			
+			@Override
+			public void propertyChange(PropertyChangeEvent arg0) {
+				Object o = arg0.getNewValue();
+				if (o instanceof Integer)
+					progressBar.setValue((Integer) o);
+				
+			}
+		});
+		
+		
 		GridBagConstraints gbc_progressBar = new GridBagConstraints();
 		gbc_progressBar.insets = new Insets(0, 0, 5, 0);
 		gbc_progressBar.gridx = 1;
@@ -205,6 +234,10 @@ public class GroupTab extends JPanel {
 
 	}
 
+	public void setDocument(StyledDocument doc) {
+		txtpnHello.setDocument(doc);
+	}
+	
 	/**
 	 * Used to pop the other selected buttons
 	 * @param The clicked button
@@ -254,7 +287,6 @@ public class GroupTab extends JPanel {
 	public void printText(String username, String string, int fontSize, Color fontColor) {
 		StyleContext ctx = new StyleContext();
 		StyledDocument doc = txtpnHello.getStyledDocument();
-
 		Style st = ctx.getStyle(StyleContext.DEFAULT_STYLE);
 		StyleConstants.setBold(st, true);
 		

@@ -149,8 +149,7 @@ public class GeneralGui extends JPanel {
 	public GroupTab getActiveTab() {
 		return (GroupTab) tabbedPane.getSelectedComponent();
 	}
-	 
-	 
+	
 	public void logOut() {
 		tabbedPane.removeAll();
 	}

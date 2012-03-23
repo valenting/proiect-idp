@@ -20,7 +20,10 @@ public class Tab {
 		this.name = name;
 		med  = m;
 		stateMgr = new StateManager(m);
-		drawings = new Vector<Drawing>();
+	}
+	
+	public void setDrawings(Vector<Drawing> v ) {
+		drawings = v;
 	}
 	
 	public String getName() {
