@@ -52,6 +52,9 @@ a codului.
 		Pentru grupuri se foloseste un JTree cu un DefaultTreeModel.
 	S-a definit un renderer pentru a afisa o iconita diferita pentru
 	grupurile la care este conectat userul curent.
+		Pentru adaugare user, join si leave grup s-a folosit un
+	JPopupMenu. In meniu apare Join/Leave in functie daca userul
+	nu se afla/se afla in grup.
 
 	
 	2.5 Zona de discutii
@@ -90,7 +93,13 @@ a codului.
 		
 ==============================================================
 
-4. Repository
+4. Testarea
+
+	
+
+==============================================================
+
+5. Repository
 	
 	Pentru lucrul in echipa am folosit gitHub. Repository-ul este:
 	
