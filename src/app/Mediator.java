@@ -18,7 +18,6 @@ import gui.ColorChooser;
 import gui.GeneralGui;
 import gui.GroupTab;
 import gui.Gui;
-import gui.JCanvas;
 import gui.buttons.ToolbarButton;
 import gui.drawings.Drawing;
 
@@ -106,8 +105,6 @@ public class Mediator {
 		return null;
 	}
 	
-	
-	//TODO - managementul pe taburi
 	public void addDrawing(Drawing d) {
 		d.setColor(man.getColor(username, getCurrentTab().name));
 		getCurrentTab().addDrawing(d);
@@ -217,7 +214,7 @@ public class Mediator {
 			GroupTab tab) {
 		if (text.length()==0)
 			return; 
-		// TODO send to communicator
+		// TODO send to communicator - tema 2
 		System.out.println("not 0");
 		tab.printText(username,text,fontSize,fontColor);
 		

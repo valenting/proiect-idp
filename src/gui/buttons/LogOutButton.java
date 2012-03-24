@@ -13,6 +13,7 @@ public class LogOutButton extends JButton implements Command {
 	public LogOutButton(ActionListener act, Mediator md) {
 		super("Log Out");
 		addActionListener(act);
+		setToolTipText("Log out button");
 		med = md;
 	}
 

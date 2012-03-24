@@ -17,6 +17,7 @@ public class LoginButton extends JButton implements Command {
 	public LoginButton(ActionListener act, Mediator md, JTextField username, JPasswordField password) {
 		super("Log In");
 		addActionListener(act);
+		setToolTipText("Log in button");
 		med = md;
 		user = username;
 		pass = password;
