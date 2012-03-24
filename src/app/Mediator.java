@@ -6,6 +6,7 @@ import java.util.Hashtable;
 import java.util.Vector;
 
 import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
 import javax.swing.ListModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeModel;
@@ -200,8 +201,30 @@ public class Mediator {
 		gg.closeTab(this.getTab((String) group.getUserObject()).tab);
 		tabs.remove(this.getTab((String) group.getUserObject()));
 	}
+	
+	public void joinGroupCommand(final String user, final String group, final Color c) {
+		if (!man.inGroup(user, group) && user!=null && group!=null) {
+			JOptionPane.showMessageDialog(null, "Awaiting permission from the group's owner", "Notice", JOptionPane.PLAIN_MESSAGE);
+			// TODO Stage 2: call communicator instead of accepting automatically
+			Thread t = (new Thread() {
+				public void run() {
+					try {
+						System.out.println("Requesting access");
+						Thread.sleep(5000);
+						JOptionPane.showMessageDialog(null, "You have been accepted to "+group, "Notice", JOptionPane.PLAIN_MESSAGE);
+						joinGroupAccepted(user, group, c);
+						
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 
-	public void joinGroupCommand(String user, String group, Color c) {
+				}
+			});
+			t.start();
+		}
+	}
+	
+	public void joinGroupAccepted(String user, String group, Color c) {
 		man.joinGroupCommand(user, group,c);
 		DefaultListModel l = man.getGroupLegend(group);
 		GroupTab tb = gg.addTab(group,l);
@@ -213,6 +236,15 @@ public class Mediator {
 		tabs.add(currentTab);
 	}
 
+	public void joinGroupDenied(String user, String group, Color c) {
+		// Message - You have been denied joining the group
+		// Unused at this stage
+	}
+	
+	public void joinGroupEvent(String user, String group, Color c) {
+		// TODO show window asking ...
+	}
+	
 	public void sendText(String text, int fontSize, Color fontColor,
 			GroupTab tab) {
 		if (text.length()==0)
@@ -229,7 +261,7 @@ public class Mediator {
 	
 	public void addUserEvent(String user, String group) {
 		if (user.equals(this.username))
-			joinGroupCommand(user,group,man.getAvailableColors(group.toString()).firstElement());
+			joinGroupAccepted(user,group,man.getAvailableColors(group.toString()).firstElement());
 	}
 	
 }
