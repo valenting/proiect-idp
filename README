@@ -81,6 +81,9 @@ a codului.
 		In general, unde s-a putut s-a adaugat posibilitatea ca la
 	enter sa aiba loc o actiune corespunzatoare unui buton.
 	(vezi Send, Login)
+		Pentru cererea permisiunii la alaturarea la un grup,
+	in cadrul etapei 1 s-au implementat doar stub-urile, urmand ca 
+	acestea sa fie conectate cu modulul de retea in etapele urmatoare.
 	
 	
 ==============================================================
@@ -90,7 +93,7 @@ a codului.
 	Au fost implementate urmatoarele bonusuri:
 		- posibilitatea de desenare la mouseClick si mouseMove
 		- desenarea altor forme: free drawing si stea
-		
+		- cererea permisiunii la join
 ==============================================================
 
 4. Testarea
