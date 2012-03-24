@@ -31,7 +31,7 @@ public class Mediator {
 	String username;
 	GeneralGui gg;
 	Vector<Tab> tabs;
-		
+
 	public Mediator() {
 		a = new Authenticator(this);
 		groupTab = new Hashtable<Object, GroupTab>();
@@ -61,7 +61,7 @@ public class Mediator {
 
 	public void createGroup() {
 		gui.groupDialog();
-		
+
 	}
 
 	public boolean groupExists(String t) {
@@ -98,14 +98,14 @@ public class Mediator {
 				return t;
 		return null;
 	}
-	
+
 	private Tab getCurrentTab() {
 		for (Tab t: tabs)
 			if (t.tab.equals(gg.getActiveTab()))
-					return t;
+				return t;
 		return null;
 	}
-	
+
 	public void addDrawing(Drawing d) {
 		d.setColor(man.getColor(username, getCurrentTab().name));
 		getCurrentTab().addDrawing(d);
@@ -120,7 +120,7 @@ public class Mediator {
 		getCurrentTab().mouseDragged(x, y);
 		getCurrentTab().repaint();
 	}
-	
+
 	public void mouseReleased(int x, int y) {
 		getCurrentTab().mouseReleased(x, y);
 		getCurrentTab().repaint();
@@ -130,7 +130,7 @@ public class Mediator {
 	public void reDraw(Graphics g) {
 		getCurrentTab().reDraw(g);
 	}
-	
+
 	public void addGroupElement(Object o, GroupTab t) {
 		groupTab.put(o, t);
 	}
@@ -154,17 +154,17 @@ public class Mediator {
 	public void setGeneralGui(GeneralGui generalGui) {
 		gg = generalGui;
 	}
-	
+
 	public boolean userInGroup(String user, String group) {
 		return man.inGroup(group, user);
 	}
 
 	/****** RIGHT CLICK MENU ******/
-	
+
 	public void addUserCommand() {
 		String addedUser = gg.getSelectedUser();
 		DefaultMutableTreeNode group = gg.getSelectedGroup();
-		
+
 		if (group == null) {
 			gui.error("No group selected");
 			return;
@@ -177,13 +177,15 @@ public class Mediator {
 		if (ret!=null)
 			gui.error(ret);
 	}
-	
+
 	public void joinGroupCommand() {
 		DefaultMutableTreeNode group = gg.getSelectedGroup();
 		if (group == null) {
 			gui.error("No group selected");
 			return;
 		}
+		if (man.inGroup(group.toString(), username))
+			return;
 		new ColorChooser(man.getAvailableColors(group.toString()), this, username, group.toString());
 	}
 
@@ -193,35 +195,16 @@ public class Mediator {
 			gui.error("No group selected");
 			return;
 		}
-		
+
 		man.leaveGroupCommand(username, (String) group.getUserObject());
 		gg.closeTab(this.getTab((String) group.getUserObject()).tab);
 		tabs.remove(this.getTab((String) group.getUserObject()));
 	}
-	
-	public void joinGroupCommand(final String user, final String group, final Color c) {
-		if (!man.inGroup(user, group) && user!=null && group!=null) {
-			JOptionPane.showMessageDialog(null, "Awaiting permission from the group's owner", "Notice", JOptionPane.PLAIN_MESSAGE);
-			// TODO Stage 2: call communicator instead of accepting automatically
-			Thread t = (new Thread() {
-				public void run() {
-					try {
-						System.out.println("Requesting access");
-						Thread.sleep(5000);
-						JOptionPane.showMessageDialog(null, "You have been accepted to "+group, "Notice", JOptionPane.PLAIN_MESSAGE);
-						joinGroupAccepted(user, group, c);
-						
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
 
-				}
-			});
-			t.start();
-		}
-	}
-	
-	public void joinGroupAccepted(String user, String group, Color c) {
+
+	public void joinGroupCommand(String user, String group, Color c) {
+		if (man.inGroup(group, user))
+			return;
 		man.joinGroupCommand(user, group,c);
 		DefaultListModel l = man.getGroupLegend(group);
 		GroupTab tb = gg.addTab(group,l);
@@ -233,15 +216,53 @@ public class Mediator {
 		tabs.add(currentTab);
 	}
 
+	public void joinGroupCommandRequest(final String user, final String group, final Color c) {
+		if (!man.inGroup(user, group) && user!=null && group!=null) {
+			JOptionPane.showMessageDialog(null, "Awaiting permission from the group's owner", "Notice", JOptionPane.PLAIN_MESSAGE);
+			// TODO Stage 2: call communicator instead of accepting automatically
+			Thread t = (new Thread() {
+				public void run() {
+					try {
+						System.out.println("Requesting access");
+						Thread.sleep(5000);
+						joinGroupAccepted(user, group, c);
+
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+
+				}
+			});
+			t.start();
+		}
+	}
+
+	public void joinGroupAccepted(String user, String group, Color c) {
+		if (!man.inGroup(user, group) && user!=null && group!=null) {
+			JOptionPane.showMessageDialog(null, "You have been accepted to "+group, "Notice", JOptionPane.PLAIN_MESSAGE);
+			man.joinGroupCommand(user, group,c);
+			DefaultListModel l = man.getGroupLegend(group);
+			if (l==null)
+				return;
+			GroupTab tb = gg.addTab(group,l);
+			Tab currentTab = new Tab(group,this);
+			currentTab.setCanvas(tb.panel);
+			currentTab.setGroupTab(tb);
+			currentTab.setDrawings(man.getDrawings(group));
+			tb.setDocument(man.getDocument(group));
+			tabs.add(currentTab);
+		}
+	}
+
 	public void joinGroupDenied(String user, String group, Color c) {
 		// Message - You have been denied joining the group
 		// Unused at this stage
 	}
-	
+
 	public void joinGroupEvent(String user, String group, Color c) {
 		// Open a JPerm panel and send back answer
 	}
-	
+
 	public void sendText(String text, int fontSize, Color fontColor,
 			GroupTab tab) {
 		if (text.length()==0)
@@ -249,17 +270,17 @@ public class Mediator {
 		// TODO send to communicator - tema 2
 		System.out.println("not 0");
 		tab.printText(username,text,fontSize,fontColor);
-		
+
 	}
 
 	public void saveWork() {
 		// TODO Auto-generated method stub 
 	}
-	
+
 	public void addUserEvent(String user, String group) {
-		if (user.equals(this.username))
-			joinGroupAccepted(user,group,man.getAvailableColors(group.toString()).firstElement());
+		if (user.equals(this.username) && !man.inGroup(group, user))
+			joinGroupCommand(user,group,man.getAvailableColors(group.toString()).firstElement());
 	}
-	
+
 }
 

@@ -25,11 +25,12 @@ public class GroupManager {
 		this.med = med;
 		groups = new Vector<Group>();
 		users = new Vector<String>();
-		userModel = new DefaultListModel();
-		userModel.addElement("phony");
-		userModel.addElement("someone");
-
 		groupModel = new DefaultTreeModel(new DefaultMutableTreeNode("Groups"));
+		userModel = new DefaultListModel();
+		userModel.addElement("phony");		// For testing
+		userModel.addElement("someone");    // For testing
+		addGroup("default", "phony");		// For testing
+		addUserCommand("phony", "someone", "default");	// For testing
 	}
 
 	public ListModel getListModel() {
@@ -52,7 +53,10 @@ public class GroupManager {
 
 	public DefaultListModel getGroupLegend(String group) {
 		Group g = getGroup(group);
-		return g.getLegendModel();
+		if (g!=null)
+			return g.getLegendModel();
+		else 
+			return null;
 	}
 
 	public boolean addGroup(String group, String username) {
