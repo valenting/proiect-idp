@@ -19,6 +19,8 @@ Echipa:	*(NULL)
 	- README - fisierul cu explicatiile aferente
 	- Use case-uri - fisierul cu cateva cazuri de utilizare
 	
+OBSERVATIE: Pentru a testa folositi userul "user" cu parola "pass"
+
 =============================================================
 	
 2. Implementare
@@ -94,6 +96,8 @@ a codului.
 		- posibilitatea de desenare la mouseClick si mouseMove
 		- desenarea altor forme: free drawing si stea
 		- cererea permisiunii la join
+
+
 ==============================================================
 
 4. Testarea
@@ -113,3 +117,6 @@ a codului.
 		git@github.com:valenting/Proiect-IDP.git.
 		
 	IDE-ul folosit a fost Eclipse.
+    
+
+==============================================================
