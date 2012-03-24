@@ -95,6 +95,10 @@ a codului.
 
 4. Testarea
 
+	Pentru testare se foloseste clasa Tester din pachetul worker.
+	Tester extinde clasa Thread, si la fiecare 5 secunde executa o operatie.
+	In cadrul etapei 1, Tester-ul apeleaza niste functii din clasa 
+	GroupManager, ce simuleaza niste evenimente executate de alti clienti.
 	
 
 ==============================================================
