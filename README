@@ -95,7 +95,12 @@ a codului.
 	Au fost implementate urmatoarele bonusuri:
 		- posibilitatea de desenare la mouseClick si mouseMove
 		- desenarea altor forme: free drawing si stea
-		- cererea permisiunii la join
+		- TODO: cererea permisiunii la join
+			* Ca observatii: au fost adaugate functiile pentru
+			cerere permisiune la join, insa din probleme de sincronizare
+			nu au putut fi testate la aceasta etapa. Astfel, pentru
+			aceasta tema nu se poate verifica cererea de permisiune
+			de join la un grup. 
 
 
 ==============================================================
