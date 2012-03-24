@@ -239,7 +239,7 @@ public class Mediator {
 	}
 	
 	public void joinGroupEvent(String user, String group, Color c) {
-		// TODO show window asking ...
+		// Open a JPerm panel and send back answer
 	}
 	
 	public void sendText(String text, int fontSize, Color fontColor,
