@@ -21,7 +21,7 @@ Create group: (practic + evenimente)
 Add user: (practic + evenimente)
 	- sa fie un nume selectat din useri conectati, altfel msg eroare
 	- sa nu mai existe userul in grup -> mesaj eroare
-	- selectare culoare pentru userul adaugat / se asigneaza automat culoarea //TODO
+	- se asigneaza automat culoarea de catre group manager
 	- sa apara in legenda cu culoarea asignata
 	- lui sa-i apara tabul deschis si legenda
 	- eveniment: sa ma adauge cineva la grup
@@ -30,13 +30,12 @@ Add user: (practic + evenimente)
 	
 Leave Group: (practic + evenimente)
 	- nu apare daca nu faci parte din grup
-	- se inchide tabul cu grupul respectiv // TODO
+	- se inchide tabul cu grupul respectiv
 	- ramane in legenda
 	- se schimba iconita in iconita ca nu face parte din grup
 	
 Join Group: (practic + evenimente)
 	- nu apare daca esti deja in grup
-	- intreaba utilizatorul cel mai longeviv din grup, adica primul copil din tree //TODO (bonus)
 	- isi alege culoare. Ii apare acele culori disponibile din grup
 	- pe prima pozitie sa nu fie culoare, ci un string "Choose color...", si sa apara numele culorilor mai frumos
 	
@@ -48,18 +47,18 @@ Taburi: (practic + evenimente)
 		- la enter se da send
 	Zona de desenat:
 		- sa fie selectate butoanele cum trebuie - vz statemgr
-		- desenare cu culori //TODO
+		- desenare cu culori
 		- legenda: la rejoin grup sa isi ia culoare noua si aia veche ramane available SAU ia culoarea veche
 		- legenda : nonselectable
 		- desenarea se face la mouse click and dragged (Bonus)
 		- alte modele de desenat: stea, linie libera (Bonus)
 	Save Work:
-		- todo
+		- ca in laborator
 		
 Lista cu useri conectati:
 	- selectarea single
 
 TODO: Bonus:
 	- mentinere label cu status: "x joined y group", "x left y group" etc
-	
+	- intreaba utilizatorul cel mai longeviv din grup, adica primul copil din tree //TODO (bonus)
 	

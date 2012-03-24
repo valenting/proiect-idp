@@ -28,16 +28,59 @@ Command si Mediator.
 	Sursele sunt impartite in pachete pentru o mai buna modularizare
 a codului.
 	
-	2.1 Butoanele de executie comenzi
+	2.1 Log in
+		Userul se logheaza cu username si parola. La enter fie ii apare
+	mesaj de eroare, fie reuseste loginul.
+		Au fost folosite JTextField si JPasswordField.
+		
+	2.2 Create group
+		Se creeaza grup nou daca nu exista deja acel grup sau daca nu
+	are nume vid, altfel apare mesaj de eroare sugestiv.
+		Creatorul grupului este adaugat automat la grup, iar culoarea
+	asignata lui pentru desenare este negru, ca o conventie pentru a se
+	sti cine este creatorul grupului.
+		
+	2.3 Butoanele de executie comenzi
 		A fost extins un buton de tip JButton si pentru executia lor
 	se foloseste patternul Command.
 	
-	2.2. Zona de discutii
+	2.4 Useri conectati si grupurile
+		Pentru lista de useri conectati s-a folosit un JList, ce are
+	un DefaultListModel la care se adauga userii atunci cand se conecteaza.
+	Pentru adaugare useri la un grup, se selecteaza un user din aceasta
+	lista. Modelul de selectie este Single.
+		Pentru grupuri se foloseste un JTree cu un DefaultTreeModel.
+	S-a definit un renderer pentru a afisa o iconita diferita pentru
+	grupurile la care este conectat userul curent.
+		Pentru adaugare user, join si leave grup s-a folosit un
+	JPopupMenu. In meniu apare Join/Leave in functie daca userul
+	nu se afla/se afla in grup.
+
+	
+	2.5 Zona de discutii
 		Afisarea se face folosind StyledDocument si Style, iar textul
 	introdus este limitat la un numar maxim de caractere pe linie
 	pentru o mai buna intelegere a mesajului. De asemenea, numele
-	userului este mereu scris la fel.
-		
+	userului este mereu scris la fel. Afisarea este asemanatoare
+	Yahoo/Gtalk.
+	
+	2.6 Lista de legenda
+		Pentru legenda se vor pastra toti userii care au facut parte
+	din grup pentru ca alti useri sa poate observa cine ce a desenat.
+	Lista nu este selectabila, iar numele userilor este scrisa
+	cu culoarea pe care acestia au folosit-o ca sa deseneze.
+	
+	2.7 Zona de desenare
+		Pe langa formele obligatorii au mai fost implementate si
+	forma stea si sa se desenze liber, orice forma vrea utilizatorul
+	gen Paint. 
+	
+	OBSERVATII:
+		Pentru a intelege mai bine ceea ce face aplicatia se
+	recomanda sa se citeasca Use case-urile introduse in arhiva.
+		In general, unde s-a putut s-a adaugat posibilitatea ca la
+	enter sa aiba loc o actiune corespunzatoare unui buton.
+	(vezi Send, Login)
 	
 	
 ==============================================================
@@ -47,3 +90,23 @@ a codului.
 	Au fost implementate urmatoarele bonusuri:
 		- posibilitatea de desenare la mouseClick si mouseMove
 		- desenarea altor forme: free drawing si stea
+		
+==============================================================
+
+4. Testarea
+
+	Pentru testare se foloseste clasa Tester din pachetul worker.
+	Tester extinde clasa Thread, si la fiecare 5 secunde executa o operatie.
+	In cadrul etapei 1, Tester-ul apeleaza niste functii din clasa 
+	GroupManager, ce simuleaza niste evenimente executate de alti clienti.
+	
+
+==============================================================
+
+5. Repository
+	
+	Pentru lucrul in echipa am folosit gitHub. Repository-ul este:
+	
+		git@github.com:valenting/Proiect-IDP.git.
+		
+	IDE-ul folosit a fost Eclipse.
