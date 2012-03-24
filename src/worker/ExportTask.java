@@ -1,8 +1,5 @@
 package worker;
 
-
-
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
 
@@ -21,7 +18,6 @@ public class ExportTask extends SwingWorker<Integer, Integer> {
 	@Override
 	protected Integer doInBackground() throws Exception {
 		System.out.println("doInBackground: "+Thread.currentThread());
-		int DELAY = 1000;
 		int count = 10;
 		int i     = 0;
 		try {
