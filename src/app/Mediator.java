@@ -2,6 +2,7 @@ package app;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.nio.channels.SelectionKey;
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -11,8 +12,9 @@ import javax.swing.ListModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeModel;
 
+import network.*;
+
 import web.Authenticator;
-import web.Communicator;
 import web.GroupManager;
 import worker.Tester;
 import gui.ColorChooser;
@@ -22,7 +24,7 @@ import gui.Gui;
 import gui.buttons.ToolbarButton;
 import gui.drawings.Drawing;
 
-public class Mediator {
+public class Mediator extends MediatorStub {
 	Authenticator a;
 	Communicator comm;
 	Gui gui;
@@ -36,6 +38,7 @@ public class Mediator {
 		a = new Authenticator(this);
 		groupTab = new Hashtable<Object, GroupTab>();
 		comm = new Communicator();
+		comm.connect("127.0.0.1", 7777);
 		man = new GroupManager(this);
 		tabs = new Vector<Tab>();
 		(new Tester(man)).start();
@@ -53,6 +56,7 @@ public class Mediator {
 	}
 
 	public void logOut() {
+		comm.send(new LogOutMessage());
 		man.logOffUser(username);
 		gui.logOut();
 		gg.logOut();
@@ -89,6 +93,7 @@ public class Mediator {
 	}
 
 	public boolean login(String user, String pass) {
+		comm.send(new LogInMessage());
 		return a.authenticate(user, pass);
 	}
 
@@ -282,5 +287,9 @@ public class Mediator {
 			joinGroupCommand(user,group,man.getAvailableColors(group.toString()).firstElement());
 	}
 
+	public void send(SelectionKey key, Message m) {
+		comm.send(m);
+	}
+	
 }
 
