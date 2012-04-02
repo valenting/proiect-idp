@@ -12,13 +12,36 @@
         <javac srcdir="${src.dir}" destdir="${build.dir}" includeantruntime="false"/>
     </target>
  
-    <target name="run" depends="compile">
-        <java classname="app.Main" fork="true">
-            <classpath>
-                <pathelement location="${build.dir}" />
-            </classpath>
-        </java>
+    <target name="run">
+    	<parallel>
+        	<antcall target="server"/>
+    		<sequential> 
+    			<sleep seconds="2"/> <antcall target="client"/> 
+    		</sequential>
+    		<sequential> 
+    			<sleep seconds="2"/> <antcall target="client"/> 
+    		</sequential>
+    		<sequential> 
+    			<sleep seconds="2"/> <antcall target="client"/> 
+    		</sequential>
+    	</parallel>
     </target>
+	
+	<target name="server" depends="compile">
+		<java classname="server.Server" fork="true">
+			<classpath>
+				<pathelement location="${build.dir}" />
+			</classpath>
+		</java>
+	</target>
+	
+	<target name="client" depends="compile">
+		<java classname="client.Client" fork="true">
+			<classpath>
+				<pathelement location="${build.dir}" />
+			</classpath>
+		</java>
+	</target>
  
     <target name="clean">
         <delete dir="${build.dir}" />
