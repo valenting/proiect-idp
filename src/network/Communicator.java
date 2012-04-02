@@ -26,7 +26,7 @@ public class Communicator {
 			chan.configureBlocking(false);
 		
 			selector = Selector.open();
-			chan.register(selector, SelectionKey.OP_READ);
+			chan.register(selector, SelectionKey.OP_READ, new DataContainer());
 			Thread t = new Thread() {
 				public void run() {
 					while (true) {

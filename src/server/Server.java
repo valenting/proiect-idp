@@ -76,7 +76,7 @@ public class Server {
 			socket.close();
 	}
 
-	public void write(SelectionKey key, Message m) throws IOException {
+	public void write(SelectionKey key, Message m){
 
 		try {
 			System.out.println("WRITE: ");

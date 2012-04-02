@@ -93,7 +93,7 @@ public class Mediator extends MediatorStub {
 	}
 
 	public boolean login(String user, String pass) {
-		comm.send(new LogInMessage());
+		comm.send(new LogInMessage(user,pass));
 		return a.authenticate(user, pass);
 	}
 

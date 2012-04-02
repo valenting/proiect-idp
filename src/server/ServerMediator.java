@@ -9,16 +9,22 @@ import app.MediatorStub;
 
 public class ServerMediator extends MediatorStub {
 	Server serv;
+	SAuthenticator sauth;
 	public ServerMediator(Server s) {
 		serv = s;
+		sauth = new SAuthenticator();
 	}
 	
 	public void send(SelectionKey key, Message m) {
-		try {
-			serv.write(key, m);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		serv.write(key, m);
+	}
+	
+	public void authenticate(SelectionKey key, String user, String pass) {
+		boolean valid = sauth.authenticate(user, pass);
+		if (valid) {
+			// TODO send new message with confirmation
+		} else {
+			// TODO send new message with rejection
 		}
 	}
 }
