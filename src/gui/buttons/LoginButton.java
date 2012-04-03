@@ -26,13 +26,10 @@ public class LoginButton extends JButton implements Command {
 	public void execute() {
 		String username = user.getText();
 		String password = String.copyValueOf(pass.getPassword());
-		user.setText("");
-		pass.setText("");
-		if (med.login(username, password)) {
-			med.loginSuccessful(username);
-		} else {
-			med.loginError(); 
-		}
+		user.setEnabled(false);
+		pass.setEnabled(false);
+		this.setEnabled(false);
+		med.login(username, password);
 	}
 
 }

@@ -10,6 +10,7 @@ import java.util.concurrent.Executors;
 
 import app.Mediator;
 
+import network.C2SMessage;
 import network.Message;
 
 public class Server {
@@ -19,9 +20,10 @@ public class Server {
 
 
 	ServerMediator m;
-
+	Vector<SelectionKey> keys;
 	public Server() {
 		m = new ServerMediator(this);
+		keys = new Vector<SelectionKey>();
 	}
 
 	public void accept(SelectionKey key) throws IOException {
@@ -32,7 +34,7 @@ public class Server {
 		SocketChannel socketChannel = null;				// initialize from accept
 
 		Selector select = key.selector();
-
+		
 		DataContainer cont = new DataContainer();
 		serverSocketChannel = (ServerSocketChannel) key.channel();
 		socketChannel = serverSocketChannel.accept();
@@ -40,6 +42,7 @@ public class Server {
 		socketChannel.register(select, SelectionKey.OP_READ, cont);
 		// display remote client address
 		System.out.println("Connection from: " + socketChannel.socket().getRemoteSocketAddress());
+		keys.add(key);
 	}
 
 
@@ -67,13 +70,15 @@ public class Server {
 				data.dataByteBuffer = null;
 				data.readLength = true;
 				System.out.println("RESULT "+ret);
-				((Message)ret).execute(m, key);
+				((C2SMessage)ret).execute(m, key);
 				// key.interestOps(SelectionKey.OP_WRITE);
 			}
 		}
 
-		if (bytesRead<0)
+		if (bytesRead<0) {
 			socket.close();
+			keys.remove(key);
+		}
 	}
 
 	public void write(SelectionKey key, Message m){
@@ -91,6 +96,13 @@ public class Server {
 		} catch (Exception e) {
 			System.out.println("End");
 		}
+	}
+	
+	
+	public void broadcast(Message m) {
+		for (SelectionKey k : keys) // TODO hope this works
+			write(k,m);
+		
 	}
 
 	public void exec() throws Exception {

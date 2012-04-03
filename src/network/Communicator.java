@@ -8,11 +8,14 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
+import java.nio.channels.NotYetConnectedException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 import java.util.Vector;
+
+import app.Mediator;
 
 /**
  * Class used to communicate with the server and other clients
@@ -20,7 +23,9 @@ import java.util.Vector;
 public class Communicator {
 	SocketChannel chan = null;
 	Selector selector;
-	public Communicator()  {
+	Mediator m;
+	public Communicator(Mediator m)  {
+		this.m = m;
 		try {
 			chan = SocketChannel.open();
 			chan.configureBlocking(false);
@@ -40,8 +45,9 @@ public class Communicator {
 								if (key.isReadable())
 									read(key);
 							}
+						} catch (NotYetConnectedException e) {
+							System.out.println("Not Yet Connected so do nothing");
 						} catch (Exception e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 						
@@ -57,7 +63,7 @@ public class Communicator {
 		
 	}
 
-public static void read(final SelectionKey key) throws  Exception {
+public void read(final SelectionKey key) throws  Exception {
 		
 		DataContainer data		= (DataContainer)key.attachment();		
 		SocketChannel socket	= (SocketChannel)key.channel();
@@ -80,6 +86,7 @@ public static void read(final SelectionKey key) throws  Exception {
 	            data.dataByteBuffer = null;
 	            data.readLength = true;
 	            System.out.println("RESULT "+ret);
+	            ((S2CMessage)ret).execute(m);
 	        }
 	    }
 		

@@ -2,6 +2,8 @@ package app;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.nio.channels.SelectionKey;
 import java.util.Hashtable;
 import java.util.Vector;
@@ -9,10 +11,13 @@ import java.util.Vector;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import javax.swing.ListModel;
+import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeModel;
 
 import network.*;
+import network.c2s.LogInMessage;
+import network.c2s.LogOutMessage;
 
 import web.Authenticator;
 import web.GroupManager;
@@ -37,18 +42,17 @@ public class Mediator extends MediatorStub {
 	public Mediator() {
 		a = new Authenticator(this);
 		groupTab = new Hashtable<Object, GroupTab>();
-		comm = new Communicator();
+		comm = new Communicator(this);
 		comm.connect("127.0.0.1", 7777);
 		man = new GroupManager(this);
 		tabs = new Vector<Tab>();
 		(new Tester(man)).start();
 	}
 
-	public void loginSuccessful(String user) {
-		gui.loginSuccessful(user);
-		this.username = user;
-		man.connectUser(user);
-		gg.setUser(user);
+	public void loginSuccessful() {
+		gui.loginSuccessful(username);
+		man.connectUser(username); // TODO remove
+		gg.setUser(username);
 	}
 
 	public void setGui(Gui gui2) {
@@ -92,9 +96,10 @@ public class Mediator extends MediatorStub {
 		return man.getListModel();
 	}
 
-	public boolean login(String user, String pass) {
+	public void login(String user, String pass) {
+		this.username = user;
 		comm.send(new LogInMessage(user,pass));
-		return a.authenticate(user, pass);
+		// TODO set timer for resend
 	}
 
 	private Tab getTab(String name) {
@@ -154,6 +159,7 @@ public class Mediator extends MediatorStub {
 
 	public void loginError() {
 		gui.error("Invalid credentials");
+		logOut();
 	}
 
 	public void setGeneralGui(GeneralGui generalGui) {

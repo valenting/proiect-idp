@@ -39,7 +39,7 @@ public class Gui extends JFrame implements ActionListener {
 	public void loginSuccessful(String username) {
 		setContentPane(contentPane);
 		contentPane.lblUsername.setText(username);
-		this.validate();	
+		this.validate();	 
 	}
 
 	public void actionPerformed(ActionEvent e) {
@@ -49,7 +49,8 @@ public class Gui extends JFrame implements ActionListener {
 	public void logOut() {
 		setContentPane(loginPane);
 		validate();
-		loginPane.textField.requestFocus(); // TODO Create function in Login.java?
+		loginPane.logOut();
+		loginPane.requestTextFieldFocus(); // TODO is it needed? Put it in logOut?
 	}
 
 	public void groupDialog() {

@@ -16,12 +16,25 @@ import app.Mediator;
 
 public class Login extends JPanel {
 	private static final long serialVersionUID = 1L;
-	public JTextField textField; 
+	private JTextField textField; 
 	private JPasswordField passwordField;
-
+	private JLabel statusLabel;
+	private JButton btnLogin;
 	/**
 	 * Create the panel.
 	 */
+	
+	public void requestTextFieldFocus() {
+		textField.requestFocus();
+	}
+	
+	public void setStatus(String str) {
+		if (str!=null)
+			statusLabel.setText("Status: "+str);
+		else
+			statusLabel.setText("Status: Not Connected");
+	}
+	
 	public Login(Gui g, Mediator m) {
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{0, 0, 0, 0, 0, 0, 0, 0};
@@ -76,7 +89,7 @@ public class Login extends JPanel {
 		add(passwordField, gbc_passwordField);
 
 
-		final JButton btnLogin = new LoginButton(g, m, textField, passwordField);
+		btnLogin = new LoginButton(g, m, textField, passwordField);
 		GridBagConstraints gbc_btnLogin = new GridBagConstraints();
 		gbc_btnLogin.anchor = GridBagConstraints.WEST;
 		gbc_btnLogin.insets = new Insets(0, 0, 5, 5);
@@ -97,14 +110,24 @@ public class Login extends JPanel {
 			}
 		});
 
-		JLabel lblStatusNotConnected = new JLabel("Status: Not Connected");
+		statusLabel = new JLabel("Status: Not Connected");
 		GridBagConstraints gbc_lblStatusNotConnected = new GridBagConstraints();
 		gbc_lblStatusNotConnected.insets = new Insets(0, 0, 0, 5);
 		gbc_lblStatusNotConnected.anchor = GridBagConstraints.SOUTHEAST;
 		gbc_lblStatusNotConnected.gridx = 6;
 		gbc_lblStatusNotConnected.gridy = 10;
-		add(lblStatusNotConnected, gbc_lblStatusNotConnected);
+		add(statusLabel, gbc_lblStatusNotConnected);
 
+	}
+
+	public void logOut() {  
+		textField.setEnabled(true);
+		textField.setText("");
+		passwordField.setEnabled(true);
+		passwordField.setText("");
+		btnLogin.setEnabled(true);
+		setStatus(null); // Set to default
+		
 	}
 
 }
