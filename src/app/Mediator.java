@@ -49,14 +49,16 @@ public class Mediator extends MediatorStub {
 		(new Tester(man)).start();
 	}
 
+	public void login(String user, String pass) {
+		this.username = user;
+		comm.send(new LogInMessage(user,pass));
+		// TODO set timer for resend
+	}
+	
 	public void loginSuccessful() {
 		gui.loginSuccessful(username);
 		man.connectUser(username); // TODO remove
 		gg.setUser(username);
-	}
-
-	public void setGui(Gui gui2) {
-		gui = gui2;
 	}
 
 	public void logOut() {
@@ -66,7 +68,11 @@ public class Mediator extends MediatorStub {
 		gg.logOut();
 		tabs.removeAllElements();
 	}
-
+	
+	public void setGui(Gui gui2) {
+		gui = gui2;
+	}
+	
 	public void createGroup() {
 		gui.groupDialog();
 
@@ -96,11 +102,7 @@ public class Mediator extends MediatorStub {
 		return man.getListModel();
 	}
 
-	public void login(String user, String pass) {
-		this.username = user;
-		comm.send(new LogInMessage(user,pass));
-		// TODO set timer for resend
-	}
+	
 
 	private Tab getTab(String name) {
 		for (Tab t: tabs)

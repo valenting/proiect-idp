@@ -20,10 +20,10 @@ public class Server {
 
 
 	ServerMediator m;
-	Vector<SelectionKey> keys;
+	Vector<SocketChannel> keys;
 	public Server() {
 		m = new ServerMediator(this);
-		keys = new Vector<SelectionKey>();
+		keys = new Vector<SocketChannel>();
 	}
 
 	public void accept(SelectionKey key) throws IOException {
@@ -42,7 +42,7 @@ public class Server {
 		socketChannel.register(select, SelectionKey.OP_READ, cont);
 		// display remote client address
 		System.out.println("Connection from: " + socketChannel.socket().getRemoteSocketAddress());
-		keys.add(key);
+		keys.add(socketChannel);
 	}
 
 
@@ -98,10 +98,27 @@ public class Server {
 		}
 	}
 	
+	public void write(SocketChannel	chan, Message m){
+
+		try {
+			System.out.println("WRITE: ");
+			ByteArrayOutputStream bs = new ByteArrayOutputStream();
+			for(int i=0;i<4;i++) bs.write(0);
+			ObjectOutputStream os = new ObjectOutputStream(bs);
+			os.writeObject(m);
+			os.close();
+			ByteBuffer wrap = ByteBuffer.wrap(bs.toByteArray());
+			wrap.putInt(0, bs.size()-4);
+			chan.write(wrap);
+		} catch (Exception e) {
+			System.out.println("End");
+		}
+	}
+	
 	
 	public void broadcast(Message m) {
-		for (SelectionKey k : keys) // TODO hope this works
-			write(k,m);
+		for (SocketChannel sock : keys) // TODO hope this works
+			write(sock,m);
 		
 	}
 
