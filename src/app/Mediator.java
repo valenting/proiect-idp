@@ -12,16 +12,22 @@ import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import javax.swing.ListModel;
 import javax.swing.SwingUtilities;
+import javax.swing.text.DefaultStyledDocument;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
 
 import network.*;
+import network.c2s.AddUserMessage;
+import network.c2s.ColorDialogMessage;
+import network.c2s.JoinGroupMessage;
+import network.c2s.LeaveGroupMessage;
 import network.c2s.LogInMessage;
 import network.c2s.LogOutMessage;
+import network.c2s.NewGroupMessage;
 
 import web.Authenticator;
 import web.GroupManager;
-import worker.Tester;
 import gui.ColorChooser;
 import gui.GeneralGui;
 import gui.GroupTab;
@@ -34,19 +40,17 @@ public class Mediator extends MediatorStub {
 	Communicator comm;
 	Gui gui;
 	Hashtable<Object, GroupTab> groupTab;
-	GroupManager man;
 	String username;
 	GeneralGui gg;
 	Vector<Tab> tabs;
-
+	DefaultTreeModel treeModel;
 	public Mediator() {
 		a = new Authenticator(this);
 		groupTab = new Hashtable<Object, GroupTab>();
 		comm = new Communicator(this);
 		comm.connect("127.0.0.1", 7777);
-		man = new GroupManager(this);
 		tabs = new Vector<Tab>();
-		(new Tester(man)).start();
+		treeModel = new DefaultTreeModel(new DefaultMutableTreeNode("Groups"));
 	}
 
 	public void login(String user, String pass) {
@@ -54,72 +58,65 @@ public class Mediator extends MediatorStub {
 		comm.send(new LogInMessage(user,pass));
 		// TODO set timer for resend
 	}
-	
+
 	public void loginSuccessful() {
 		gui.loginSuccessful(username);
-		man.connectUser(username); // TODO remove
 		gg.setUser(username);
 	}
 
 	public void logOut() {
-		comm.send(new LogOutMessage());
-		man.logOffUser(username);
+		comm.send(new LogOutMessage(username));
+		//man.logOffUser(username);
 		gui.logOut();
 		gg.logOut();
 		tabs.removeAllElements();
 	}
-	
+
 	public void setGui(Gui gui2) {
 		gui = gui2;
 	}
-	
+
 	public void createGroup() {
 		gui.groupDialog();
 
 	}
 
-	public boolean groupExists(String t) {
-		return man.groupExists(t);
+	public boolean groupExists(String group) {
+		DefaultMutableTreeNode root = (DefaultMutableTreeNode)treeModel.getRoot();
+		for (int i=0;i<root.getChildCount();i++) {
+			DefaultMutableTreeNode n = (DefaultMutableTreeNode) root.getChildAt(i);
+			if (n.getUserObject().equals(group))
+				return true;
+		}
+		return false;
 	}
 
 	public void addGroup(String t) {
-		man.addGroup(t, username); 
-		DefaultListModel l = man.getGroupLegend(t);
-		GroupTab tb = gg.addTab(t,l);
-		Tab currentTab = new Tab(t,this);
-		currentTab.setCanvas(tb.panel);
-		currentTab.setGroupTab(tb);
-		currentTab.setDrawings(man.getDrawings(t));
-		tb.setDocument(man.getDocument(t));
-		tabs.add(currentTab);
+		comm.send(new NewGroupMessage(t, username));
 	}  
 
-	public TreeModel getTreeModel() {
-		return man.getTreeModel();
+	public void addGroupCallBack(String t) {
+		// TODO
 	}
 
-	public ListModel getListModel() {
-		return man.getListModel();
-	}
 
-	
 
 	private Tab getTab(String name) {
 		for (Tab t: tabs)
 			if (t.getName().equals(name))
 				return t;
-		return null;
+				return null;
 	}
 
 	private Tab getCurrentTab() {
 		for (Tab t: tabs)
 			if (t.tab.equals(gg.getActiveTab()))
 				return t;
-		return null;
+				return null;
 	}
 
 	public void addDrawing(Drawing d) {
-		d.setColor(man.getColor(username, getCurrentTab().name));
+		// TODO
 		getCurrentTab().addDrawing(d);
 	}
 
@@ -169,7 +166,17 @@ public class Mediator extends MediatorStub {
 	}
 
 	public boolean userInGroup(String user, String group) {
-		return man.inGroup(group, user);
+		DefaultMutableTreeNode root = (DefaultMutableTreeNode)treeModel.getRoot();
+		for (int i=0;i<root.getChildCount();i++) {
+			DefaultMutableTreeNode n = (DefaultMutableTreeNode) root.getChildAt(i);
+			if (n.getUserObject().equals(group))
+				for (int j=0;j<n.getChildCount();j++) {
+					DefaultMutableTreeNode t = (DefaultMutableTreeNode) n.getChildAt(j);
+					if (t.getUserObject().equals(user))
+						return true;
+				}
+		}
+		return false;
 	}
 
 	/****** RIGHT CLICK MENU ******/
@@ -185,10 +192,12 @@ public class Mediator extends MediatorStub {
 		if (addedUser==null) {
 			gui.error("No user selected");
 			return;
-		}
-		String ret = man.addUserCommand(username, addedUser,(String) group.getUserObject());
-		if (ret!=null)
-			gui.error(ret);
+		} 
+		comm.send(new AddUserMessage((String) group.getUserObject(), addedUser, username)); 
+	}
+
+	public void displayError(String s) {
+		gui.error(s);
 	}
 
 	public void joinGroupCommand() {
@@ -197,9 +206,16 @@ public class Mediator extends MediatorStub {
 			gui.error("No group selected");
 			return;
 		}
-		if (man.inGroup(group.toString(), username))
+
+		if (userInGroup(group.toString(), username))
 			return;
-		new ColorChooser(man.getAvailableColors(group.toString()), this, username, group.toString());
+
+		//comm.send(new JoinGroupMessage(group.toString(),username));
+		comm.send(new ColorDialogMessage(group.toString()));
+	}
+
+	public void openColorChooser(Vector<Color> colors, String group) {
+		new ColorChooser(colors, this, username, group);
 	}
 
 	public void leaveGroupCommand() {
@@ -209,26 +225,17 @@ public class Mediator extends MediatorStub {
 			return;
 		}
 
-		man.leaveGroupCommand(username, (String) group.getUserObject());
-		gg.closeTab(this.getTab((String) group.getUserObject()).tab);
-		tabs.remove(this.getTab((String) group.getUserObject()));
+		comm.send(new LeaveGroupMessage((String) group.getUserObject(), username));
 	}
-
 
 	public void joinGroupCommand(String user, String group, Color c) {
-		if (man.inGroup(group, user))
+
+		if (userInGroup(user, group))
 			return;
-		man.joinGroupCommand(user, group,c);
-		DefaultListModel l = man.getGroupLegend(group);
-		GroupTab tb = gg.addTab(group,l);
-		Tab currentTab = new Tab(group,this);
-		currentTab.setCanvas(tb.panel);
-		currentTab.setGroupTab(tb);
-		currentTab.setDrawings(man.getDrawings(group));
-		tb.setDocument(man.getDocument(group));
-		tabs.add(currentTab);
+		comm.send(new JoinGroupMessage(group.toString(),username,c));
 	}
 
+	/*
 	public void joinGroupCommandRequest(final String user, final String group, final Color c) {
 		if (!man.inGroup(user, group) && user!=null && group!=null) {
 			JOptionPane.showMessageDialog(null, "Awaiting permission from the group's owner", "Notice", JOptionPane.PLAIN_MESSAGE);
@@ -249,23 +256,22 @@ public class Mediator extends MediatorStub {
 			t.start();
 		}
 	}
+	 */
 
-	public void joinGroupAccepted(String user, String group, Color c) {
-		if (!man.inGroup(user, group) && user!=null && group!=null) {
-			JOptionPane.showMessageDialog(null, "You have been accepted to "+group, "Notice", JOptionPane.PLAIN_MESSAGE);
-			man.joinGroupCommand(user, group,c);
-			DefaultListModel l = man.getGroupLegend(group);
-			if (l==null)
-				return;
-			GroupTab tb = gg.addTab(group,l);
-			Tab currentTab = new Tab(group,this);
-			currentTab.setCanvas(tb.panel);
-			currentTab.setGroupTab(tb);
-			currentTab.setDrawings(man.getDrawings(group));
-			tb.setDocument(man.getDocument(group));
-			tabs.add(currentTab);
-		}
+	public void joinGroupAccepted(String user, String group) {
+		// TODO GetGroupLegend
+		if (!user.equals(username))
+			return;
+		GroupTab tb = gg.addTab(group,new DefaultListModel());
+		Tab currentTab = new Tab(group,this);
+		currentTab.setCanvas(tb.panel);
+		currentTab.setGroupTab(tb);
+		
+		currentTab.setDrawings(new Vector<Drawing>());
+		tb.setDocument(new DefaultStyledDocument());
+		tabs.add(currentTab);
 	}
+
 
 	public void joinGroupDenied(String user, String group, Color c) {
 		// Message - You have been denied joining the group
@@ -276,8 +282,7 @@ public class Mediator extends MediatorStub {
 		// Open a JPerm panel and send back answer
 	}
 
-	public void sendText(String text, int fontSize, Color fontColor,
-			GroupTab tab) {
+	public void sendText(String text, int fontSize, Color fontColor, GroupTab tab) {
 		if (text.length()==0)
 			return; 
 		// TODO send to communicator - tema 2
@@ -291,13 +296,22 @@ public class Mediator extends MediatorStub {
 	}
 
 	public void addUserEvent(String user, String group) {
-		if (user.equals(this.username) && !man.inGroup(group, user))
-			joinGroupCommand(user,group,man.getAvailableColors(group.toString()).firstElement());
+		if (user.equals(this.username) && userInGroup(user, group))
+			;//joinGroupCommand(user,group,man.getAvailableColors(group.toString()).firstElement());
+		// TODO getAvailableColors
 	}
 
 	public void send(SelectionKey key, Message m) {
 		comm.send(m);
 	}
-	
+
+	public void setUserList(DefaultListModel model) {
+		gg.setListModel(model);
+	}
+
+	public void setTreeList(DefaultTreeModel model) {
+		gg.setTreeModel(model);
+		treeModel = model;
+	}
 }
 

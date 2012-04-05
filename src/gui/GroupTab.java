@@ -238,6 +238,10 @@ public class GroupTab extends JPanel {
 		txtpnHello.setDocument(doc);
 	}
 	
+	public void setLegend(DefaultListModel model) {
+		userLegend.setModel(model);
+	}
+	
 	/**
 	 * Used to pop the other selected buttons
 	 * @param The clicked button

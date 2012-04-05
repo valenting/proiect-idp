@@ -27,10 +27,6 @@ public class GroupManager {
 		users = new Vector<String>();
 		groupModel = new DefaultTreeModel(new DefaultMutableTreeNode("Groups"));
 		userModel = new DefaultListModel();
-		userModel.addElement("phony");		// For testing
-		userModel.addElement("someone");    // For testing
-		addGroup("default", "phony");		// For testing
-		addUserCommand("phony", "someone", "default");	// For testing
 	}
 
 	public ListModel getListModel() {
@@ -209,39 +205,6 @@ public class GroupManager {
 		return getGroup(group).getDrawings();
 	}
 
-	/*** STUBS ***/
-
-	public void connectedUserEvent(String username) {
-		connectUser(username);
-	}
-
-	public void disconnectedUserEvent(String username) {
-		logOffUser(username);
-	}
-
-	public boolean createGroupEvent(String username,String group) {
-		return addGroup(group, username);
-	}
-	
-	public void joinGroupEvent(String username, String group) {
-		try {
-			Color c =getAvailableColors(group).firstElement();
-			joinGroupCommand(username, group, c);
-		} catch (Exception e) {
-
-		}
-	}
-	
-	public void addUserEvent(String by, String username, String group) {
-		med.addUserEvent(username, group);
-		if (!inGroup(group, username))
-			addUserCommand(by, username, group);
-	}
-
-	public void leaveGroupEvent(String username, String group) {
-		leaveGroupCommand(username, group);
-	}
-	
 	public String getFirstUser() {
 		return users.firstElement();
 	}

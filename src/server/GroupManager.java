@@ -26,21 +26,17 @@ public class GroupManager {
 		userModel = new DefaultListModel();
 	}
 
-	public ListModel getListModel() {
+	public DefaultListModel getListModel() {
 		return userModel;
 	}
 
-	public TreeModel getTreeModel() {
+	public DefaultTreeModel getTreeModel() {
 		return groupModel;
 	}
 
 	public void connectUser(String user) {
 		users.add(user);
 		userModel.addElement(user);
-	}
-
-	public Vector<String> getConnectedUsers() {
-		return users;
 	}
 
 	public DefaultListModel getGroupLegend(String group) {
@@ -165,13 +161,15 @@ public class GroupManager {
 		return null;
 	}
 
-	public void joinGroupCommand(String username, String group, Color c) {
+	public boolean joinGroupCommand(String username, String group, Color c) {
 		Group g = getGroup(group);
 		if (g!=null) 
 			if (!g.userInGroup(username)) {
 				g.addUser(username, c); 
 				groupModel.insertNodeInto(new DefaultMutableTreeNode(username), getGroupNode(group), getGroupNode(group).getChildCount());
+				return true;
 			}
+		return false;
 
 	}
 
