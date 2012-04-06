@@ -48,9 +48,9 @@ public class Gui extends JFrame implements ActionListener {
 
 	public void logOut() {
 		setContentPane(loginPane);
-		validate();
 		loginPane.logOut();
-		loginPane.requestTextFieldFocus(); // TODO is it needed? Put it in logOut?
+		loginPane.requestTextFieldFocus();
+		validate();
 	}
 
 	public void groupDialog() {

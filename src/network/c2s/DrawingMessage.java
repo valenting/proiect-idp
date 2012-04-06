@@ -8,7 +8,8 @@ import server.ServerMediator;
 import network.C2SMessage;
 
 public class DrawingMessage extends C2SMessage {
-
+	private static final long serialVersionUID = 6227242184982640850L;
+	
 	Drawing d;
 	String username;
 	String group;

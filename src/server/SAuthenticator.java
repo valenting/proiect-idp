@@ -1,9 +1,6 @@
 package server;
 
 import java.util.Hashtable;
-
-import app.Mediator;
-
 /**
  * Class used to authenticate a client
  */

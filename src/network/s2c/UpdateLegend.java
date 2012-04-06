@@ -1,6 +1,7 @@
 package network.s2c;
 
 import javax.swing.DefaultListModel;
+import javax.swing.SwingUtilities;
 
 import app.Mediator;
 import network.S2CMessage;
@@ -18,8 +19,14 @@ public class UpdateLegend extends S2CMessage {
 	}
 
 	@Override
-	public void execute(Mediator m) {
-		m.setUserLegend(groupName, groupLegend);
+	public void execute(final Mediator m) {
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				m.setUserLegend(groupName, groupLegend);
+			}
+		});
+		
 	}
 
 }

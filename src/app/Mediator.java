@@ -2,20 +2,13 @@ package app;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.nio.channels.SelectionKey;
 import java.util.Hashtable;
 import java.util.Vector;
 
 import javax.swing.DefaultListModel;
-import javax.swing.JOptionPane;
-import javax.swing.ListModel;
-import javax.swing.SwingUtilities;
 import javax.swing.text.DefaultStyledDocument;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.TreeModel;
 
 import network.*;
 import network.c2s.AddUserMessage;
@@ -31,7 +24,6 @@ import network.c2s.LogOutMessage;
 import network.c2s.NewGroupMessage;
 import network.c2s.TextMessage;
 
-import web.Authenticator;
 import gui.ColorChooser;
 import gui.GeneralGui;
 import gui.GroupTab;
@@ -50,15 +42,15 @@ public class Mediator {
 	public Mediator() {
 		groupTab = new Hashtable<Object, GroupTab>();
 		comm = new Communicator(this);
-		comm.connect("127.0.0.1", 7777);
 		tabs = new Vector<Tab>();
 		treeModel = new DefaultTreeModel(new DefaultMutableTreeNode("Groups"));
 	}
 
 	public void login(String user, String pass) {
 		this.username = user;
+		comm.connect("127.0.0.1", 7777);
+		// TODO if connection fails
 		comm.send(new LogInMessage(user,pass));
-		// TODO set timer for resend
 	}
 
 	public void loginSuccessful() {
@@ -149,7 +141,7 @@ public class Mediator {
 		System.out.println("menu selection");
 		GroupTab t = getGroupTab(o);
 		t.popOthers(o);
-		getCurrentTab().stateMgr.setState(((ToolbarButton)o).getType()); // TODO create metod
+		getCurrentTab().setState(((ToolbarButton)o).getType()); 
 	}
 
 
@@ -233,29 +225,6 @@ public class Mediator {
 		comm.send(new JoinGroupMessage(group.toString(),username,c));
 	}
 
-	/*
-	public void joinGroupCommandRequest(final String user, final String group, final Color c) {
-		if (!man.inGroup(user, group) && user!=null && group!=null) {
-			JOptionPane.showMessageDialog(null, "Awaiting permission from the group's owner", "Notice", JOptionPane.PLAIN_MESSAGE);
-			// TODO Stage 2: call communicator instead of accepting automatically
-			Thread t = (new Thread() {
-				public void run() {
-					try {
-						System.out.println("Requesting access");
-						Thread.sleep(5000);
-						joinGroupAccepted(user, group, c);
-
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-
-				}
-			});
-			t.start();
-		}
-	}
-	 */
-
 	public void joinGroupAccepted(String user, String group) {
 		if (!user.equals(username))
 			return;
@@ -274,15 +243,6 @@ public class Mediator {
 		comm.send(new GetGroupHistory(group));
 	}
 
-
-	public void joinGroupDenied(String user, String group, Color c) {
-		// Message - You have been denied joining the group
-		// Unused at this stage
-	}
-
-	public void joinGroupEvent(String user, String group, Color c) {
-		// Open a JPerm panel and send back answer
-	}
 
 	public void sendText(String text, int fontSize, Color fontColor, GroupTab tab) {
 		if (text.length()==0)
@@ -313,7 +273,9 @@ public class Mediator {
 	
 	public void setUserLegend(String groupName, DefaultListModel model) {
 		System.err.println("Set Legend");
-		gg.getTab(groupName).setLegend(model);
+		GroupTab t = gg.getTab(groupName);
+		if (t!=null)
+		t.setLegend(model);
 	}
 	
 	public void setDrawings(String groupName, Vector<Drawing> drawings) {
@@ -331,7 +293,11 @@ public class Mediator {
 	}
 
 	public void updateDrawings(String group, Drawing d) {
-		getTab(group).addDrawing(d);
+		System.err.println(group);
+		System.err.println(d);
+		Tab t = getTab(group);
+		if (t!=null)
+			getTab(group).addDrawing(d);
 	}
 }
 

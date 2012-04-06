@@ -1,6 +1,7 @@
 package network.s2c;
 
 import javax.swing.DefaultListModel;
+import javax.swing.SwingUtilities;
 
 import app.Mediator;
 import network.S2CMessage;
@@ -13,9 +14,13 @@ public class UserStatusChange extends S2CMessage {
 	}
 	
 	@Override
-	public void execute(Mediator m) {
-		System.out.println("Status change");
-		m.setUserList(model); // TODO Gui Thread
+	public void execute(final Mediator m) {
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				m.setUserList(model);
+			}
+		});
 	}
 
 }

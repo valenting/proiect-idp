@@ -2,7 +2,6 @@ package network;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
@@ -13,7 +12,6 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 import java.util.Iterator;
-import java.util.Vector;
 
 import app.Mediator;
 
@@ -38,7 +36,6 @@ public class Communicator {
 						try {
 							selector.select();
 							for (Iterator<SelectionKey> it = selector.selectedKeys().iterator(); it.hasNext(); ) {
-								// get current event and REMOVE it from the list!!!
 								System.out.println("Event");
 								SelectionKey key = it.next();
 								it.remove();
@@ -89,6 +86,8 @@ public void read(final SelectionKey key) throws  Exception {
 	            ((S2CMessage)ret).execute(m);
 	        }
 	    }
+		
+		System.err.println("read: "+bytesRead);
 		
 		if (bytesRead<0)
 			socket.close();

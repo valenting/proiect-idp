@@ -3,6 +3,8 @@ package network.s2c;
 import java.awt.Color;
 import java.util.Vector;
 
+import javax.swing.SwingUtilities;
+
 import app.Mediator;
 import network.S2CMessage;
 
@@ -16,8 +18,14 @@ public class OpenColorDialogMessage extends S2CMessage {
 	}
 
 	@Override
-	public void execute(Mediator m) {
-		m.openColorChooser(cols, group);
+	public void execute(final Mediator m) {
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				m.openColorChooser(cols, group);
+			}
+		});
+		
 	}
 
 }

@@ -5,10 +5,7 @@ import java.nio.*;
 import java.nio.channels.*;
 import java.net.*;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
-import app.Mediator;
 
 import network.C2SMessage;
 import network.Message;
@@ -34,7 +31,7 @@ public class Server {
 		SocketChannel socketChannel = null;				// initialize from accept
 
 		Selector select = key.selector();
-		
+
 		DataContainer cont = new DataContainer();
 		serverSocketChannel = (ServerSocketChannel) key.channel();
 		socketChannel = serverSocketChannel.accept();
@@ -47,39 +44,47 @@ public class Server {
 
 
 
-	public void read(final SelectionKey key) throws  Exception {
-
+	public void read(final SelectionKey key)  {
 		DataContainer data		= (DataContainer)key.attachment();		
 		SocketChannel socket	= (SocketChannel)key.channel();
 		System.out.println("READ");
 		int bytesRead = 0;
-		if (data.readLength) {
-			bytesRead = socket.read(data.lengthByteBuffer);
-			if (data.lengthByteBuffer.remaining() == 0) {
-				data.readLength = false;
-				data.dataByteBuffer = ByteBuffer.allocate(data.lengthByteBuffer.getInt(0));
-				data.lengthByteBuffer.clear();
-			}
-		} else {
-			bytesRead = socket.read(data.dataByteBuffer);
-			if (data.dataByteBuffer.remaining() == 0) {
-				System.out.println(data.dataByteBuffer);
-				ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(data.dataByteBuffer.array()));
-				Serializable ret = (Serializable) ois.readObject();
-				// clean up
-				data.dataByteBuffer = null;
-				data.readLength = true;
-				System.out.println("RESULT "+ret);
-				((C2SMessage)ret).execute(m, key);
-			}
-		}
+		try {
 
-		if (bytesRead<0) {
-			System.err.println("CLOSED");
+			while (data.lengthByteBuffer.remaining()!=0) {
+				bytesRead = socket.read(data.lengthByteBuffer);
+				if (bytesRead < 0 ) {
+					System.err.println("CLOSED");
+					m.disconnectUser(socket);
+					socket.close();
+					sockets.remove(key);
+				}
+			}
+
+			data.dataByteBuffer = ByteBuffer.allocate(data.lengthByteBuffer.getInt(0));
+			data.lengthByteBuffer.clear();
+
+			while (data.dataByteBuffer.remaining()!=0) 
+				socket.read(data.dataByteBuffer);
+
+			System.out.println(data.dataByteBuffer);
+			ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(data.dataByteBuffer.array()));
+			Serializable ret = (Serializable) ois.readObject();
+			// clean up
+			data.dataByteBuffer = null;
+			data.readLength = true;
+			System.out.println("RESULT "+ret);
+			((C2SMessage)ret).execute(m, key);
+		} catch (Exception e) {
 			m.disconnectUser(socket);
-			socket.close();
+			try {
+				socket.close();
+			} catch (IOException e1) {
+				System.err.println("WTF");
+			}
 			sockets.remove(key);
 		}
+
 	}
 
 	public void write(SelectionKey key, Message m){
@@ -98,7 +103,7 @@ public class Server {
 			System.out.println("End");
 		}
 	}
-	
+
 	public void write(SocketChannel	chan, Message m){
 
 		try {
@@ -115,12 +120,12 @@ public class Server {
 			System.out.println("End");
 		}
 	}
-	
-	
+
+
 	public void broadcast(Message m) {
 		for (SocketChannel sock : sockets)
 			write(sock,m);
-		
+
 	}
 
 	public void exec() throws Exception {

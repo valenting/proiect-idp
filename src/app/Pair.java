@@ -3,6 +3,8 @@ package app;
 import java.io.Serializable;
 
 public class Pair<K,V> implements Serializable {
+	private static final long serialVersionUID = 1999021412458659774L;
+	
 	private K k;
 	private V v;
 	

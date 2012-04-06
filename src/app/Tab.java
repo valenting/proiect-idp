@@ -72,4 +72,8 @@ public class Tab {
 			v.draw(g);
 		}
 	}
+	
+	public void setState(int type) {
+		stateMgr.setState(type);
+	}
 }

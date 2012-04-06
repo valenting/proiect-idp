@@ -1,22 +1,13 @@
 package server;
 
-import gui.GroupTab;
 import gui.drawings.Drawing;
-
 import java.awt.Color;
 import java.util.Vector;
 import javax.swing.DefaultListModel;
-import javax.swing.ListModel;
-import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultStyledDocument;
-import javax.swing.text.Style;
-import javax.swing.text.StyleConstants;
-import javax.swing.text.StyleContext;
-import javax.swing.text.StyledDocument;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
-import javax.swing.tree.TreeModel;
 
 public class GroupManager {
 	Vector<Group> groups;
@@ -194,7 +185,7 @@ public class GroupManager {
 				g.delUser(username);
 				DefaultMutableTreeNode p = (DefaultMutableTreeNode) getUserNode(username, group).getParent();
 				groupModel.removeNodeFromParent(getUserNode(username, group));
-				if (p.isLeaf())  { // TODO Stage2: do this for all leave group events  
+				if (p.isLeaf())  { 
 					groupModel.removeNodeFromParent(p);
 					groups.remove(this.getGroup((String) p.getUserObject()));
 				}

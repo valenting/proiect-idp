@@ -3,12 +3,7 @@ package network.c2s;
 import java.nio.channels.SelectionKey;
 
 import server.ServerMediator;
-
 import network.C2SMessage;
-import network.Message;
-
-import app.Mediator;
-import app.MediatorStub;
 
 public class LogInMessage extends C2SMessage {
 	String user;

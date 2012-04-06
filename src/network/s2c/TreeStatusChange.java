@@ -1,6 +1,6 @@
 package network.s2c;
 
-import javax.swing.DefaultListModel;
+import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultTreeModel;
 
 import app.Mediator;
@@ -14,9 +14,14 @@ public class TreeStatusChange extends S2CMessage {
 	}
 	
 	@Override
-	public void execute(Mediator m) {
-		System.out.println("Status change");
-		m.setTreeList(model); // TODO GUI Thread
+	public void execute(final Mediator m) {
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				m.setTreeList(model);
+			}
+		});
+		
 	}
 
 }

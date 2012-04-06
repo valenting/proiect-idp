@@ -4,6 +4,8 @@ import gui.drawings.Drawing;
 
 import java.util.Vector;
 
+import javax.swing.SwingUtilities;
+
 import app.Mediator;
 import network.S2CMessage;
 
@@ -18,8 +20,14 @@ public class UpdateDrawings extends S2CMessage {
 	}
 
 	@Override
-	public void execute(Mediator m) {
-		m.setDrawings(groupName, drawings);
+	public void execute(final Mediator m) {
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				m.setDrawings(groupName, drawings);
+			}
+		});
+		
 	}
 
 }

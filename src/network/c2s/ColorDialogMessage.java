@@ -1,6 +1,5 @@
 package network.c2s;
 
-import java.awt.Color;
 import java.nio.channels.SelectionKey;
 
 import server.ServerMediator;

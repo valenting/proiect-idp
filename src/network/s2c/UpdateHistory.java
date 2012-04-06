@@ -1,5 +1,6 @@
 package network.s2c;
 
+import javax.swing.SwingUtilities;
 import javax.swing.text.DefaultStyledDocument;
 
 import app.Mediator;
@@ -17,8 +18,14 @@ public class UpdateHistory extends S2CMessage {
 	}
  
 	@Override
-	public void execute(Mediator m) {
-		m.setHistory(groupName, document);
+	public void execute(final Mediator m) {
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				m.setHistory(groupName, document);
+			}
+		});
+		
 	}
 
 }

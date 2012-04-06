@@ -3,12 +3,9 @@ package network.s2c;
 
 
 import java.awt.Color;
-import java.nio.channels.SelectionKey;
+import javax.swing.SwingUtilities;
 
 import app.Mediator;
-
-import server.ServerMediator;
-import network.C2SMessage;
 import network.S2CMessage;
 
 public class UpdateTextMessage extends S2CMessage {
@@ -29,8 +26,14 @@ public class UpdateTextMessage extends S2CMessage {
 	}
 	
 	@Override
-	public void execute(Mediator m) {
-		m.printText(group, user, text, fontSize, fontColor);
+	public void execute(final Mediator m) {
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				m.printText(group, user, text, fontSize, fontColor);
+			}
+		});
+		
 	}
 	
 

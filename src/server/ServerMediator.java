@@ -3,27 +3,21 @@ package server;
 import gui.drawings.Drawing;
 
 import java.awt.Color;
-import java.io.IOException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
 import java.util.Hashtable;
 
-
-import network.Message;
 import network.s2c.DrawingMessage;
 import network.s2c.ErrorNoticeMessage;
 import network.s2c.LogInResponse;
 import network.s2c.OpenColorDialogMessage;
 import network.s2c.OpenPanelMessage;
-import network.s2c.StatusChange;
 import network.s2c.TreeStatusChange;
 import network.s2c.UpdateDrawings;
 import network.s2c.UpdateHistory;
 import network.s2c.UpdateLegend;
 import network.s2c.UpdateTextMessage;
 import network.s2c.UserStatusChange;
-import app.Mediator;
-import app.MediatorStub;
 
 public class ServerMediator {
 	Server serv;
@@ -84,6 +78,7 @@ public class ServerMediator {
 		if (s==null) {
 			serv.broadcast(new TreeStatusChange(gm.getTreeModel()));
 			serv.broadcast(new OpenPanelMessage(userName,groupName));
+			serv.broadcast(new UpdateLegend(groupName, gm.getGroupLegend(groupName)));
 		} else
 			serv.write(key, new ErrorNoticeMessage(s));
 	}
