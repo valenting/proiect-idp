@@ -10,14 +10,15 @@ public class UpdateLegend extends S2CMessage {
 	
 	
 	DefaultListModel groupLegend;
-	public UpdateLegend(DefaultListModel groupLegend) {
+	String groupName;
+	public UpdateLegend(String groupName, DefaultListModel groupLegend) {
+		this.groupName = groupName;
 		this.groupLegend = groupLegend;
 	}
 
 	@Override
 	public void execute(Mediator m) {
-		// TODO Auto-generated method stub
-		
+		m.setUserLegend(groupName, groupLegend);
 	}
 
 }

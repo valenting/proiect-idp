@@ -40,6 +40,7 @@ import javax.swing.JTextField;
 import javax.swing.JProgressBar;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
@@ -317,6 +318,10 @@ public class GroupTab extends JPanel {
 	public void setLegendModel(DefaultListModel l) {
 		userLegend.setModel(l);
 		userLegend.setCellRenderer(new CustomListCellRenderer());
+	}
+	
+	public void setHistory(DefaultStyledDocument document) {
+		txtpnHello.setDocument(document);
 	}
 
 }

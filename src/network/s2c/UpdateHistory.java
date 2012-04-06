@@ -10,14 +10,15 @@ public class UpdateHistory extends S2CMessage {
 	
 	
 	DefaultStyledDocument document;
-	public UpdateHistory(DefaultStyledDocument document) {
+	String groupName;
+	public UpdateHistory(String groupName, DefaultStyledDocument document) {
 		this.document = document;
+		this.groupName = groupName;
 	}
  
 	@Override
 	public void execute(Mediator m) {
-		// TODO Auto-generated method stub
-		
+		m.setHistory(groupName, document);
 	}
 
 }

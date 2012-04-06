@@ -1,5 +1,7 @@
 package server;
 
+import gui.drawings.Drawing;
+
 import java.awt.Color;
 import java.io.IOException;
 import java.nio.channels.SelectionKey;
@@ -8,6 +10,7 @@ import java.util.Hashtable;
 
 
 import network.Message;
+import network.s2c.DrawingMessage;
 import network.s2c.ErrorNoticeMessage;
 import network.s2c.LogInResponse;
 import network.s2c.OpenColorDialogMessage;
@@ -88,15 +91,20 @@ public class ServerMediator {
 	}
 
 	public void getGroupHistory(SelectionKey k, String groupName) {
-		serv.write(k, new UpdateHistory(gm.getDocument(groupName)));
+		serv.write(k, new UpdateHistory(groupName, gm.getDocument(groupName)));
 	} 
 	
 	public void getGroupLegend(SelectionKey k, String groupName) {
-		serv.write(k, new UpdateLegend(gm.getGroupLegend(groupName)));
+		serv.write(k, new UpdateLegend(groupName, gm.getGroupLegend(groupName)));
 	}
 	
 	public void getGroupDrawings(SelectionKey k, String groupName) {
-		serv.write(k, new UpdateDrawings(gm.getDrawings(groupName)));
+		serv.write(k, new UpdateDrawings(groupName, gm.getDrawings(groupName)));
+	}
+
+	public void addDrawing(String username, String group, Drawing d) {
+		gm.addDrawing(username, group, d);
+		serv.broadcast(new DrawingMessage(group, d));
 	}
 	
 

@@ -20,6 +20,10 @@ import javax.swing.tree.TreeModel;
 import network.*;
 import network.c2s.AddUserMessage;
 import network.c2s.ColorDialogMessage;
+import network.c2s.DrawingMessage;
+import network.c2s.GetGroupDrawings;
+import network.c2s.GetGroupHistory;
+import network.c2s.GetGroupLegend;
 import network.c2s.JoinGroupMessage;
 import network.c2s.LeaveGroupMessage;
 import network.c2s.LogInMessage;
@@ -27,7 +31,6 @@ import network.c2s.LogOutMessage;
 import network.c2s.NewGroupMessage;
 
 import web.Authenticator;
-import web.GroupManager;
 import gui.ColorChooser;
 import gui.GeneralGui;
 import gui.GroupTab;
@@ -109,7 +112,6 @@ public class Mediator extends MediatorStub {
 	}
 
 	public void addDrawing(Drawing d) {
-		// TODO
 		getCurrentTab().addDrawing(d);
 	}
 
@@ -218,6 +220,7 @@ public class Mediator extends MediatorStub {
 		}
 		System.out.println(group.getUserObject());
 		gg.closeTab((String)group.getUserObject());
+		tabs.remove(getTab(group.getUserObject().toString()));
 		comm.send(new LeaveGroupMessage((String) group.getUserObject(), username));
 	}
 
@@ -263,9 +266,11 @@ public class Mediator extends MediatorStub {
 		tb.setDocument(new DefaultStyledDocument());
 		tabs.add(currentTab);
 		
-		// TODO GetGroupLegend
-		// TODO GetDrawings
-		// TODO GetHistory
+		// TODO set color
+
+		comm.send(new GetGroupLegend(group));
+		comm.send(new GetGroupDrawings(group));
+		comm.send(new GetGroupHistory(group));
 	}
 
 
@@ -315,7 +320,21 @@ public class Mediator extends MediatorStub {
 	}
 	
 	public void setDrawings(String groupName, Vector<Drawing> drawings) {
-		gg.getTab(groupName)
+		getTab(groupName).setDrawings(drawings);
+		getTab(groupName).repaint();
+	}
+	
+	public void setHistory(String groupName, DefaultStyledDocument document) {
+		gg.getTab(groupName).setHistory(document);
+	}
+
+	public void sendDrawing(Drawing d) {
+		getCurrentTab().delDrawing(d);
+		comm.send(new DrawingMessage(username, getCurrentTab().getName(), d));
+	}
+
+	public void updateDrawings(String group, Drawing d) {
+		getTab(group).addDrawing(d);
 	}
 }
 

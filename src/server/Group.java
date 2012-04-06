@@ -84,5 +84,9 @@ public class Group {
 	public Color getUserColor(String username) {
 		return colors.get(username);
 	}
+
+	public void addDrawing(Drawing d) {
+		drawings.add(d);
+	} 
 	
 }

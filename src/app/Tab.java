@@ -32,8 +32,13 @@ public class Tab {
 	
 	public void addDrawing(Drawing d) {
 		drawings.addElement(d);
+		repaint();
 	}
 
+	public void delDrawing(Drawing d) {
+		drawings.remove(d);
+	}
+	
 	public void setCanvas(JCanvas canvas) {
 		jc = canvas;
 	}

@@ -133,6 +133,13 @@ public class GroupManager {
 				return g;
 		return null; 
 	}
+	
+	public void addDrawing(String user, String group, Drawing d) {
+		Group g = getGroup(group);
+		Color c = getColor(user, group);
+		d.setColor(c);
+		g.addDrawing(d); 
+	}
 
 	public Vector<Color> getAvailableColors(String group) {
 		return getGroup(group).availableColors();
