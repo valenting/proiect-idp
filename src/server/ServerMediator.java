@@ -20,6 +20,7 @@ import network.s2c.TreeStatusChange;
 import network.s2c.UpdateDrawings;
 import network.s2c.UpdateHistory;
 import network.s2c.UpdateLegend;
+import network.s2c.UpdateTextMessage;
 import network.s2c.UserStatusChange;
 import app.Mediator;
 import app.MediatorStub;
@@ -106,6 +107,11 @@ public class ServerMediator {
 		gm.addDrawing(username, group, d);
 		serv.broadcast(new DrawingMessage(group, d));
 	}
+	
+	public void addTextMessage(String groupName, String userName, String text, int fontSize, Color fontColor) {
+		gm.addTextMessage(groupName, userName, text, fontSize,fontColor);
+		serv.broadcast(new UpdateTextMessage(groupName, userName, text, fontSize, fontColor));
+	} 
 	
 
  

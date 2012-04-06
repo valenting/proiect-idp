@@ -150,6 +150,14 @@ public class GeneralGui extends JPanel {
 		return null;
 	}
 	
+	public String getTabName(GroupTab tab) {
+		for (int i=0;i<tabbedPane.getComponentCount();i++) {
+			if (tabbedPane.getComponent(i).equals(tab))
+				return tabbedPane.getTitleAt(i);
+		}
+		return null;
+	}
+	
 	public GroupTab addTab(String group, DefaultListModel l) {
 		GroupTab tb = new GroupTab(gg,med);
 		tb.setLegendModel(l);

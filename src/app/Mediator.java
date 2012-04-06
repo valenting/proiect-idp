@@ -29,6 +29,7 @@ import network.c2s.LeaveGroupMessage;
 import network.c2s.LogInMessage;
 import network.c2s.LogOutMessage;
 import network.c2s.NewGroupMessage;
+import network.c2s.TextMessage;
 
 import web.Authenticator;
 import gui.ColorChooser;
@@ -38,7 +39,7 @@ import gui.Gui;
 import gui.buttons.ToolbarButton;
 import gui.drawings.Drawing;
 
-public class Mediator extends MediatorStub {
+public class Mediator {
 	Communicator comm;
 	Gui gui;
 	Hashtable<Object, GroupTab> groupTab;
@@ -147,7 +148,7 @@ public class Mediator extends MediatorStub {
 		System.out.println("menu selection");
 		GroupTab t = getGroupTab(o);
 		t.popOthers(o);
-		getCurrentTab().stateMgr.setState(((ToolbarButton)o).getType());
+		getCurrentTab().stateMgr.setState(((ToolbarButton)o).getType()); // TODO create metod
 	}
 
 
@@ -286,25 +287,20 @@ public class Mediator extends MediatorStub {
 	public void sendText(String text, int fontSize, Color fontColor, GroupTab tab) {
 		if (text.length()==0)
 			return; 
-		// TODO send to communicator - tema 2
-		System.out.println("not 0");
-		tab.printText(username,text,fontSize,fontColor);
-
+		String tabName = gg.getTabName(tab);
+		comm.send(new TextMessage(tabName, username, text, fontSize, fontColor));
+	}
+	
+	public void printText(String groupName, String userName, String text, int fontSize, Color fontColor) {
+		Tab t = getTab(groupName);
+		if (t != null) 
+			t.tab.printText(userName, text, fontSize, fontColor);
 	}
 
 	public void saveWork() {
 		// TODO Auto-generated method stub 
 	}
 
-	public void addUserEvent(String user, String group) {
-		if (user.equals(this.username) && userInGroup(user, group))
-			;//joinGroupCommand(user,group,man.getAvailableColors(group.toString()).firstElement());
-		// TODO getAvailableColors
-	}
-
-	public void send(SelectionKey key, Message m) {
-		comm.send(m);
-	}
 
 	public void setUserList(DefaultListModel model) {
 		gg.setListModel(model);

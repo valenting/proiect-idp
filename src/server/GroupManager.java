@@ -1,12 +1,18 @@
 package server;
 
+import gui.GroupTab;
 import gui.drawings.Drawing;
 
 import java.awt.Color;
 import java.util.Vector;
 import javax.swing.DefaultListModel;
 import javax.swing.ListModel;
+import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultStyledDocument;
+import javax.swing.text.Style;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyleContext;
+import javax.swing.text.StyledDocument;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
@@ -209,5 +215,14 @@ public class GroupManager {
 	public String getFirstUser() {
 		return users.firstElement();
 	}
+  
+	public void addTextMessage(String groupName, String userName, String text,
+			int fontSize, Color fontColor) {
+		System.err.println(groupName);
+		Group t = getGroup(groupName);
+		if (t!=null)
+			t.printText(userName, text, fontSize, fontColor);
+	}
+	
 }
 

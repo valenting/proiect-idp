@@ -7,7 +7,12 @@ import java.util.Hashtable;
 import java.util.Vector;
 
 import javax.swing.DefaultListModel;
+import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultStyledDocument;
+import javax.swing.text.Style;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyleContext;
+import javax.swing.text.StyledDocument;
 
 import app.Pair;
 
@@ -88,5 +93,49 @@ public class Group {
 	public void addDrawing(Drawing d) {
 		drawings.add(d);
 	} 
+	
+	
+	private static final int MAX_LINE_CHARS = 40;
+	
+	private String prettyPrinting(String s) {
+		int buckets = s.length() / MAX_LINE_CHARS;
+		String newS = "";
+		for (int i = 0; i < buckets; i++) {
+			if (i == 0) {
+				newS = newS.concat(" " + s.substring(i * MAX_LINE_CHARS, (i + 1) * MAX_LINE_CHARS) + "\n");
+			} else
+				newS = newS.concat("   " + s.substring(i * MAX_LINE_CHARS, (i + 1) * MAX_LINE_CHARS) + "\n");
+		}
+		if (buckets == 0)
+			newS = newS.concat(" ");
+		else
+			newS = newS.concat("   ");
+		newS = newS.concat(s.substring(buckets * MAX_LINE_CHARS) + "\n");
+		return newS;
+	}
+
+	public void printText(String username, String string, int fontSize, Color fontColor) {
+		StyleContext ctx = new StyleContext();
+		Style st = ctx.getStyle(StyleContext.DEFAULT_STYLE);
+		StyleConstants.setBold(st, true);
+		
+		try {
+			doc.insertString(doc.getLength(), username + ":", st);
+		} catch (BadLocationException e1) {
+
+		}
+		
+		StyleConstants.setBold(st, false);
+		StyleConstants.setFontSize(st, fontSize);
+		StyleConstants.setForeground(st, fontColor);
+
+		try {
+			doc.insertString(doc.getLength(), prettyPrinting(string), st);
+		} catch (BadLocationException e1) {
+
+		}
+
+	}
+	
 	
 }
