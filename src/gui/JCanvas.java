@@ -1,11 +1,8 @@
 package gui;
 
-import gui.drawings.Drawing;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.util.Vector;
-
 import javax.swing.JPanel;
 
 import app.Mediator;

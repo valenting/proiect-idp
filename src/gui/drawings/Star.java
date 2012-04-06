@@ -4,6 +4,7 @@ import java.awt.Graphics;
 import java.awt.Point;
 
 public class Star extends Drawing {
+	private static final long serialVersionUID = -1142530433460211915L;
 
 	public Star(int x, int y) {
 		super(x, y);

@@ -61,6 +61,7 @@ public class Mediator extends MediatorStub {
 	}
 
 	public void loginSuccessful() {
+		//TODO Create log file
 		gui.loginSuccessful(username);
 		gg.setUser(username);
 	}
