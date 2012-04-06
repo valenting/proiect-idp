@@ -268,8 +268,7 @@ public class Mediator {
 		tb.setDocument(new DefaultStyledDocument());
 		tabs.add(currentTab);
 		
-		// TODO set color
-
+		System.err.println("grp: "+group);		
 		comm.send(new GetGroupLegend(group));
 		comm.send(new GetGroupDrawings(group));
 		comm.send(new GetGroupHistory(group));
@@ -313,6 +312,7 @@ public class Mediator {
 	}
 	
 	public void setUserLegend(String groupName, DefaultListModel model) {
+		System.err.println("Set Legend");
 		gg.getTab(groupName).setLegend(model);
 	}
 	

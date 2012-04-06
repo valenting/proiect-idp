@@ -69,6 +69,7 @@ public class ServerMediator {
 		if (gm.joinGroupCommand(userName, groupName, c)) {
 			serv.broadcast(new TreeStatusChange(gm.getTreeModel()));
 			serv.write(key, new OpenPanelMessage(userName,groupName));
+			serv.broadcast(new UpdateLegend(groupName, gm.getGroupLegend(groupName)));
 		} else
 			serv.write(key, new ErrorNoticeMessage("Could not join group"));
 	}
@@ -96,6 +97,7 @@ public class ServerMediator {
 	} 
 	
 	public void getGroupLegend(SelectionKey k, String groupName) {
+		System.err.println("getGroup");
 		serv.write(k, new UpdateLegend(groupName, gm.getGroupLegend(groupName)));
 	}
 	

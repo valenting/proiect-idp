@@ -47,6 +47,7 @@ public class GroupManager {
 
 	public DefaultListModel getGroupLegend(String group) {
 		Group g = getGroup(group);
+		System.err.println("Grp: "+g);
 		if (g!=null)
 			return g.getLegendModel();
 		else 
