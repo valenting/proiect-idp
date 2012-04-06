@@ -62,6 +62,7 @@ public class Mediator {
 	}
 
 	public void loginSuccessful() {
+		//TODO Create log file
 		gui.loginSuccessful(username);
 		gg.setUser(username);
 	}

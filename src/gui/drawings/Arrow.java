@@ -5,7 +5,8 @@ import java.awt.Point;
 
 
 public class Arrow extends Drawing {
-	
+	private static final long serialVersionUID = 1L;
+
 	public Arrow(int x, int y) {
 		super(x, y);
 	}
@@ -13,7 +14,7 @@ public class Arrow extends Drawing {
 	public Arrow(Point start) {
 		super(start);
 	}
-	
+
 	public void draw(Graphics g) {
 
 		float arrowWidth = 10.0f;

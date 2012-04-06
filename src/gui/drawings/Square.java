@@ -4,6 +4,7 @@ import java.awt.Graphics;
 import java.awt.Point;
 
 public class Square extends Drawing {
+	private static final long serialVersionUID = 1L;
 
 	public Square(int x, int y) {
 		super(x, y);
@@ -14,7 +15,7 @@ public class Square extends Drawing {
 	}
 
 	public void draw(Graphics g) {
-		
+
 		int x1 = Math.min(start.x, end.x);
 		int y1 = Math.min(start.y, end.y);
 		int x2 = Math.max(start.x, end.x);

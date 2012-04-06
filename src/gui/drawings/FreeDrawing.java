@@ -5,9 +5,9 @@ import java.awt.Point;
 import java.util.Vector;
 
 public class FreeDrawing extends Drawing {
-
+	private static final long serialVersionUID = 1L;
 	Vector<Point> points;
-	
+
 	public FreeDrawing(int x, int y) {
 		super(x, y);
 		points = new Vector<Point>();
@@ -19,12 +19,12 @@ public class FreeDrawing extends Drawing {
 		points = new Vector<Point>();
 		points.add(start);
 	}
-	
+
 	public void move(int x, int y) {
 		points.add(end);
 		end = new Point(x,y);
 	}
-	
+
 	public void draw(Graphics g) {
 		g.setColor(color);
 		for (int i=0;i<points.size()-1;i++)
