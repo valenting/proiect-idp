@@ -15,8 +15,7 @@ public class GetGroupHistory extends C2SMessage {
 	
 	@Override
 	public void execute(ServerMediator m, SelectionKey k) {
-		// TODO Auto-generated method stub
-		
-	}
+		m.getGroupHistory(k,groupName);
+	} 
 
 }

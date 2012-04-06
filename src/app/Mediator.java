@@ -309,5 +309,13 @@ public class Mediator extends MediatorStub {
 		gg.setTreeModel(model);
 		treeModel = model;
 	}
+	
+	public void setUserLegend(String groupName, DefaultListModel model) {
+		gg.getTab(groupName).setLegend(model);
+	}
+	
+	public void setDrawings(String groupName, Vector<Drawing> drawings) {
+		gg.getTab(groupName)
+	}
 }
 

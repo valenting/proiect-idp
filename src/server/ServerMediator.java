@@ -14,6 +14,9 @@ import network.s2c.OpenColorDialogMessage;
 import network.s2c.OpenPanelMessage;
 import network.s2c.StatusChange;
 import network.s2c.TreeStatusChange;
+import network.s2c.UpdateDrawings;
+import network.s2c.UpdateHistory;
+import network.s2c.UpdateLegend;
 import network.s2c.UserStatusChange;
 import app.Mediator;
 import app.MediatorStub;
@@ -82,9 +85,20 @@ public class ServerMediator {
 
 	public void getColorDialog(SelectionKey k, String group) {
 		serv.write(k, new OpenColorDialogMessage(gm.getAvailableColors(group),group));
-	} 
+	}
 
+	public void getGroupHistory(SelectionKey k, String groupName) {
+		serv.write(k, new UpdateHistory(gm.getDocument(groupName)));
+	} 
+	
+	public void getGroupLegend(SelectionKey k, String groupName) {
+		serv.write(k, new UpdateLegend(gm.getGroupLegend(groupName)));
+	}
+	
+	public void getGroupDrawings(SelectionKey k, String groupName) {
+		serv.write(k, new UpdateDrawings(gm.getDrawings(groupName)));
+	}
 	
 
-
+ 
 }

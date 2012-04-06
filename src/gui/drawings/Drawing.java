@@ -3,8 +3,9 @@ package gui.drawings;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.io.Serializable;
 
-public class Drawing {
+public class Drawing implements Serializable {
 
 	protected Point start;
 	protected Point end;
