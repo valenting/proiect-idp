@@ -36,7 +36,6 @@ import gui.buttons.ToolbarButton;
 import gui.drawings.Drawing;
 
 public class Mediator extends MediatorStub {
-	Authenticator a;
 	Communicator comm;
 	Gui gui;
 	Hashtable<Object, GroupTab> groupTab;
@@ -45,7 +44,6 @@ public class Mediator extends MediatorStub {
 	Vector<Tab> tabs;
 	DefaultTreeModel treeModel;
 	public Mediator() {
-		a = new Authenticator(this);
 		groupTab = new Hashtable<Object, GroupTab>();
 		comm = new Communicator(this);
 		comm.connect("127.0.0.1", 7777);
@@ -66,10 +64,10 @@ public class Mediator extends MediatorStub {
 
 	public void logOut() {
 		comm.send(new LogOutMessage(username));
-		//man.logOffUser(username);
 		gui.logOut();
 		gg.logOut();
 		tabs.removeAllElements();
+		username = "(null)";
 	}
 
 	public void setGui(Gui gui2) {
@@ -95,24 +93,19 @@ public class Mediator extends MediatorStub {
 		comm.send(new NewGroupMessage(t, username));
 	}  
 
-	public void addGroupCallBack(String t) {
-		// TODO
-	}
-
-
 
 	private Tab getTab(String name) {
 		for (Tab t: tabs)
 			if (t.getName().equals(name))
 				return t;
-				return null;
+		return null;
 	}
 
 	private Tab getCurrentTab() {
 		for (Tab t: tabs)
 			if (t.tab.equals(gg.getActiveTab()))
 				return t;
-				return null;
+		return null;
 	}
 
 	public void addDrawing(Drawing d) {
@@ -210,7 +203,6 @@ public class Mediator extends MediatorStub {
 		if (userInGroup(group.toString(), username))
 			return;
 
-		//comm.send(new JoinGroupMessage(group.toString(),username));
 		comm.send(new ColorDialogMessage(group.toString()));
 	}
 
@@ -224,7 +216,8 @@ public class Mediator extends MediatorStub {
 			gui.error("No group selected");
 			return;
 		}
-
+		System.out.println(group.getUserObject());
+		gg.closeTab((String)group.getUserObject());
 		comm.send(new LeaveGroupMessage((String) group.getUserObject(), username));
 	}
 
@@ -259,17 +252,20 @@ public class Mediator extends MediatorStub {
 	 */
 
 	public void joinGroupAccepted(String user, String group) {
-		// TODO GetGroupLegend
 		if (!user.equals(username))
 			return;
 		GroupTab tb = gg.addTab(group,new DefaultListModel());
 		Tab currentTab = new Tab(group,this);
 		currentTab.setCanvas(tb.panel);
 		currentTab.setGroupTab(tb);
-		
+
 		currentTab.setDrawings(new Vector<Drawing>());
 		tb.setDocument(new DefaultStyledDocument());
 		tabs.add(currentTab);
+		
+		// TODO GetGroupLegend
+		// TODO GetDrawings
+		// TODO GetHistory
 	}
 
 

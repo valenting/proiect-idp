@@ -144,7 +144,7 @@ public class GeneralGui extends JPanel {
 	
 	public GroupTab getTab(String groupName) {
 		for (int i=0;i<tabbedPane.getComponentCount();i++) {
-			if (((GroupTab)tabbedPane.getComponent(i)).getName().equals(groupName))
+			if (tabbedPane.getTitleAt(i).equals(groupName))
 				return (GroupTab) tabbedPane.getComponent(i);
 		}
 		return null;
@@ -159,6 +159,12 @@ public class GeneralGui extends JPanel {
 	
 	public void closeTab(GroupTab g) {
 		tabbedPane.remove(g);
+	}
+	
+	public void closeTab(String group) {
+		GroupTab t = getTab(group);
+		if (t!=null)
+			closeTab(t);
 	}
 	
 	public GroupTab getActiveTab() {

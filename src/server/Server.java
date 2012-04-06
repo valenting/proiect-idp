@@ -71,11 +71,12 @@ public class Server {
 				data.readLength = true;
 				System.out.println("RESULT "+ret);
 				((C2SMessage)ret).execute(m, key);
-				// key.interestOps(SelectionKey.OP_WRITE);
 			}
 		}
 
 		if (bytesRead<0) {
+			System.err.println("CLOSED");
+			m.disconnectUser(socket);
 			socket.close();
 			keys.remove(key);
 		}

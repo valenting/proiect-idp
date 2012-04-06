@@ -28,6 +28,8 @@ public class State {
 	}
 
 	public void mouseReleased(int x, int y) {
+		// TODO send d to server
+		// remove d from drawings
 	}
 	
 	public void mouseDragged(int x, int y) {

@@ -3,6 +3,9 @@ package server;
 import java.awt.Color;
 import java.io.IOException;
 import java.nio.channels.SelectionKey;
+import java.nio.channels.SocketChannel;
+import java.util.Hashtable;
+
 
 import network.Message;
 import network.s2c.ErrorNoticeMessage;
@@ -19,10 +22,12 @@ public class ServerMediator {
 	Server serv;
 	SAuthenticator sauth;
 	GroupManager gm;
+	Hashtable<SocketChannel,String> hash;
 	public ServerMediator(Server s) {
 		serv = s;
 		sauth = new SAuthenticator();
 		gm = new GroupManager();
+		hash = new Hashtable<SocketChannel, String>();
 	}
 
 	public void login(SelectionKey key, String user, String pass) {
@@ -31,18 +36,24 @@ public class ServerMediator {
 		if (valid) {
 			gm.connectUser(user);
 			serv.broadcast(new UserStatusChange(gm.getListModel()));
+			serv.write(key, new UserStatusChange(gm.getListModel()));
+			serv.write(key, new TreeStatusChange(gm.getTreeModel()));
+			hash.put((SocketChannel) key.channel(), user);
 		}
 	}
 
+	public void disconnectUser(SocketChannel chan) {
+		this.logOff(null, hash.get(chan));
+	}
+	
 	public void logOff(SelectionKey key, String user) {
 		gm.logOffUser(user);
-		System.out.println("LogOff "+user);
 		serv.broadcast(new UserStatusChange(gm.getListModel()));
 		serv.broadcast(new TreeStatusChange(gm.getTreeModel()));
 	}
 
 	public void newGroup(SelectionKey key, String groupName, String userName) {
-		gm.addGroup(groupName, userName);
+		gm.addGroup(groupName, userName); 
 		serv.broadcast(new TreeStatusChange(gm.getTreeModel()));
 		serv.write(key, new OpenPanelMessage(userName,groupName));
 	}
@@ -50,7 +61,7 @@ public class ServerMediator {
 	public void joinGroup(SelectionKey key, String groupName, String userName, Color c) {
 		if (gm.joinGroupCommand(userName, groupName, c)) {
 			serv.broadcast(new TreeStatusChange(gm.getTreeModel()));
-			serv.write(key, new OpenPanelMessage(userName,groupName)); // ACK
+			serv.write(key, new OpenPanelMessage(userName,groupName));
 		} else
 			serv.write(key, new ErrorNoticeMessage("Could not join group"));
 	}
@@ -73,7 +84,7 @@ public class ServerMediator {
 		serv.write(k, new OpenColorDialogMessage(gm.getAvailableColors(group),group));
 	} 
 
-
+	
 
 
 }
