@@ -39,17 +39,19 @@ public class Mediator {
 	GeneralGui gg;
 	Vector<Tab> tabs;
 	DefaultTreeModel treeModel;
-	public Mediator() {
+	String serverIP;
+	
+	public Mediator(String serverIP) {
 		groupTab = new Hashtable<Object, GroupTab>();
 		comm = new Communicator(this);
 		tabs = new Vector<Tab>();
 		treeModel = new DefaultTreeModel(new DefaultMutableTreeNode("Groups"));
+		this.serverIP = serverIP;
 	}
 
 	public void login(String user, String pass) {
 		this.username = user;
-		boolean done = comm.connect("127.0.0.1", 7777);
-		// TODO if connection fails
+		boolean done = comm.connect(serverIP, 7777);
 		if (done)
 			comm.send(new LogInMessage(user,pass));
 	}
