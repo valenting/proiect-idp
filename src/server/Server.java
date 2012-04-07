@@ -15,7 +15,6 @@ public class Server {
 	public final String IP		= "127.0.0.1";	// server IP
 	public final int PORT		= 7777;		// server port
 
-
 	ServerMediator m;
 	Vector<SocketChannel> sockets;
 	public Server() {
@@ -54,10 +53,8 @@ public class Server {
 			while (data.lengthByteBuffer.remaining()!=0) {
 				bytesRead = socket.read(data.lengthByteBuffer);
 				if (bytesRead < 0 ) {
-					System.err.println("CLOSED");
-					m.disconnectUser(socket);
-					socket.close();
-					sockets.remove(key);
+					cleanup(key);
+					return;
 				}
 			}
 
@@ -76,32 +73,25 @@ public class Server {
 			System.out.println("RESULT "+ret);
 			((C2SMessage)ret).execute(m, key);
 		} catch (Exception e) {
-			m.disconnectUser(socket);
-			try {
-				socket.close();
-			} catch (IOException e1) {
-				System.err.println("WTF");
-			}
-			sockets.remove(key);
+			System.err.println("Disconnect: "+e);
+			cleanup(key);
 		}
-
+	}
+	
+	public void cleanup(SelectionKey key) {
+		System.err.println("Cleanup");
+		SocketChannel chan = (SocketChannel) key.channel();
+		sockets.remove(chan);
+		m.disconnectUser(chan);
+		try {
+			chan.close();
+		} catch (IOException e) {
+			System.err.println("Socket Close error: "+e);
+		}
 	}
 
 	public void write(SelectionKey key, Message m){
-
-		try {
-			System.out.println("WRITE: ");
-			ByteArrayOutputStream bs = new ByteArrayOutputStream();
-			for(int i=0;i<4;i++) bs.write(0);
-			ObjectOutputStream os = new ObjectOutputStream(bs);
-			os.writeObject(m);
-			os.close();
-			ByteBuffer wrap = ByteBuffer.wrap(bs.toByteArray());
-			wrap.putInt(0, bs.size()-4);
-			((SocketChannel)key.channel()).write(wrap);
-		} catch (Exception e) {
-			System.out.println("End");
-		}
+		write((SocketChannel)key.channel(),m);
 	}
 
 	public void write(SocketChannel	chan, Message m){
@@ -115,9 +105,18 @@ public class Server {
 			os.close();
 			ByteBuffer wrap = ByteBuffer.wrap(bs.toByteArray());
 			wrap.putInt(0, bs.size()-4);
-			chan.write(wrap);
+			int bytesOut = 0;
+			while (bytesOut<bs.size()) {
+				int out =  chan.write(wrap);
+				if (out<0) { 
+					cleanup(chan.keyFor(selector));
+					return;
+				}
+				bytesOut += out;
+			}
 		} catch (Exception e) {
-			System.out.println("End");
+			System.err.println("Disconnect: "+e);
+			cleanup(chan.keyFor(selector));
 		}
 	}
 
@@ -128,9 +127,10 @@ public class Server {
 
 	}
 
+	Selector selector;
 	public void exec() throws Exception {
 
-		Selector selector						= null;
+		//Selector selector						= null;
 		ServerSocketChannel serverSocketChannel	= null;
 
 		try {

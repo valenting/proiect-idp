@@ -34,10 +34,11 @@ public class ServerMediator {
 	public void login(SelectionKey key, String user, String pass) {
 		boolean valid = sauth.authenticate(user, pass); 
 		serv.write(key,new LogInResponse(valid));
+		//TODO - verifica sa nu fi fost deja logat
 		if (valid) {
 			gm.connectUser(user);
 			serv.broadcast(new UserStatusChange(gm.getListModel()));
-			serv.write(key, new UserStatusChange(gm.getListModel()));
+			//serv.write(key, new UserStatusChange(gm.getListModel())); //DE ce??
 			serv.write(key, new TreeStatusChange(gm.getTreeModel()));
 			hash.put((SocketChannel) key.channel(), user);
 		}
@@ -81,7 +82,7 @@ public class ServerMediator {
 			serv.broadcast(new UpdateLegend(groupName, gm.getGroupLegend(groupName)));
 		} else
 			serv.write(key, new ErrorNoticeMessage(s));
-	}
+	} 
 
 	public void getColorDialog(SelectionKey k, String group) {
 		serv.write(k, new OpenColorDialogMessage(gm.getAvailableColors(group),group));
