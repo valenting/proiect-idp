@@ -92,7 +92,7 @@ public class Communicator {
 		
 		try {
 			chan.connect(new InetSocketAddress(IP, PORT));
-			chan.finishConnect();
+			while(!chan.finishConnect()); // wait for connection to complete
 			
 			Thread t = new Thread() {
 				public void run() {
