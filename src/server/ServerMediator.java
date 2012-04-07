@@ -51,10 +51,14 @@ public class ServerMediator {
 		gm.logOffUser(user);
 		serv.broadcast(new UserStatusChange(gm.getListModel()));
 		serv.broadcast(new TreeStatusChange(gm.getTreeModel()));
+		
+		for (int i=0;i<gm.groups.size();i++)
+			if (gm.inGroup(gm.groups.get(i).getName(), user))
+				serv.broadcast(new UpdateLegend(gm.groups.get(i).getName(), gm.getGroupLegend(gm.groups.get(i).getName())));
 	}
 
-	public void newGroup(SelectionKey key, String groupName, String userName) {
-		gm.addGroup(groupName, userName); 
+	public void newGroup(SelectionKey key, String groupName, String userName, Color c) {
+		gm.addGroup(groupName, userName,c); 
 		serv.broadcast(new TreeStatusChange(gm.getTreeModel()));
 		serv.write(key, new OpenPanelMessage(userName,groupName));
 	}
@@ -71,6 +75,7 @@ public class ServerMediator {
 	public void leaveGroup(SelectionKey key, String groupName, String userName) {
 		gm.leaveGroupCommand(userName, groupName);
 		serv.broadcast(new TreeStatusChange(gm.getTreeModel()));
+		serv.broadcast(new UpdateLegend(groupName, gm.getGroupLegend(groupName)));
 	}
 
 	public void addUser(SelectionKey key, String groupName, String userName, String by) {
@@ -83,8 +88,11 @@ public class ServerMediator {
 			serv.write(key, new ErrorNoticeMessage(s));
 	} 
 
-	public void getColorDialog(SelectionKey k, String group) {
-		serv.write(k, new OpenColorDialogMessage(gm.getAvailableColors(group),group));
+	public void probeGroupDialog(SelectionKey k, String user, String group) {
+		if (gm.getColor(user, group)==null)
+			serv.write(k, new OpenColorDialogMessage(gm.getAvailableColors(group),group));
+		else
+			joinGroup(k,group,user,Color.black); // Color is already set.
 	}
 
 	public void getGroupHistory(SelectionKey k, String groupName) {

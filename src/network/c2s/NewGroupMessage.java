@@ -1,5 +1,6 @@
 package network.c2s;
 
+import java.awt.Color;
 import java.nio.channels.SelectionKey;
 
 import server.ServerMediator;
@@ -10,15 +11,16 @@ public class NewGroupMessage extends C2SMessage {
 
 	String group;
 	String user;
-	
-	public NewGroupMessage(String groupName, String userName) {
+	Color c;
+	public NewGroupMessage(String groupName, String userName, Color c) {
 		group = groupName;
 		user = userName;
+		this.c = c;
 	}
 	
 	@Override
 	public void execute(ServerMediator m, SelectionKey k) {
-		m.newGroup(k, group, user);
+		m.newGroup(k, group, user,c);
 	}
 
 }

@@ -1,6 +1,7 @@
 package gui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.FlowLayout;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -13,6 +14,7 @@ import javax.swing.JTextField;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Vector;
 
 import app.Mediator;
 
@@ -97,7 +99,12 @@ public class GroupDialog extends JDialog implements ActionListener {
 			} else if (t.length()==0) {
 				lblStatus.setText("Empty field");
 			} else {
-				med.addGroup(t); 
+				//med.addGroup(t);
+				Color avail[] = { Color.BLACK, Color.BLUE, Color.CYAN, Color.DARK_GRAY, Color.GRAY, Color.GREEN, Color.LIGHT_GRAY, Color.MAGENTA, Color.ORANGE, Color.PINK, Color.RED, Color.YELLOW };
+				Vector<Color> vc = new Vector<Color>();
+				for (int i=0;i<avail.length;i++)
+					vc.add(avail[i]);
+				med.openColorChooser(vc, t);
 				dispose();
 			}
 		} else if (command.equals("Cancel")){

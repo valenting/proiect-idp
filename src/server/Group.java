@@ -27,24 +27,26 @@ public class Group {
 	
 	DefaultListModel userColorModel;
 	
-	public Group(String name, String user) {
+	public Group(String name, String user, Color c) {
 		this.name = name; 
 		users = new Vector<String>();
 		colors = new Hashtable<String, Color>();
 		users.add(user);
-		colors.put(user, Color.BLACK);
+		colors.put(user, c);
 		userColorModel = new DefaultListModel();
-		// creator always has color black - convention
-		userColorModel.addElement(new Pair<String,Color>(user,Color.black));
+		userColorModel.addElement(new Pair<String,Color>(user,c));
 		createdBy = user;
 		drawings = new Vector<Drawing>(); 
 		doc = new DefaultStyledDocument();
 	}
 
 	public void addUser(String user, Color c) {
-		users.add(user);
-		colors.put(user, c);
-		userColorModel.addElement(new Pair<String,Color>(user,c));
+		if (!users.contains(user))
+			users.add(user);
+		if (colors.get(user)==null) {
+			colors.put(user, c);
+			userColorModel.addElement(new Pair<String,Color>(user,c));
+		}
 	}
 	
 	public Vector<Drawing> getDrawings() {

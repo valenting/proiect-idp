@@ -160,7 +160,7 @@ public class GeneralGui extends JPanel {
 	
 	public GroupTab addTab(String group, DefaultListModel l) {
 		GroupTab tb = new GroupTab(gg,med);
-		tb.setLegendModel(l);
+		tb.setLegendModel(l,group);
 		tabbedPane.addTab(group, tb);
 		return tb;
 	}

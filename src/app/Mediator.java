@@ -12,7 +12,7 @@ import javax.swing.tree.DefaultTreeModel;
 
 import network.*;
 import network.c2s.AddUserMessage;
-import network.c2s.ColorDialogMessage;
+import network.c2s.ProbeGroupMessage;
 import network.c2s.DrawingMessage;
 import network.c2s.GetGroupDrawings;
 import network.c2s.GetGroupHistory;
@@ -85,11 +85,6 @@ public class Mediator {
 		}
 		return false;
 	}
-
-	public void addGroup(String t) {
-		comm.send(new NewGroupMessage(t, username));
-	}  
-
 
 	private Tab getTab(String name) {
 		for (Tab t: tabs)
@@ -167,7 +162,8 @@ public class Mediator {
 		}
 		return false;
 	}
-
+	
+	
 	/****** RIGHT CLICK MENU ******/
 
 	public void addUserCommand() {
@@ -199,7 +195,7 @@ public class Mediator {
 		if (userInGroup(group.toString(), username))
 			return;
 
-		comm.send(new ColorDialogMessage(group.toString()));
+		comm.send(new ProbeGroupMessage(username,group.toString()));
 	}
 
 	public void openColorChooser(Vector<Color> colors, String group) {
@@ -219,10 +215,13 @@ public class Mediator {
 	}
 
 	public void joinGroupCommand(String user, String group, Color c) {
-
-		if (userInGroup(user, group))
-			return;
-		comm.send(new JoinGroupMessage(group.toString(),username,c));
+		if (!groupExists(group)) {
+			comm.send(new NewGroupMessage(group, username,c));
+		} else {
+			if (userInGroup(user, group))
+				return;
+			comm.send(new JoinGroupMessage(group.toString(),username,c));
+		}
 	}
 
 	public void joinGroupAccepted(String user, String group) {

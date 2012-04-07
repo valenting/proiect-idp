@@ -62,9 +62,10 @@ public class GroupTab extends JPanel {
 	JComboBox comboBox_1;
 	JTextPane txtpnHello;
 	private static Color cls[] = {Color.black, Color.green, Color.blue, Color.yellow, Color.red, Color.pink};
-
+	Mediator med;
 	public GroupTab(Gui g, final Mediator m) {
 		super();
+		this.med = m;
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[]{0, 0, 0};
 		gridBagLayout.rowHeights = new int[]{0, 0, 0, 0, 0, 0};
@@ -315,9 +316,9 @@ public class GroupTab extends JPanel {
 		txtpnHello.setCaretPosition(txtpnHello.getText().length());
 	}
 
-	public void setLegendModel(DefaultListModel l) {
+	public void setLegendModel(DefaultListModel l, String groupName) {
 		userLegend.setModel(l);
-		userLegend.setCellRenderer(new CustomListCellRenderer());
+		userLegend.setCellRenderer(new CustomListCellRenderer(med,groupName));
 	}
 	
 	public void setHistory(DefaultStyledDocument document) {
@@ -330,7 +331,13 @@ public class GroupTab extends JPanel {
 class CustomListCellRenderer extends DefaultListCellRenderer{
 
 	private static final long serialVersionUID = 1L;
-
+	
+	Mediator m;
+	String group;
+	public CustomListCellRenderer(Mediator m, String group) {
+		this.m = m;
+		this.group = group;
+	}
 
 	public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
 
@@ -339,7 +346,13 @@ class CustomListCellRenderer extends DefaultListCellRenderer{
 		JLabel label = (JLabel) ret ;
 		@SuppressWarnings("unchecked")
 		Pair<String, Color> p = (Pair<String, Color>)(value);  
-		label.setText(p.getK()); 
+		String username = p.getK();
+		String conn;
+		if (m.userInGroup(username, group))
+			conn = " (c)";
+		else
+			conn = " (u)";
+		label.setText(p.getK()+conn); 
 
 		label.setForeground(p.getV());
 		return label;

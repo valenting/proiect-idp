@@ -52,11 +52,11 @@ public class GroupManager {
 			return null;
 	}
 
-	public boolean addGroup(String group, String username) {
+	public boolean addGroup(String group, String username, Color c) {
 		for (Group g : groups)
 			if (g.getName().equals(group))
 				return false;
-		groups.add(new Group(group,username));
+		groups.add(new Group(group,username,c));
 		DefaultMutableTreeNode t = new DefaultMutableTreeNode(group);
 		groupModel.insertNodeInto(t, (MutableTreeNode) groupModel.getRoot(), ((DefaultMutableTreeNode)groupModel.getRoot()).getChildCount());
 		groupModel.insertNodeInto(new DefaultMutableTreeNode(username), t, 0);
@@ -168,6 +168,8 @@ public class GroupManager {
 		if (g!=null && username!=null && addedUser!=null && g.userInGroup(username) && !g.userInGroup(addedUser)) {
 			try {
 				Color c = getAvailableColors(group).firstElement();
+				if (g.userInGroup(addedUser))
+					c = g.getUserColor(addedUser); 
 				g.addUser(addedUser, c);
 				groupModel.insertNodeInto(new DefaultMutableTreeNode(addedUser), getGroupNode(group), getGroupNode(group).getChildCount());
 			} catch (Exception e) {
