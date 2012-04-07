@@ -75,6 +75,13 @@ OBSERVATIE: Pentru testare nu putem da nume user in linia de comanda caci
 		Se foloseste un fisier de logare si pentru server.
 	
 	2.3 Junit
+		Pentru testare am folosit Junit. Am testat acele clase care sunt
+	independente. De aceea, nu am putut testa decat Authenticatorul si 
+	GroupManagerul. Partea de transmisie mesaje nu se putea testa la fel
+	de usor folosind Junit, caci depinde de mediator ar trebui stuburi
+	si cerinta temei nu specifica aceste lucruri.
+		Pentru cele doua clase testate se verifica daca autentificarea
+	se face corect si daca comenzile de add, join si leave group se fac ok.
 	
 	
 ==============================================================
