@@ -9,83 +9,72 @@ Email:	emma.mirica@gmail.com
 Echipa:	*(NULL)
 
 ##################################################
-#                Tema 1 - GUI                    #
+#                Tema 2 - NET                    #
 ##################################################
 
 1. Continut arhiva
 
 	- src/ - folderul cu sursele
 	- build.xml - fisierul pentru rularea cu ant
+	- lib - cu jarurile necesare logarii si junit
 	- README - fisierul cu explicatiile aferente
-	- Use case-uri - fisierul cu cateva cazuri de utilizare
 	
-OBSERVATIE: Pentru a testa folositi userul "user" cu parola "pass"
+OBSERVATIE: Pentru testare nu putem da nume user in linia de comanda caci
+	trebuie facut login si introdusa parola.
+	Puteti testa cu urmatorii useri:
+		- user, pass
+		- test, test
+		- emma, emma
+		- vali, vali
+		- qwe, rty
+		- me, test
 
 =============================================================
 	
 2. Implementare
 
-	Au fost folosite patternurile Model-View-Controller, State,
-Command si Mediator.
-	Sursele sunt impartite in pachete pentru o mai buna modularizare
-a codului.
+	2.1.1 Protocol comunicatie
+		Comunicatia intre client si server se realizeaza prin transmiterea 
+	de mesaje. Un mesaj consta dintr-un antet de 4 octeti ce reprezinta 
+	dimensiunea mesajului, si dintr-un obiect serializabil.
+		Mesajele sunt de 2 tipuri: Mesaj client-server sau mesaj server-client.
+	La primirea mesajului, se apeleaza metoda execute din clasa aferenta a 
+	mesajului. Diferenta dintre tipurile de mesaje consta in parametrii metodei
+	execute. Deoarece serverul este stateless, metoda execute primeste 
+	un obiect ServerMediator si un obiect SelectionKey. Cheia este folosita la
+	transmiterea mesajelor de raspuns clientului.
+		La nivelul serverului, primirea si executia unui mesaj conduce la 
+	transmiterea altor mesaje si la schimbarea anumitor proprietati din 
+	GroupManager.
 	
-	2.1 Log in
-		Userul se logheaza cu username si parola. La enter fie ii apare
-	mesaj de eroare, fie reuseste loginul.
-		Au fost folosite JTextField si JPasswordField.
+	2.1.2 Modificari fata de etapa 1
+		Fata de etapa 1 s-au realizat modificari conform enuntului pentru
+	asigurarea managementului de grupuri la nivelul serverului. In acest sens
+	s-a mutat complet si relativ nealterata clasa GroupManager din Mediator-ul
+	clientului in ServerMediator. 
+		S-a adaugat clasa Communicator ce implementeaza primirea si trimiterea
+	mesajelor catre client.
+		La crearea unui grup, acum utilizatorul este intrebat ce culoare 
+	doreste, astfel culoarea Negru nu mai este default pentru creatorul 
+	grupului. De asemenea, nu pot exista mai multe sesiuni de de utilizatori
+	conectati cu acelasi user si parola. 
+		La nivelul legendei, userii ce au participat la grup si sunt conectati
+	apar cu sufixul "(+)" in timp ce userii care au parasit grupul apar cu
+	sufixul "(-)". La reconectarea la un grup, daca user-ul a fost anterior
+	in grup, acesta primeste automat culoarea precedenta. Daca user-ul este
+	adaugat de altcineva, si nu a mai fost in grupul respectiv, el primeste
+	automat prima culoare disponibila.
 		
-	2.2 Create group
-		Se creeaza grup nou daca nu exista deja acel grup sau daca nu
-	are nume vid, altfel apare mesaj de eroare sugestiv.
-		Creatorul grupului este adaugat automat la grup, iar culoarea
-	asignata lui pentru desenare este negru, ca o conventie pentru a se
-	sti cine este creatorul grupului.
-		
-	2.3 Butoanele de executie comenzi
-		A fost extins un buton de tip JButton si pentru executia lor
-	se foloseste patternul Command.
 	
-	2.4 Useri conectati si grupurile
-		Pentru lista de useri conectati s-a folosit un JList, ce are
-	un DefaultListModel la care se adauga userii atunci cand se conecteaza.
-	Pentru adaugare useri la un grup, se selecteaza un user din aceasta
-	lista. Modelul de selectie este Single.
-		Pentru grupuri se foloseste un JTree cu un DefaultTreeModel.
-	S-a definit un renderer pentru a afisa o iconita diferita pentru
-	grupurile la care este conectat userul curent.
-		Pentru adaugare user, join si leave grup s-a folosit un
-	JPopupMenu. In meniu apare Join/Leave in functie daca userul
-	nu se afla/se afla in grup.
-
+	2.2 Logare
+		Pentru logare a fost folosit pachetul log4j. Se foloseste
+	clasa Log ce contine un logger static si tote metodele sunt statice.
+	Astfel, in momentul autentificarii in mediatorul clientului se va seta
+	fisierul de log la "numeUser.log". Si apoi toate mesajele vor fi logate
+	in acest fisier. Mesajele de eroare vr fi afisate si la consola.
+		Se foloseste un fisier de logare si pentru server.
 	
-	2.5 Zona de discutii
-		Afisarea se face folosind StyledDocument si Style, iar textul
-	introdus este limitat la un numar maxim de caractere pe linie
-	pentru o mai buna intelegere a mesajului. De asemenea, numele
-	userului este mereu scris la fel. Afisarea este asemanatoare
-	Yahoo/Gtalk.
-	
-	2.6 Lista de legenda
-		Pentru legenda se vor pastra toti userii care au facut parte
-	din grup pentru ca alti useri sa poate observa cine ce a desenat.
-	Lista nu este selectabila, iar numele userilor este scrisa
-	cu culoarea pe care acestia au folosit-o ca sa deseneze.
-	
-	2.7 Zona de desenare
-		Pe langa formele obligatorii au mai fost implementate si
-	forma stea si sa se desenze liber, orice forma vrea utilizatorul
-	gen Paint. 
-	
-	OBSERVATII:
-		Pentru a intelege mai bine ceea ce face aplicatia se
-	recomanda sa se citeasca Use case-urile introduse in arhiva.
-		In general, unde s-a putut s-a adaugat posibilitatea ca la
-	enter sa aiba loc o actiune corespunzatoare unui buton.
-	(vezi Send, Login)
-		Pentru cererea permisiunii la alaturarea la un grup,
-	in cadrul etapei 1 s-au implementat doar stub-urile, urmand ca 
-	acestea sa fie conectate cu modulul de retea in etapele urmatoare.
+	2.3 Junit
 	
 	
 ==============================================================
@@ -95,22 +84,15 @@ a codului.
 	Au fost implementate urmatoarele bonusuri:
 		- posibilitatea de desenare la mouseClick si mouseMove
 		- desenarea altor forme: free drawing si stea
-		- TODO: cererea permisiunii la join
-			* Ca observatii: au fost adaugate functiile pentru
-			cerere permisiune la join, insa din probleme de sincronizare
-			nu au putut fi testate la aceasta etapa. Astfel, pentru
-			aceasta tema nu se poate verifica cererea de permisiune
-			de join la un grup. 
 
 
 ==============================================================
 
 4. Testarea
 
-	Pentru testare se foloseste clasa Tester din pachetul worker.
-	Tester extinde clasa Thread, si la fiecare 5 secunde executa o operatie.
-	In cadrul etapei 1, Tester-ul apeleaza niste functii din clasa 
-	GroupManager, ce simuleaza niste evenimente executate de alti clienti.
+		Se ruleaza build.xml care va porni serverul si trei clienti.
+		Pentru clienti folositi userii si parolele sugerate in prima 
+	sectiune.
 	
 
 ==============================================================
