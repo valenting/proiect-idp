@@ -26,12 +26,74 @@ public class Communicator {
 	Mediator m;
 	public Communicator(Mediator m)  {
 		this.m = m;
+	}
+
+	public void read(final SelectionKey key) throws  Exception {
+		DataContainer data		= (DataContainer)key.attachment();		
+		SocketChannel socket	= (SocketChannel)key.channel();
+		System.out.println("READ");
+		int bytesRead = 0;
+		try {
+
+			while (data.lengthByteBuffer.remaining()!=0) {
+				bytesRead = socket.read(data.lengthByteBuffer);
+				if (bytesRead < 0 ) {
+					m.loginError("Connection failure");
+					key.channel().close();
+					return;
+				}
+			}
+
+			data.dataByteBuffer = ByteBuffer.allocate(data.lengthByteBuffer.getInt(0));
+			data.lengthByteBuffer.clear();
+
+			while (data.dataByteBuffer.remaining()!=0) {
+				bytesRead = socket.read(data.dataByteBuffer);
+				if (bytesRead < 0 ) {
+					m.loginError("Connection failure");
+					key.channel().close();
+					return;
+				}
+			}
+
+			System.out.println(data.dataByteBuffer);
+			ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(data.dataByteBuffer.array()));
+			Serializable ret = (Serializable) ois.readObject();
+			// clean up
+			data.dataByteBuffer = null;
+			data.readLength = true;
+			System.out.println("RESULT "+ret);
+			((S2CMessage)ret).execute(m);
+		} catch (NotYetConnectedException e) {
+			
+		} catch (IOException e) {
+			System.err.println("Disconnect: "+e);
+			m.loginError("Connection failure");
+			key.channel().close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		System.out.println("READ done");
+	}
+
+	public boolean connect(String IP, int PORT)  {
 		try {
 			chan = SocketChannel.open();
 			chan.configureBlocking(false);
 
 			selector = Selector.open();
 			chan.register(selector, SelectionKey.OP_READ, new DataContainer());
+			
+
+		} catch (Exception e) {
+			System.err.println("SocketChannel Failed");
+			return false;
+		}
+		
+		try {
+			chan.connect(new InetSocketAddress(IP, PORT));
+			chan.finishConnect();
+			
 			Thread t = new Thread() {
 				public void run() {
 					while (true) {
@@ -54,57 +116,12 @@ public class Communicator {
 				}
 			};
 			t.start();
-
-		} catch (Exception e) {
-			System.err.println("SocketChannel Failed");
-		}
-
-
-	}
-
-	public void read(final SelectionKey key) throws  Exception {
-		DataContainer data		= (DataContainer)key.attachment();		
-		SocketChannel socket	= (SocketChannel)key.channel();
-		System.out.println("READ");
-		int bytesRead = 0;
-		try {
-
-			while (data.lengthByteBuffer.remaining()!=0) {
-				bytesRead = socket.read(data.lengthByteBuffer);
-				if (bytesRead < 0 ) {
-					key.channel().close();
-					return;
-				}
-			}
-
-			data.dataByteBuffer = ByteBuffer.allocate(data.lengthByteBuffer.getInt(0));
-			data.lengthByteBuffer.clear();
-
-			while (data.dataByteBuffer.remaining()!=0) 
-				socket.read(data.dataByteBuffer);
-
-			System.out.println(data.dataByteBuffer);
-			ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(data.dataByteBuffer.array()));
-			Serializable ret = (Serializable) ois.readObject();
-			// clean up
-			data.dataByteBuffer = null;
-			data.readLength = true;
-			System.out.println("RESULT "+ret);
-			((S2CMessage)ret).execute(m);
-		} catch (NotYetConnectedException e) {
+			return true;
 			
 		} catch (Exception e) {
-			System.err.println("Disconnect: "+e);
-			key.channel().close();
-		}
-	}
-
-	public void connect(String IP, int PORT)  {
-		try {
-			chan.connect(new InetSocketAddress(IP, PORT));
-			chan.finishConnect();
-		} catch (Exception e) {
-			System.err.println("Connection failed");
+			System.err.println("Connection failed: "+e);
+			m.loginError("Connection failed");
+			return false;
 		}
 	}
 
@@ -128,11 +145,13 @@ public class Communicator {
 			}
 		} catch (Exception e) {
 			System.err.println("Send Failed: "+e);
+			m.loginError("Connection failure");
 			try {
 				chan.close();
 			} catch (IOException e1) {
 				System.err.println("WTF");
 			}
+			
 		}
 	}
 

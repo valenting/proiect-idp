@@ -11,8 +11,6 @@ import network.C2SMessage;
 import network.Message;
 
 public class Server {
-
-	public final String IP		= "192.168.1.7";	// server IP
 	public final int PORT		= 7777;		// server port
 
 	ServerMediator m;
@@ -61,8 +59,13 @@ public class Server {
 			data.dataByteBuffer = ByteBuffer.allocate(data.lengthByteBuffer.getInt(0));
 			data.lengthByteBuffer.clear();
 
-			while (data.dataByteBuffer.remaining()!=0) 
-				socket.read(data.dataByteBuffer);
+			while (data.dataByteBuffer.remaining()!=0) {
+				bytesRead = socket.read(data.dataByteBuffer);
+				if (bytesRead < 0 ) {
+					cleanup(key);
+					return;
+				}
+			}
 
 			System.out.println(data.dataByteBuffer);
 			ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(data.dataByteBuffer.array()));
@@ -138,7 +141,7 @@ public class Server {
 
 			serverSocketChannel = ServerSocketChannel.open();
 			serverSocketChannel.configureBlocking(false);
-			serverSocketChannel.socket().bind(new InetSocketAddress(IP, PORT));
+			serverSocketChannel.socket().bind(new InetSocketAddress(PORT));
 			serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
 			// main loop
 			while (true) {

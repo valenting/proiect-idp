@@ -48,9 +48,10 @@ public class Mediator {
 
 	public void login(String user, String pass) {
 		this.username = user;
-		comm.connect("192.168.1.7", 7777);
+		boolean done = comm.connect("127.0.0.1", 7777);
 		// TODO if connection fails
-		comm.send(new LogInMessage(user,pass));
+		if (done)
+			comm.send(new LogInMessage(user,pass));
 	}
 
 	public void loginSuccessful() {
@@ -143,6 +144,11 @@ public class Mediator {
 	public void loginError() {
 		gui.error("Invalid credentials");
 		gui.resetLogin();
+	}
+	
+	public void loginError(String s) {
+		gui.logOut();
+		gui.error(s);
 	}
 
 	public void setGeneralGui(GeneralGui generalGui) {

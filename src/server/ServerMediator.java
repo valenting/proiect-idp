@@ -53,7 +53,7 @@ public class ServerMediator {
 		serv.broadcast(new TreeStatusChange(gm.getTreeModel()));
 		
 		for (int i=0;i<gm.groups.size();i++)
-			if (gm.inGroup(gm.groups.get(i).getName(), user))
+			if (gm.getColor(user, gm.groups.get(i).getName())!=null)
 				serv.broadcast(new UpdateLegend(gm.groups.get(i).getName(), gm.getGroupLegend(gm.groups.get(i).getName())));
 	}
 
