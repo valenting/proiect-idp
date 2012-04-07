@@ -147,7 +147,7 @@ public class Mediator {
 
 	public void loginError() {
 		gui.error("Invalid credentials");
-		logOut();
+		gui.resetLogin();
 	}
 
 	public void setGeneralGui(GeneralGui generalGui) {

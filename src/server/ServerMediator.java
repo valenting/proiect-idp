@@ -32,9 +32,8 @@ public class ServerMediator {
 	}
 
 	public void login(SelectionKey key, String user, String pass) {
-		boolean valid = sauth.authenticate(user, pass); 
-		serv.write(key,new LogInResponse(valid));
-		//TODO - verifica sa nu fi fost deja logat
+		boolean valid = sauth.authenticate(user, pass) && !gm.userConnected(user); 
+		serv.write(key,new LogInResponse(user,valid));
 		if (valid) {
 			gm.connectUser(user);
 			serv.broadcast(new UserStatusChange(gm.getListModel()));

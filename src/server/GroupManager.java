@@ -36,6 +36,13 @@ public class GroupManager {
 		userModel.addElement(user);
 	}
 
+	public boolean userConnected(String user) {
+		for (String u: users)
+			if (u.equals(user))
+				return true;
+		return false;
+	}
+	
 	public DefaultListModel getGroupLegend(String group) {
 		Group g = getGroup(group);
 		System.err.println("Grp: "+g);
@@ -82,7 +89,11 @@ public class GroupManager {
 				i--;
 			}
 		}
-
+		for (int i=0;i<users.size();i++)
+			if (users.get(i).equals(username)) {
+				users.remove(i);
+				break;
+			}
 		return true;
 	}
 

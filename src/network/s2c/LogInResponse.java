@@ -9,8 +9,8 @@ public class LogInResponse extends S2CMessage {
 	private static final long serialVersionUID = -3263390169240962237L;
 
 	boolean valid;
-
-	public LogInResponse(boolean valid) {
+	String username;
+	public LogInResponse(String username, boolean valid) {
 		this.valid = valid;
 	}
 

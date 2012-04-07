@@ -48,9 +48,13 @@ public class Gui extends JFrame implements ActionListener {
 
 	public void logOut() {
 		setContentPane(loginPane);
+		resetLogin();
+		validate();
+	}
+	
+	public void resetLogin() {
 		loginPane.logOut();
 		loginPane.requestTextFieldFocus();
-		validate();
 	}
 
 	public void groupDialog() {
