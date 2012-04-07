@@ -12,7 +12,7 @@ import network.Message;
 
 public class Server {
 
-	public final String IP		= "127.0.0.1";	// server IP
+	public final String IP		= "192.168.1.7";	// server IP
 	public final int PORT		= 7777;		// server port
 
 	ServerMediator m;

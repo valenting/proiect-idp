@@ -48,7 +48,7 @@ public class Mediator {
 
 	public void login(String user, String pass) {
 		this.username = user;
-		comm.connect("127.0.0.1", 7777);
+		comm.connect("192.168.1.7", 7777);
 		// TODO if connection fails
 		comm.send(new LogInMessage(user,pass));
 	}
