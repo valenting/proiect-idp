@@ -15,7 +15,6 @@ public class UpdateLegend extends S2CMessage {
 	public UpdateLegend(String groupName, DefaultListModel groupLegend) {
 		this.groupName = groupName;
 		this.groupLegend = groupLegend;
-		System.err.println("UpdateLegend Created");
 	}
 
 	@Override

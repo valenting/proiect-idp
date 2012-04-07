@@ -1,6 +1,8 @@
 package network.c2s;
 
 import java.nio.channels.SelectionKey;
+
+import app.Log;
 import server.ServerMediator;
 import network.C2SMessage;
 
@@ -10,6 +12,7 @@ public class LogOutMessage extends C2SMessage {
 	String user;
 	public LogOutMessage(String user) {
 		this.user = user;
+		Log.debug(user);
 	}
 	
 	public String toString() {
@@ -18,6 +21,7 @@ public class LogOutMessage extends C2SMessage {
 
 	@Override
 	public void execute(ServerMediator m, SelectionKey k) {
+		Log.debug(user);
 		m.logOff(k, user);
 	}
 

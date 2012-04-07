@@ -10,6 +10,7 @@ import javax.swing.text.DefaultStyledDocument;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
+
 import network.*;
 import network.c2s.AddUserMessage;
 import network.c2s.ProbeGroupMessage;
@@ -57,12 +58,14 @@ public class Mediator {
 	}
 
 	public void loginSuccessful() {
-		//TODO Create log file
+		Log.setLogFile(username + ".log");
+		Log.debug("Cient " + username + " connected");
 		gui.loginSuccessful(username);
 		gg.setUser(username);
 	}
 
 	public void logOut() {
+		Log.debug("Cient " + username + " disconnected");
 		comm.send(new LogOutMessage(username));
 		gui.logOut();
 		gg.logOut();
@@ -136,7 +139,6 @@ public class Mediator {
 	}
 
 	public void menuSelection(Object o) {
-		System.out.println("menu selection");
 		GroupTab t = getGroupTab(o);
 		t.popOthers(o);
 		getCurrentTab().setState(((ToolbarButton)o).getType()); 
@@ -151,6 +153,7 @@ public class Mediator {
 	public void loginError(String s) {
 		gui.logOut();
 		gui.error(s);
+		Log.error(s);
 	}
 
 	public void setGeneralGui(GeneralGui generalGui) {
@@ -216,7 +219,6 @@ public class Mediator {
 			gui.error("No group selected");
 			return;
 		}
-		System.out.println(group.getUserObject());
 		gg.closeTab((String)group.getUserObject());
 		tabs.remove(getTab(group.getUserObject().toString()));
 		comm.send(new LeaveGroupMessage((String) group.getUserObject(), username));
@@ -243,8 +245,7 @@ public class Mediator {
 		currentTab.setDrawings(new Vector<Drawing>());
 		tb.setDocument(new DefaultStyledDocument());
 		tabs.add(currentTab);
-		
-		System.err.println("grp: "+group);		
+				
 		comm.send(new GetGroupLegend(group));
 		comm.send(new GetGroupDrawings(group));
 		comm.send(new GetGroupHistory(group));
@@ -279,7 +280,6 @@ public class Mediator {
 	}
 	
 	public void setUserLegend(String groupName, DefaultListModel model) {
-		System.err.println("Set Legend");
 		GroupTab t = gg.getTab(groupName);
 		if (t!=null)
 		t.setLegend(model);
@@ -300,8 +300,6 @@ public class Mediator {
 	}
 
 	public void updateDrawings(String group, Drawing d) {
-		System.err.println(group);
-		System.err.println(d);
 		Tab t = getTab(group);
 		if (t!=null)
 			getTab(group).addDrawing(d);

@@ -37,7 +37,6 @@ public class ServerMediator {
 		if (valid) {
 			gm.connectUser(user);
 			serv.broadcast(new UserStatusChange(gm.getListModel()));
-			//serv.write(key, new UserStatusChange(gm.getListModel())); //DE ce??
 			serv.write(key, new TreeStatusChange(gm.getTreeModel()));
 			hash.put((SocketChannel) key.channel(), user);
 		}
@@ -100,7 +99,6 @@ public class ServerMediator {
 	} 
 	
 	public void getGroupLegend(SelectionKey k, String groupName) {
-		System.err.println("getGroup");
 		serv.write(k, new UpdateLegend(groupName, gm.getGroupLegend(groupName)));
 	}
 	

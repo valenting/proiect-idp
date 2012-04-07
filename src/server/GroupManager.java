@@ -45,7 +45,6 @@ public class GroupManager {
 	
 	public DefaultListModel getGroupLegend(String group) {
 		Group g = getGroup(group);
-		System.err.println("Grp: "+g);
 		if (g!=null)
 			return g.getLegendModel();
 		else 
@@ -223,7 +222,6 @@ public class GroupManager {
   
 	public void addTextMessage(String groupName, String userName, String text,
 			int fontSize, Color fontColor) {
-		System.err.println(groupName);
 		Group t = getGroup(groupName);
 		if (t!=null)
 			t.printText(userName, text, fontSize, fontColor);

@@ -4,6 +4,8 @@ import gui.drawings.Drawing;
 
 import java.nio.channels.SelectionKey;
 
+import app.Log;
+
 import server.ServerMediator;
 import network.C2SMessage;
 
@@ -17,10 +19,12 @@ public class DrawingMessage extends C2SMessage {
 		this.username = username;
 		this.group = group;
 		this.d = d;
+		Log.debug(d + " to " + group + " by " + username);
 	}
 	
 	@Override
 	public void execute(ServerMediator m, SelectionKey k) {
+		Log.debug(d + " to " + group + " by " + username);
 		m.addDrawing(username, group, d);
 	}
 

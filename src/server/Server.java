@@ -6,6 +6,8 @@ import java.nio.channels.*;
 import java.net.*;
 import java.util.*;
 
+import app.Log;
+
 
 import network.C2SMessage;
 import network.Message;
@@ -22,8 +24,6 @@ public class Server {
 
 	public void accept(SelectionKey key) throws IOException {
 
-		System.out.print("ACCEPT: ");
-
 		ServerSocketChannel serverSocketChannel = null; // initialize from key
 		SocketChannel socketChannel = null;				// initialize from accept
 
@@ -35,7 +35,7 @@ public class Server {
 		socketChannel.configureBlocking(false);
 		socketChannel.register(select, SelectionKey.OP_READ, cont);
 		// display remote client address
-		System.out.println("Connection from: " + socketChannel.socket().getRemoteSocketAddress());
+		Log.debug("Connection from: " + socketChannel.socket().getRemoteSocketAddress());
 		sockets.add(socketChannel);
 	}
 
@@ -44,7 +44,6 @@ public class Server {
 	public void read(final SelectionKey key)  {
 		DataContainer data		= (DataContainer)key.attachment();		
 		SocketChannel socket	= (SocketChannel)key.channel();
-		System.out.println("READ");
 		int bytesRead = 0;
 		try {
 
@@ -67,29 +66,28 @@ public class Server {
 				}
 			}
 
-			System.out.println(data.dataByteBuffer);
+			Log.debug("READ: " + data.dataByteBuffer);
 			ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(data.dataByteBuffer.array()));
 			Serializable ret = (Serializable) ois.readObject();
 			// clean up
 			data.dataByteBuffer = null;
 			data.readLength = true;
-			System.out.println("RESULT "+ret);
 			((C2SMessage)ret).execute(m, key);
 		} catch (Exception e) {
-			System.err.println("Disconnect: "+e);
+			Log.error("Disconnect: "+e);
 			cleanup(key);
 		}
 	}
 	
 	public void cleanup(SelectionKey key) {
-		System.err.println("Cleanup");
+		Log.debug("CLEANUP");
 		SocketChannel chan = (SocketChannel) key.channel();
 		sockets.remove(chan);
 		m.disconnectUser(chan);
 		try {
 			chan.close();
 		} catch (IOException e) {
-			System.err.println("Socket Close error: "+e);
+			Log.error("Socket Close error: "+e);
 		}
 	}
 
@@ -100,7 +98,6 @@ public class Server {
 	public void write(SocketChannel	chan, Message m){
 
 		try {
-			System.out.println("WRITE: ");
 			ByteArrayOutputStream bs = new ByteArrayOutputStream();
 			for(int i=0;i<4;i++) bs.write(0);
 			ObjectOutputStream os = new ObjectOutputStream(bs);
@@ -117,8 +114,9 @@ public class Server {
 				}
 				bytesOut += out;
 			}
+			Log.debug("WRITE:" + bytesOut);
 		} catch (Exception e) {
-			System.err.println("Disconnect: "+e);
+			Log.error("Disconnect: "+e);
 			cleanup(chan.keyFor(selector));
 		}
 	}

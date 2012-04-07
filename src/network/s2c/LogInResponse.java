@@ -16,8 +16,6 @@ public class LogInResponse extends S2CMessage {
 
 	@Override
 	public void execute(final Mediator m) {
-		System.out.println("Execute LoginResp");
-
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {

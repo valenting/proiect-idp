@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.swing.SwingWorker;
 
+import app.Log;
 import app.Mediator;
 
 public class ExportTask extends SwingWorker<Integer, Integer> {
@@ -17,7 +18,7 @@ public class ExportTask extends SwingWorker<Integer, Integer> {
 
 	@Override
 	protected Integer doInBackground() throws Exception {
-		System.out.println("doInBackground: "+Thread.currentThread());
+		Log.debug("doInBackground: "+Thread.currentThread());
 		int count = 10;
 		int i     = 0;
 		try {
@@ -34,16 +35,15 @@ public class ExportTask extends SwingWorker<Integer, Integer> {
 	}
 
 	protected void process(List<Integer> chunks) {
-		System.out.println("process: "+Thread.currentThread());
-		System.out.println(chunks);
+		Log.debug("process: " + " " + chunks);
 	}
 
 	@Override
 	protected void done() {
-		System.out.println("done: "+ Thread.currentThread());
+		Log.debug("done: "+ Thread.currentThread());
 		if (isCancelled())
-			System.out.println("Cancelled !");
+			Log.debug("Cancelled !");
 		else
-			System.out.println("Done !");
+			Log.debug("Done !");
 	}
 }

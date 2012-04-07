@@ -3,6 +3,8 @@ package network.c2s;
 import java.awt.Color;
 import java.nio.channels.SelectionKey;
 
+import app.Log;
+
 import server.ServerMediator;
 import network.C2SMessage;
 
@@ -16,10 +18,12 @@ public class NewGroupMessage extends C2SMessage {
 		group = groupName;
 		user = userName;
 		this.c = c;
+		Log.debug(group + " by " + user + " " + c);
 	}
 	
 	@Override
 	public void execute(ServerMediator m, SelectionKey k) {
+		Log.debug(group + " by " + user + " " + c);
 		m.newGroup(k, group, user,c);
 	}
 

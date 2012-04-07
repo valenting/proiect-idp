@@ -62,7 +62,7 @@ public class StateManager {
 			currentState = sts;
 			break;
 		default:
-			System.out.println("Invalid state " + type);
+			Log.error("Invalid state " + type);
 			currentState = cs;
 			break;
 		}

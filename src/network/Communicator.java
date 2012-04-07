@@ -15,6 +15,7 @@ import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 
 
+import app.Log;
 import app.Mediator;
 
 /**
@@ -31,7 +32,6 @@ public class Communicator {
 	public void read(final SelectionKey key) throws  Exception {
 		DataContainer data		= (DataContainer)key.attachment();		
 		SocketChannel socket	= (SocketChannel)key.channel();
-		System.out.println("READ");
 		int bytesRead = 0;
 		try {
 
@@ -56,24 +56,21 @@ public class Communicator {
 				}
 			}
 
-			System.out.println(data.dataByteBuffer);
 			ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(data.dataByteBuffer.array()));
 			Serializable ret = (Serializable) ois.readObject();
 			// clean up
 			data.dataByteBuffer = null;
 			data.readLength = true;
-			System.out.println("RESULT "+ret);
 			((S2CMessage)ret).execute(m);
+			
 		} catch (NotYetConnectedException e) {
 			
 		} catch (IOException e) {
-			System.err.println("Disconnect: "+e);
 			m.loginError("Connection failure");
 			key.channel().close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		System.out.println("READ done");
 	}
 
 	public boolean connect(String IP, int PORT)  {
@@ -86,7 +83,7 @@ public class Communicator {
 			
 
 		} catch (Exception e) {
-			System.err.println("SocketChannel Failed");
+			Log.error("SocketChannel Failed");
 			return false;
 		}
 		
@@ -100,14 +97,13 @@ public class Communicator {
 						try {
 							selector.select();
 							for (Iterator<SelectionKey> it = selector.selectedKeys().iterator(); it.hasNext(); ) {
-								System.out.println("Event");
 								SelectionKey key = it.next();
 								it.remove();
 								if (key.isReadable())
 									read(key);
 							}
 						} catch (NotYetConnectedException e) {
-							System.out.println("Not Yet Connected so do nothing");
+							Log.debug("Not Yet Connected so do nothing");
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
@@ -119,7 +115,7 @@ public class Communicator {
 			return true;
 			
 		} catch (Exception e) {
-			System.err.println("Connection failed: "+e);
+			Log.error("Connection failed: "+e);
 			m.loginError("Connection failed");
 			return false;
 		}
@@ -138,18 +134,18 @@ public class Communicator {
 			while (bytesOut<bs.size()) {
 				int out = chan.write(wrap);
 				if (out<0) {
-					System.err.println("CLOSED");
+					Log.error("CLOSED");
 					chan.close();
 				}
 				bytesOut += out;
 			}
 		} catch (Exception e) {
-			System.err.println("Send Failed: "+e);
+			Log.error("Send Failed: "+e);
 			m.loginError("Connection failure");
 			try {
 				chan.close();
 			} catch (IOException e1) {
-				System.err.println("WTF");
+				Log.error("WTF");
 			}
 			
 		}

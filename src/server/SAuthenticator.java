@@ -13,6 +13,10 @@ public class SAuthenticator {
 		passwords.put("me","test");
 		passwords.put("bla","mypass");
 		passwords.put("qwe","rty");
+		passwords.put("emma","emma");
+		passwords.put("vali","vali");
+		passwords.put("test","test");
+		passwords.put("unu","unu");
 	}
 	
 	public boolean authenticate(String user, String password) {

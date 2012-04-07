@@ -3,6 +3,8 @@ package network.c2s;
 import java.awt.Color;
 import java.nio.channels.SelectionKey;
 
+import app.Log;
+
 import server.ServerMediator;
 import network.C2SMessage;
 
@@ -21,10 +23,13 @@ public class TextMessage extends C2SMessage {
 		this.text = text;
 		this.fontSize = fontSize;
 		this.fontColor = fontColor;
+		
+		Log.debug(group + "  " + user);
 	}
 	
 	@Override
 	public void execute(ServerMediator m, SelectionKey k) {
+		Log.debug(group + "  " + user);
 		m.addTextMessage(group, user, text, fontSize, fontColor);
 	}
 
