@@ -20,6 +20,8 @@ public class SAuthenticator {
 	}
 	
 	public boolean authenticate(String user, String password) {
+		if (user==null || password==null)
+			return false;
 		String ps = passwords.get(user);
 		if (password.equals(ps))
 			return true;

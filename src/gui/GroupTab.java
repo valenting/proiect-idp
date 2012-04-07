@@ -349,9 +349,9 @@ class CustomListCellRenderer extends DefaultListCellRenderer{
 		String username = p.getK();
 		String conn;
 		if (m.userInGroup(username, group))
-			conn = " (c)";
+			conn = " (+)";
 		else
-			conn = " (u)";
+			conn = " (-)";
 		label.setText(p.getK()+conn); 
 
 		label.setForeground(p.getV());
