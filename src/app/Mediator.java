@@ -48,7 +48,7 @@ public class Mediator {
 
 	public void login(String user, String pass) {
 		this.username = user;
-		boolean done = comm.connect("127.0.0.1", 7777);
+		boolean done = comm.connect("127.0.0.1", 7777); // TODO set IP to command-line parameter
 		// TODO if connection fails
 		if (done)
 			comm.send(new LogInMessage(user,pass));
