@@ -27,6 +27,7 @@ import network.c2s.TextMessage;
 
 import gui.ColorChooser;
 import gui.GeneralGui;
+import gui.GoogleLogin;
 import gui.GroupTab;
 import gui.Gui;
 import gui.buttons.ToolbarButton;
@@ -265,10 +266,10 @@ public class Mediator {
 			t.tab.printText(userName, text, fontSize, fontColor);
 	}
 
-	public void saveWork() {
+	public void saveWork() { 
 		// TODO Auto-generated method stub 
-	}
-
+	} 
+ 
 
 	public void setUserList(DefaultListModel model) {
 		gg.setListModel(model);
@@ -303,6 +304,10 @@ public class Mediator {
 		Tab t = getTab(group);
 		if (t!=null)
 			getTab(group).addDrawing(d);
+	}
+
+	public void openGLogin() {
+		GoogleLogin gl = new GoogleLogin(this);
 	}
 }
 

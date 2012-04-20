@@ -1,6 +1,7 @@
 package gui;
 
 import gui.buttons.CreateGroup;
+import gui.buttons.GoogleButton;
 import gui.buttons.LogOutButton;
 import app.Mediator;
 
@@ -32,6 +33,7 @@ public class GeneralGui extends JPanel {
 	Mediator med;
 	JTabbedPane tabbedPane;
 	Gui gg;
+	private JButton btnGoogleConnect;
 	
 	public GeneralGui(Gui g, final Mediator m) {
 		gg = g;
@@ -100,6 +102,13 @@ public class GeneralGui extends JPanel {
 		gbc_btnLogout.gridx = 6;
 		gbc_btnLogout.gridy = 0;
 		panel.add(btnLogout, gbc_btnLogout);
+		
+		btnGoogleConnect = new GoogleButton(g, m);
+		GridBagConstraints gbc_btnGoogleConnect = new GridBagConstraints();
+		gbc_btnGoogleConnect.insets = new Insets(0, 0, 5, 5);
+		gbc_btnGoogleConnect.gridx = 5;
+		gbc_btnGoogleConnect.gridy = 2;
+		panel.add(btnGoogleConnect, gbc_btnGoogleConnect);
 
 
 		// Create Group Button
