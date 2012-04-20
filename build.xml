@@ -4,10 +4,15 @@
  
     <property name="src.dir" value="src" />
     <property name="build.dir" value="build" />
+	<property name="jar.dir" value="lib" />
 	
 	<path id="jars">
+		<!--Without fileset
 		<pathelement location="lib/log4j-1.2.16.jar" />
 		<pathelement location="lib/junit-4.10.jar" />
+		<pathelement location="lib/ini4j-0.5.2.jar" />
+		-->
+		<fileset dir="${jar.dir}" includes="**/*.jar"/>
 	</path>
  
     <!-- Targets -->
