@@ -1,6 +1,5 @@
 package gui;
 
-import javax.swing.JDialog;
 import java.awt.GridBagLayout;
 import javax.swing.JLabel;
 import java.awt.GridBagConstraints;
@@ -14,6 +13,7 @@ import javax.swing.JButton;
 import app.Mediator;
 
 public class GoogleLogin extends JFrame {
+	private static final long serialVersionUID = -4095002598650843097L;
 	private JTextField passwordField;
 	private JTextField textField_1;
 	private JButton btnLogin;
@@ -72,7 +72,5 @@ public class GoogleLogin extends JFrame {
 		setLocationRelativeTo(null);
 		setSize(400, 400);
 	}
-	
-	
 
 }
