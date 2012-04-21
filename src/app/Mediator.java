@@ -6,11 +6,17 @@ import java.util.Hashtable;
 import java.util.Vector;
 
 import javax.swing.DefaultListModel;
+import javax.swing.SwingUtilities;
 import javax.swing.text.DefaultStyledDocument;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
+import org.ini4j.Ini;
+
+import com.google.gdata.util.AuthenticationException;
+
 import web.GoogleComm;
+import web.MyIni;
 
 
 import network.*;
@@ -45,6 +51,7 @@ public class Mediator {
 	DefaultTreeModel treeModel;
 	String serverIP;
 	GoogleComm gcom;
+	Ini ini;
 	public Mediator(String serverIP) {
 		groupTab = new Hashtable<Object, GroupTab>();
 		comm = new Communicator(this);
@@ -52,8 +59,10 @@ public class Mediator {
 		treeModel = new DefaultTreeModel(new DefaultMutableTreeNode("Groups"));
 		this.serverIP = serverIP;
 		gcom = new GoogleComm(this);
-	}
 
+		MyIni.open("google.ini");
+	}
+	
 	public void login(String user, String pass) {
 		this.username = user;
 		boolean done = comm.connect(serverIP, 7777);
@@ -66,6 +75,37 @@ public class Mediator {
 		Log.debug("Cient " + username + " connected");
 		gui.loginSuccessful(username);
 		gg.setUser(username);
+		
+		Pair<String,String> p = MyIni.get(username);
+		if (p!=null)
+			connectToGoogle(p.getK(),p.getV());
+	}
+	
+	public void connectToGoogle(final String email, final String pass) {
+		Thread t = new Thread() {
+			public void run() {
+				try {
+					gcom.login(email, pass);
+				} catch (AuthenticationException e) {
+					SwingUtilities.invokeLater(new Runnable() {
+						@Override
+						public void run() {
+							 Mediator.this.displayError("Authentication Error");
+							 Mediator.this.gg.setMail("(none)");
+						}
+					});
+					return;
+				}
+				SwingUtilities.invokeLater(new Runnable() {
+					@Override
+					public void run() {
+						 Mediator.this.gg.setMail(email);
+						 MyIni.put(username, email, pass);
+					}
+				});
+			}
+		};
+		t.start();
 	}
 
 	public void logOut() {
@@ -75,6 +115,7 @@ public class Mediator {
 		gg.logOut();
 		tabs.removeAllElements();
 		username = "(null)";
+		gg.setMail("(none)");
 	}
 
 	public void setGui(Gui gui2) {
@@ -314,13 +355,8 @@ public class Mediator {
 	}
 	
 	public boolean gLogin(String user, String pass) {
-		try {
-			gcom.login(user, pass);
-			return true;
-		} catch (Exception e) {
-			gui.error("Login failed");
-			return false;
-		}
+		connectToGoogle(user, pass);
+		return true;
 	}
 }
 

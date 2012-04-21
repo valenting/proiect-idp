@@ -34,6 +34,8 @@ public class GeneralGui extends JPanel {
 	JTabbedPane tabbedPane;
 	Gui gg;
 	private JButton btnGoogleConnect;
+	private JLabel lblGoogleUser;
+	private JLabel lblnone;
 	
 	public GeneralGui(Gui g, final Mediator m) {
 		gg = g;
@@ -73,26 +75,26 @@ public class GeneralGui extends JPanel {
 		this.add(panel, gbc_panel);
 		GridBagLayout gbl_panel = new GridBagLayout();
 		gbl_panel.columnWidths = new int[]{0, 0, 0, 0, 0, 0, 0, 0};
-		gbl_panel.rowHeights = new int[]{0, 0, 0, 0, 0};
-		gbl_panel.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
-		gbl_panel.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+		gbl_panel.rowHeights = new int[]{0, 0, 0, 0, 0, 0};
+		gbl_panel.columnWeights = new double[]{0.4, 0.0, 0.0, 0.0, 0.1, 0.0, 0.4, Double.MIN_VALUE};
+		gbl_panel.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		panel.setLayout(gbl_panel);
-
-		// Log Out button
-		JLabel lblUser = new JLabel("Connected User: ");
-		lblUser.setHorizontalAlignment(SwingConstants.RIGHT);
-		GridBagConstraints gbc_lblUser = new GridBagConstraints();
-		gbc_lblUser.insets = new Insets(0, 0, 5, 5);
-		gbc_lblUser.gridx = 4;
-		gbc_lblUser.gridy = 0;
-		panel.add(lblUser, gbc_lblUser);
-
-		lblUsername = new JLabel("username");
-		GridBagConstraints gbc_lblUsername = new GridBagConstraints();
-		gbc_lblUsername.insets = new Insets(0, 0, 5, 5);
-		gbc_lblUsername.gridx = 5;
-		gbc_lblUsername.gridy = 0;
-		panel.add(lblUsername, gbc_lblUsername);
+		
+				// Log Out button
+				JLabel lblUser = new JLabel("Connected User: ");
+				lblUser.setHorizontalAlignment(SwingConstants.RIGHT);
+				GridBagConstraints gbc_lblUser = new GridBagConstraints();
+				gbc_lblUser.insets = new Insets(0, 0, 5, 5);
+				gbc_lblUser.gridx = 2;
+				gbc_lblUser.gridy = 0;
+				panel.add(lblUser, gbc_lblUser);
+		
+				lblUsername = new JLabel("username");
+				GridBagConstraints gbc_lblUsername = new GridBagConstraints();
+				gbc_lblUsername.insets = new Insets(0, 0, 5, 5);
+				gbc_lblUsername.gridx = 3;
+				gbc_lblUsername.gridy = 0;
+				panel.add(lblUsername, gbc_lblUsername);
 
 		JButton btnLogout = new LogOutButton(g, m);
 		GridBagConstraints gbc_btnLogout = new GridBagConstraints();
@@ -103,11 +105,25 @@ public class GeneralGui extends JPanel {
 		gbc_btnLogout.gridy = 0;
 		panel.add(btnLogout, gbc_btnLogout);
 		
+		lblGoogleUser = new JLabel("Google User:");
+		GridBagConstraints gbc_lblGoogleUser = new GridBagConstraints();
+		gbc_lblGoogleUser.insets = new Insets(0, 0, 5, 5);
+		gbc_lblGoogleUser.gridx = 2;
+		gbc_lblGoogleUser.gridy = 3;
+		panel.add(lblGoogleUser, gbc_lblGoogleUser);
+		
+		lblnone = new JLabel("(none)");
+		GridBagConstraints gbc_lblnone = new GridBagConstraints();
+		gbc_lblnone.insets = new Insets(0, 0, 5, 5);
+		gbc_lblnone.gridx = 3;
+		gbc_lblnone.gridy = 3;
+		panel.add(lblnone, gbc_lblnone);
+		
 		btnGoogleConnect = new GoogleButton(g, m);
 		GridBagConstraints gbc_btnGoogleConnect = new GridBagConstraints();
 		gbc_btnGoogleConnect.insets = new Insets(0, 0, 5, 5);
 		gbc_btnGoogleConnect.gridx = 5;
-		gbc_btnGoogleConnect.gridy = 2;
+		gbc_btnGoogleConnect.gridy = 3;
 		panel.add(btnGoogleConnect, gbc_btnGoogleConnect);
 
 
@@ -118,7 +134,7 @@ public class GeneralGui extends JPanel {
 		gbc_btnCreateGroup.anchor = GridBagConstraints.WEST;
 		gbc_btnCreateGroup.insets = new Insets(0, 0, 5, 0);
 		gbc_btnCreateGroup.gridx = 6;
-		gbc_btnCreateGroup.gridy = 2;
+		gbc_btnCreateGroup.gridy = 3;
 		panel.add(btnCreateGroup, gbc_btnCreateGroup);
 
 
@@ -202,5 +218,9 @@ public class GeneralGui extends JPanel {
 	
 	public void setUser(String user) {
 		tree.setCurrentUser(user);
+	}
+	
+	public void setMail(String mail) {
+		lblnone.setText(mail);
 	}
 }
