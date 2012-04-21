@@ -43,8 +43,11 @@ public class Communicator {
 					return;
 				}
 			}
-
+			if (data.lengthByteBuffer.getInt(0)<0)
+				throw new IOException(); // TODO
 			data.dataByteBuffer = ByteBuffer.allocate(data.lengthByteBuffer.getInt(0));
+			if (data.dataByteBuffer == null)
+				throw new IOException(); // TODO
 			data.lengthByteBuffer.clear();
 
 			while (data.dataByteBuffer.remaining()!=0) {

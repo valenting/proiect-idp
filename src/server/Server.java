@@ -80,15 +80,16 @@ public class Server {
 	}
 	
 	public void cleanup(SelectionKey key) {
+		
 		Log.debug("CLEANUP");
 		SocketChannel chan = (SocketChannel) key.channel();
-		sockets.remove(chan);
-		m.disconnectUser(chan);
 		try {
 			chan.close();
 		} catch (IOException e) {
 			Log.error("Socket Close error: "+e);
 		}
+		sockets.remove(chan);
+		m.disconnectUser(chan);	
 	}
 
 	public void write(SelectionKey key, Message m){
@@ -96,7 +97,10 @@ public class Server {
 	}
 
 	public void write(SocketChannel	chan, Message m){
-
+		if (!chan.isConnected()) {
+			System.out.println("Channel CLOSED");
+			return;
+		}
 		try {
 			ByteArrayOutputStream bs = new ByteArrayOutputStream();
 			for(int i=0;i<4;i++) bs.write(0);
