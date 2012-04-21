@@ -1,30 +1,27 @@
 package web;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.MalformedURLException;
+import java.io.InputStream;
 import java.net.URL;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
 
 import com.google.gdata.client.docs.DocsService;
 import com.google.gdata.data.DateTime;
+import com.google.gdata.data.MediaContent;
 import com.google.gdata.data.PlainTextConstruct;
-import com.google.gdata.data.docs.ChangelogFeed;
 import com.google.gdata.data.docs.DocumentEntry;
 import com.google.gdata.data.docs.DocumentListEntry;
 import com.google.gdata.data.docs.DocumentListFeed;
 import com.google.gdata.data.extensions.LastModifiedBy;
+import com.google.gdata.data.media.MediaSource;
 import com.google.gdata.util.AuthenticationException;
 import com.google.gdata.util.ServiceException;
-import com.sun.jndi.toolkit.url.UrlUtil;
 
 import app.Mediator;
 
 public class GoogleComm {
 	private DocsService service;
 	private String host = "docs.google.com";
-	private final String URL_DOCUMENT = "/document";
 
 	public GoogleComm(Mediator m) {
 
@@ -41,30 +38,92 @@ public class GoogleComm {
 	public DocumentListEntry createNew(String title) throws Exception {
 		if (title == null)
 			throw new Exception("Null title for document");
-		DocumentListEntry newEntry = new DocumentEntry();
-		newEntry.setTitle(new PlainTextConstruct(title));
-		return service.insert(buildUrl("", null), newEntry);
-	}
-
-	private URL buildUrl(String path, Map<String, String> param) throws Exception {
-		StringBuffer url = new StringBuffer();
-		if (path == null)
-			throw new Exception("Null Path");
-		url.append("https://" + host + URL_DOCUMENT + path);
-		System.out.println(url.toString());
-		if (param != null && param.size() > 0) {
-			Set<Map.Entry<String, String>> params = param.entrySet();
-			Iterator<Map.Entry<String, String>> itr = params.iterator();
-			url.append("?");
-			while (itr.hasNext()) {
-				Map.Entry<String, String> entry = itr.next();
-				url.append(entry.getKey() + "=" + entry.getValue());
-				if (itr.hasNext()) {
-					url.append("&");
-				}
+		// Check if the document already exists
+		URL feedUri = new URL("https://docs.google.com/feeds/documents/private/full/");
+		DocumentListFeed feed = service.getFeed(feedUri, DocumentListFeed.class);
+		for (DocumentListEntry entry : feed.getEntries()) {
+			if (entry.getTitle().getPlainText().equals(title)) {
+				return entry;
 			}
 		}
-		return new URL(url.toString());
+		// Else create a new Entry
+		DocumentListEntry newEntry = new DocumentEntry();
+		newEntry.setTitle(new PlainTextConstruct(title));
+		URL url = new URL("https://docs.google.com/feeds/documents/private/full/");
+		return service.insert(url, newEntry);
+	}
+
+	public void trashDocument(String title) throws Exception {
+		if (title == null)
+			throw new Exception("Null resourceId");
+		// Obtain resourceId based on the docs title
+		String resourceId = getResourceId(title);
+		if (resourceId.length() <= 0)
+			return;
+		String feedUrl = "https://docs.google.com/feeds/documents/private/full/"
+			+ resourceId + "?delete=true";
+		service.delete(new URL(feedUrl), getDocsListEntry(resourceId).getEtag());
+	}
+
+	private String getResourceId(String title) throws Exception {
+		String resourceId = "";
+		URL feedUri = new URL("https://docs.google.com/feeds/documents/private/full/");
+		DocumentListFeed feed = service.getFeed(feedUri, DocumentListFeed.class);
+		for (DocumentListEntry entry : feed.getEntries()) {
+			if (entry.getTitle().getPlainText().equals(title)) {
+				resourceId = entry.getResourceId();
+				break;
+			}
+		}
+		return resourceId;
+	}
+
+	private DocumentListEntry getDocsListEntry(String resourceId) throws Exception {
+		if (resourceId == null)
+			throw new Exception("Null resourceId");
+		URL url = new URL("https://docs.google.com/feeds/documents/private/full/" + resourceId);
+
+		return service.getEntry(url, DocumentListEntry.class);
+	}
+
+	public void downloadDocument(String title, String filePath, String format) throws Exception {
+		// Obtain resourceId based on title
+		if (title == null || filePath == null || format == null)
+			throw new Exception("Null arguments");
+		String resourceId = getResourceId(title);
+		// If the resource doesn't exist
+		if (resourceId.length() <= 0) {
+			System.out.println("Nu exista\n");
+			return;
+		}
+		String docType = resourceId.substring(0, resourceId.lastIndexOf(':'));
+		String docId = resourceId.substring(resourceId.lastIndexOf(':') + 1);
+		URL exportUrl = new URL("https://docs.google.com/feeds/download/" + docType +
+				"s/Export?docID=" + docId + "&exportFormat=" + format);
+		MediaContent mc = new MediaContent();
+		mc.setUri(exportUrl.toString());
+		MediaSource ms = service.getMedia(mc);
+
+		InputStream inStream = null;
+		FileOutputStream outStream = null;
+
+		try {
+			inStream = ms.getInputStream();
+			outStream = new FileOutputStream(filePath);
+
+			int c;
+			while ((c = inStream.read()) != -1) {
+				outStream.write(c);
+			}
+		} finally {
+			if (inStream != null) {
+				inStream.close();
+			}
+			if (outStream != null) {
+				outStream.flush();
+				outStream.close();
+			}
+		}
 	}
 
 	public void showAllDocs() throws IOException, ServiceException {
@@ -115,7 +174,9 @@ public class GoogleComm {
 		GoogleComm comm = new GoogleComm(null);
 		comm.login("frigus.glacialis@gmail.com", "testpassword");
 		System.out.println("Done");
+		comm.createNew("Test");
 		comm.showAllDocs();
+		comm.downloadDocument("desen1", "/home/icecold/Proiect-IDP/FirstDoc.jpg", "jpg");
 		System.out.println("Success");
 	}
 }
