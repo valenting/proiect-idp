@@ -9,6 +9,10 @@ import com.google.gdata.client.docs.DocsService;
 import com.google.gdata.data.DateTime;
 import com.google.gdata.data.MediaContent;
 import com.google.gdata.data.PlainTextConstruct;
+import com.google.gdata.data.acl.AclEntry;
+import com.google.gdata.data.acl.AclFeed;
+import com.google.gdata.data.acl.AclRole;
+import com.google.gdata.data.acl.AclScope;
 import com.google.gdata.data.docs.DocumentEntry;
 import com.google.gdata.data.docs.DocumentListEntry;
 import com.google.gdata.data.docs.DocumentListFeed;
@@ -61,7 +65,7 @@ public class GoogleComm {
 		if (resourceId.length() <= 0)
 			return;
 		String feedUrl = "https://docs.google.com/feeds/documents/private/full/"
-			+ resourceId + "?delete=true";
+				+ resourceId + "?delete=true";
 		service.delete(new URL(feedUrl), getDocsListEntry(resourceId).getEtag());
 	}
 
@@ -167,16 +171,47 @@ public class GoogleComm {
 		System.out.println("  writersCanInvite? " + doc.isWritersCanInvite().toString());
 		System.out.println("  hidden? " + doc.isHidden());
 		System.out.println("  starrred? " + doc.isStarred());
-		System.out.println();
+		System.out.println("PERMS:");
+		try {
+			showPerms(doc);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		System.out.println("-----");
+	}
+
+	public AclEntry addAclRole(AclRole role, AclScope scope, DocumentListEntry documentEntry) throws Exception  {
+		AclEntry entry = new AclEntry();
+		entry.setRole(role);
+		entry.setScope(scope);
+
+		URL url = new URL("https://docs.google.com/feeds/acl/private/full/" + documentEntry.getResourceId());
+		entry = service.insert(url, entry);
+		return entry;
+	}
+
+	public void showPerms(DocumentListEntry ent) throws Exception {
+		AclFeed aclFeed = service.getFeed(new URL(ent.getAclFeedLink().getHref()), AclFeed.class);
+		for (AclEntry entry : aclFeed.getEntries()) {
+			System.out.println(
+					entry.getScope().getValue() + " (" + entry.getScope().getType() + ") : " + entry.getRole().getValue());
+		}
+	}
+
+	public void setAllPerms(DocumentListEntry ent, String user) throws Exception {
+		AclScope scope = new AclScope(AclScope.Type.USER, user);
+		AclRole role = AclRole.OWNER;
+		AclEntry aclEntry = addAclRole(role, scope, ent);
 	}
 
 	public static void main(String args[]) throws Exception {
 		GoogleComm comm = new GoogleComm(null);
 		comm.login("frigus.glacialis@gmail.com", "testpassword");
 		System.out.println("Done");
-		comm.createNew("Test");
+		DocumentListEntry ent = comm.createNew("Test");
+		comm.setAllPerms(ent, "valentin.gosu@gmail.com");
 		comm.showAllDocs();
-		comm.downloadDocument("desen1", "/home/icecold/Proiect-IDP/FirstDoc.jpg", "jpg");
+
 		System.out.println("Success");
 	}
 }
