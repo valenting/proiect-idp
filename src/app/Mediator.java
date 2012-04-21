@@ -10,6 +10,8 @@ import javax.swing.text.DefaultStyledDocument;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
+import web.GoogleComm;
+
 
 import network.*;
 import network.c2s.AddUserMessage;
@@ -42,13 +44,14 @@ public class Mediator {
 	Vector<Tab> tabs;
 	DefaultTreeModel treeModel;
 	String serverIP;
-	
+	GoogleComm gcom;
 	public Mediator(String serverIP) {
 		groupTab = new Hashtable<Object, GroupTab>();
 		comm = new Communicator(this);
 		tabs = new Vector<Tab>();
 		treeModel = new DefaultTreeModel(new DefaultMutableTreeNode("Groups"));
 		this.serverIP = serverIP;
+		gcom = new GoogleComm(this);
 	}
 
 	public void login(String user, String pass) {
@@ -307,7 +310,17 @@ public class Mediator {
 	}
 
 	public void openGLogin() {
-		GoogleLogin gl = new GoogleLogin(this);
+		new GoogleLogin(this);
+	}
+	
+	public boolean gLogin(String user, String pass) {
+		try {
+			gcom.login(user, pass);
+			return true;
+		} catch (Exception e) {
+			gui.error("Login failed");
+			return false;
+		}
 	}
 }
 

@@ -4,6 +4,8 @@ import java.awt.GridBagLayout;
 import javax.swing.JLabel;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JFrame;
 import javax.swing.JPasswordField;
@@ -67,6 +69,18 @@ public class GoogleLogin extends JFrame {
 		gbc_btnLogin.gridx = 3;
 		gbc_btnLogin.gridy = 7;
 		getContentPane().add(btnLogin, gbc_btnLogin);
+		
+		btnLogin.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				boolean succ = med.gLogin(textField_1.getText(), passwordField.getText());
+				if (succ)
+					dispose();
+				else
+					passwordField.setText("");
+			}
+		});
 		
 		setVisible(true);
 		setLocationRelativeTo(null);
