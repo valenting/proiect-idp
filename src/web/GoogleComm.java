@@ -1,7 +1,6 @@
 package web;
 
 import com.google.gdata.client.docs.DocsService;
-import com.google.gdata.data.gtt.DocumentFeed;
 import com.google.gdata.util.AuthenticationException;
 
 import app.Mediator;
@@ -12,7 +11,7 @@ public class GoogleComm {
 	
 	public GoogleComm(Mediator m) {
 	
-		service = new DocsService(host);
+		service = new DocsService("Whiteboard");
 	}
 	
 	public void login(String user, String pass) throws AuthenticationException  {
