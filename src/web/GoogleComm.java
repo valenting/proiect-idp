@@ -17,6 +17,7 @@ import com.google.gdata.data.docs.DocumentEntry;
 import com.google.gdata.data.docs.DocumentListEntry;
 import com.google.gdata.data.docs.DocumentListFeed;
 import com.google.gdata.data.extensions.LastModifiedBy;
+import com.google.gdata.data.media.MediaByteArraySource;
 import com.google.gdata.data.media.MediaSource;
 import com.google.gdata.util.AuthenticationException;
 import com.google.gdata.util.ServiceException;
@@ -26,6 +27,10 @@ import app.Mediator;
 public class GoogleComm {
 	private DocsService service;
 	private String host = "docs.google.com";
+
+	private final static int ADD_ROLE = 1;
+	private final static int REMOVE_ROLE = 2;
+	private final static int CHANGE_ROLE = 3;
 
 	public GoogleComm(Mediator m) {
 
@@ -65,10 +70,11 @@ public class GoogleComm {
 		if (resourceId.length() <= 0)
 			return;
 		String feedUrl = "https://docs.google.com/feeds/documents/private/full/"
-				+ resourceId + "?delete=true";
+			+ resourceId + "?delete=true";
 		service.delete(new URL(feedUrl), getDocsListEntry(resourceId).getEtag());
 	}
 
+	//TODO -use query to obtain documententry based on title
 	private String getResourceId(String title) throws Exception {
 		String resourceId = "";
 		URL feedUri = new URL("https://docs.google.com/feeds/documents/private/full/");
@@ -128,6 +134,16 @@ public class GoogleComm {
 				outStream.close();
 			}
 		}
+	}
+
+	//TODO - now it just replaces the content
+	// Later add new data
+	public void addData(String title, String data) throws Exception {
+		DocumentListEntry ent = getDocsListEntry(getResourceId(title));
+		service.getRequestFactory().setHeader("If-Match", ent.getEtag());
+
+		ent.setMediaSource(new MediaByteArraySource(data.getBytes(), "text/plain"));
+		ent.updateMedia(false);
 	}
 
 	public void showAllDocs() throws IOException, ServiceException {
@@ -190,6 +206,23 @@ public class GoogleComm {
 		return entry;
 	}
 
+	public AclEntry changeAclRole(AclRole role, AclScope scope, DocumentListEntry documentEntry)
+	throws Exception {
+		if (role == null || scope == null || documentEntry == null) {
+			throw new Exception("Null passed in for required parameters");
+		}
+		URL url = new URL("https://docs.google.com/feeds/acl/private/full/" + documentEntry.getResourceId());
+
+		return service.update(url, scope, role);
+	}
+
+	public void removeAclRole(AclScope scope, DocumentListEntry documentEntry) throws Exception {
+		if (scope == null || documentEntry == null) {
+			throw new Exception("null passed in for required parameters");
+		}
+		service.delete(new URL(documentEntry.getAclFeedLink().getHref()), scope);
+	}
+
 	public void showPerms(DocumentListEntry ent) throws Exception {
 		AclFeed aclFeed = service.getFeed(new URL(ent.getAclFeedLink().getHref()), AclFeed.class);
 		for (AclEntry entry : aclFeed.getEntries()) {
@@ -198,10 +231,20 @@ public class GoogleComm {
 		}
 	}
 
-	public void setAllPerms(DocumentListEntry ent, String user) throws Exception {
+	public void setPerms(DocumentListEntry ent, String user, AclRole role, int perm) throws Exception {
 		AclScope scope = new AclScope(AclScope.Type.USER, user);
-		AclRole role = AclRole.OWNER;
-		AclEntry aclEntry = addAclRole(role, scope, ent);
+		switch(perm) {
+		case ADD_ROLE:
+			addAclRole(role, scope, ent);
+			break;
+		case REMOVE_ROLE:
+			removeAclRole(scope, ent);
+			break;
+		case CHANGE_ROLE:
+			changeAclRole(role, scope, ent);
+			break;
+		}
+
 	}
 
 	public static void main(String args[]) throws Exception {
@@ -209,9 +252,11 @@ public class GoogleComm {
 		comm.login("frigus.glacialis@gmail.com", "testpassword");
 		System.out.println("Done");
 		DocumentListEntry ent = comm.createNew("Test");
-		comm.setAllPerms(ent, "valentin.gosu@gmail.com");
-		comm.showAllDocs();
-
+		//comm.setPerms(ent, "emma.mirica@gmail.com", AclRole.WRITER, ADD_ROLE);
+		//comm.showPerms(ent);
+		//comm.showAllDocs();
+		comm.addData("Test", "hai sa vedem ce iese!");
+		//comm.addData("Test", "hai sa vedem ce iese!");
 		System.out.println("Success");
 	}
 }
