@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<group name="...">
+	<circle color="" nr_points="2">
+		<point x="" y="" />
+		<point x="" y="" />
+	</circle>
+	
+	<square color="" nr_points="2">
+		<point x="" y="" /> //start
+		<point x="" y="" /> //end
+	</square>
+	
+	<line color="" nr_points="2">
+		<point x="" y="" />
+		<point x="" y="" />
+	</line>
+	
+	<free color="" nr_points="n">
+		<point x="" y="" />
+		<point x="" y="" />
+		...
+	</free>
+	
+	<arrow color="" nr_points="2">
+		<point x="" y="" />
+		<point x="" y="" /> 
+	</arrow>
+	
+	<star color="" nr_points="2">
+		<point x="" y="" />
+		<point x="" y="" />
+	</star>
+	
+</group>
