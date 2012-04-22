@@ -33,69 +33,114 @@ public class GoogleComm {
 	private final static int CHANGE_ROLE = 3;
 
 	public GoogleComm(Mediator m) {
-
 		service = new DocsService("Whiteboard");
 		service.setProtocolVersion(DocsService.Versions.V2);
 	}
 
-	public void login(String user, String pass) throws AuthenticationException  {
-		if (user == null || pass == null)
-			throw new AuthenticationException("Null login credentials");
-		service.setUserCredentials(user,pass);
-	}
-
-	public DocumentListEntry createNew(String title) throws Exception {
-		if (title == null)
-			throw new Exception("Null title for document");
-		// Check if the document already exists
-		URL feedUri = new URL("https://docs.google.com/feeds/documents/private/full/");
-		DocumentListFeed feed = service.getFeed(feedUri, DocumentListFeed.class);
-		for (DocumentListEntry entry : feed.getEntries()) {
-			if (entry.getTitle().getPlainText().equals(title)) {
-				return entry;
-			}
+	public boolean login(String user, String pass)  {
+		try {
+			service.setUserCredentials(user,pass);
+			return true;
+		} catch (Exception e) {
+			System.err.println(e);
+			return false;
 		}
-		// Else create a new Entry
-		DocumentListEntry newEntry = new DocumentEntry();
-		newEntry.setTitle(new PlainTextConstruct(title));
-		URL url = new URL("https://docs.google.com/feeds/documents/private/full/");
-		return service.insert(url, newEntry);
 	}
 
-	public void trashDocument(String title) throws Exception {
-		if (title == null)
-			throw new Exception("Null resourceId");
-		// Obtain resourceId based on the docs title
-		String resourceId = getResourceId(title);
-		if (resourceId.length() <= 0)
-			return;
-		String feedUrl = "https://docs.google.com/feeds/documents/private/full/"
-			+ resourceId + "?delete=true";
-		service.delete(new URL(feedUrl), getDocsListEntry(resourceId).getEtag());
-	}
-
-	//TODO -use query to obtain documententry based on title
-	private String getResourceId(String title) throws Exception {
-		String resourceId = "";
-		URL feedUri = new URL("https://docs.google.com/feeds/documents/private/full/");
-		DocumentListFeed feed = service.getFeed(feedUri, DocumentListFeed.class);
-		for (DocumentListEntry entry : feed.getEntries()) {
-			if (entry.getTitle().getPlainText().equals(title)) {
-				resourceId = entry.getResourceId();
-				break;
-			}
+	public DocumentListEntry createNew(String title) {
+		try {
+			// Check if the document already exists
+			String rid = getResourceId(title);
+			if (rid == null || rid.equals(""))
+				return null;
+			DocumentListEntry newEntry = new DocumentEntry();
+			newEntry.setTitle(new PlainTextConstruct(title));
+			URL url = new URL("https://docs.google.com/feeds/documents/private/full/");
+			return service.insert(url, newEntry);
+		} catch (Exception e) {
+			System.err.println(e);
 		}
-		return resourceId;
+		return null;
 	}
 
-	private DocumentListEntry getDocsListEntry(String resourceId) throws Exception {
-		if (resourceId == null)
-			throw new Exception("Null resourceId");
-		URL url = new URL("https://docs.google.com/feeds/documents/private/full/" + resourceId);
-
-		return service.getEntry(url, DocumentListEntry.class);
+	public void trashDocument(String title) {
+		try {
+			String resourceId = getResourceId(title);
+			DocumentListEntry ent = getDocument(title);
+			if (ent==null)
+				return;
+			String feedUrl = "https://docs.google.com/feeds/documents/private/full/" + resourceId + "?delete=true";
+			
+			service.delete(new URL(feedUrl), ent.getEtag());
+		} catch (Exception e) {
+			System.err.println(e);
+		}
 	}
 
+
+	private String getResourceId(String title) {
+		DocumentListEntry ent = getDocument(title);
+		if (ent!=null)
+			return ent.getResourceId();
+		return "";
+	}
+
+	public DocumentListEntry getDocument(String title) {
+		try {
+			URL feedUri = new URL("https://docs.google.com/feeds/documents/private/full/");
+			DocumentListFeed feed = service.getFeed(feedUri, DocumentListFeed.class);
+			for (DocumentListEntry entry : feed.getEntries())
+				if (entry.getTitle().getPlainText().equals(title)) 
+					return entry;
+			return null;
+		} catch (Exception e) {
+			System.err.println(e);
+			return null;
+		}
+
+	}
+/*
+	private DocumentListEntry getDocsListEntry(String resourceId) {
+		try {
+			if (resourceId == null)
+				throw new Exception("Null resourceId");
+			URL url = new URL("https://docs.google.com/feeds/documents/private/full/" + resourceId);
+			return service.getEntry(url, DocumentListEntry.class);
+		} catch (Exception e) {
+			System.err.println(e);
+			return null;
+		}
+	}*/
+
+	
+	String getContent(DocumentListEntry ent, String format) {
+		String content = "";
+		
+		try {
+			String resourceId = ent.getResourceId();
+			String docType = resourceId.substring(0, resourceId.lastIndexOf(':'));
+			String docId = resourceId.substring(resourceId.lastIndexOf(':') + 1);
+			URL exportUrl = new URL("https://docs.google.com/feeds/download/" + docType +
+					"s/Export?docID=" + docId + "&exportFormat=" + format);
+			MediaContent mc = new MediaContent();
+			mc.setUri(exportUrl.toString());
+			MediaSource ms = service.getMedia(mc);
+
+			InputStream inStream = ms.getInputStream();
+			int c;
+			while ((c = inStream.read())!=-1) {
+				char ch = (char) c;
+				System.out.println(Character.getType(ch)+" "+ch);
+				if (ch != 'ï' && ch != '»' && ch != '¿')
+					content += ch;
+			}
+		} catch (Exception e) {
+			System.err.println(e);
+		}
+		
+		return content;
+	}
+	
 	public void downloadDocument(String title, String filePath, String format) throws Exception {
 		// Obtain resourceId based on title
 		if (title == null || filePath == null || format == null)
@@ -138,21 +183,33 @@ public class GoogleComm {
 
 	//TODO - now it just replaces the content
 	// Later add new data
-	public void addData(String title, String data) throws Exception {
-		DocumentListEntry ent = getDocsListEntry(getResourceId(title));
-		service.getRequestFactory().setHeader("If-Match", ent.getEtag());
-
-		ent.setMediaSource(new MediaByteArraySource(data.getBytes(), "text/plain"));
-		ent.updateMedia(false);
+	public void addData(String title, String data) {
+		DocumentListEntry ent = getDocument(title);
+		if (ent==null)
+			return;
+		addData(ent,data);
+	}
+	
+	public void addData(DocumentListEntry ent, String data) {
+		try {
+			service.getRequestFactory().setHeader("If-Match", ent.getEtag());
+			ent.setMediaSource(new MediaByteArraySource(data.getBytes(), "text/plain"));
+			ent.updateMedia(false);
+		} catch (Exception e) {
+			System.err.println(e);
+		}
 	}
 
-	public void showAllDocs() throws IOException, ServiceException {
-		URL feedUri = new URL("https://docs.google.com/feeds/documents/private/full/");
-		DocumentListFeed feed = service.getFeed(feedUri, DocumentListFeed.class);
-
-		for (DocumentListEntry entry : feed.getEntries()) {
-			printDocumentEntry(entry);
-		} 
+	public void showAllDocs() {
+		try {
+			URL feedUri = new URL("https://docs.google.com/feeds/documents/private/full/");
+			DocumentListFeed feed = service.getFeed(feedUri, DocumentListFeed.class);
+			for (DocumentListEntry entry : feed.getEntries())
+				printDocumentEntry(entry);
+		} catch (Exception e) {
+			System.err.println(e);
+		}
+		 
 	}
 
 	public void printDocumentEntry(DocumentListEntry doc) {
@@ -207,7 +264,7 @@ public class GoogleComm {
 	}
 
 	public AclEntry changeAclRole(AclRole role, AclScope scope, DocumentListEntry documentEntry)
-	throws Exception {
+			throws Exception {
 		if (role == null || scope == null || documentEntry == null) {
 			throw new Exception("Null passed in for required parameters");
 		}
@@ -231,18 +288,22 @@ public class GoogleComm {
 		}
 	}
 
-	public void setPerms(DocumentListEntry ent, String user, AclRole role, int perm) throws Exception {
-		AclScope scope = new AclScope(AclScope.Type.USER, user);
-		switch(perm) {
-		case ADD_ROLE:
-			addAclRole(role, scope, ent);
-			break;
-		case REMOVE_ROLE:
-			removeAclRole(scope, ent);
-			break;
-		case CHANGE_ROLE:
-			changeAclRole(role, scope, ent);
-			break;
+	public void setPerms(DocumentListEntry ent, String user, AclRole role, int perm) {
+		try {
+			AclScope scope = new AclScope(AclScope.Type.USER, user);
+			switch(perm) {
+				case ADD_ROLE:
+					addAclRole(role, scope, ent);
+					break;
+				case REMOVE_ROLE:
+					removeAclRole(scope, ent);
+					break;
+				case CHANGE_ROLE:
+					changeAclRole(role, scope, ent);
+					break;
+			}
+		} catch (Exception e) {
+			System.err.println(e);
 		}
 
 	}
@@ -250,13 +311,17 @@ public class GoogleComm {
 	public static void main(String args[]) throws Exception {
 		GoogleComm comm = new GoogleComm(null);
 		comm.login("frigus.glacialis@gmail.com", "testpassword");
-		System.out.println("Done");
-		DocumentListEntry ent = comm.createNew("Test");
-		//comm.setPerms(ent, "emma.mirica@gmail.com", AclRole.WRITER, ADD_ROLE);
-		//comm.showPerms(ent);
-		//comm.showAllDocs();
-		comm.addData("Test", "hai sa vedem ce iese!");
-		//comm.addData("Test", "hai sa vedem ce iese!");
-		System.out.println("Success");
+//		System.out.println("Done");
+//		DocumentListEntry ent = comm.createNew("Test");
+//		//comm.setPerms(ent, "emma.mirica@gmail.com", AclRole.WRITER, ADD_ROLE);
+//		//comm.showPerms(ent);
+//		comm.showAllDocs();
+//		comm.addData("Test", "hai sa vedem ce iese!");
+//		//comm.addData("Test", "hai sa vedem ce iese!");
+//		System.out.println("Success");
+		
+		DocumentListEntry ent = comm.getDocument("Test");
+		String out = comm.getContent(ent, "txt");
+		System.out.println(out);
 	}
 }

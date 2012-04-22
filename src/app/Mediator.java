@@ -84,9 +84,7 @@ public class Mediator {
 	public void connectToGoogle(final String email, final String pass) {
 		Thread t = new Thread() {
 			public void run() {
-				try {
-					gcom.login(email, pass);
-				} catch (AuthenticationException e) {
+				if (!gcom.login(email, pass)) { 
 					SwingUtilities.invokeLater(new Runnable() {
 						@Override
 						public void run() {
@@ -95,7 +93,7 @@ public class Mediator {
 						}
 					});
 					return;
-				}
+				} else
 				SwingUtilities.invokeLater(new Runnable() {
 					@Override
 					public void run() {

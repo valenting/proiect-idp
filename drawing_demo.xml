@@ -1,34 +1,30 @@
-<?xml version="1.0"?>
-<group name="...">
-	<circle color="" nr_points="2">
-		<point x="" y="" />
-		<point x="" y="" />
-	</circle>
-	
-	<square color="" nr_points="2">
-		<point x="" y="" /> //start
-		<point x="" y="" /> //end
-	</square>
-	
-	<line color="" nr_points="2">
-		<point x="" y="" />
-		<point x="" y="" />
-	</line>
-	
-	<free color="" nr_points="n">
-		<point x="" y="" />
-		<point x="" y="" />
-		...
-	</free>
-	
-	<arrow color="" nr_points="2">
-		<point x="" y="" />
-		<point x="" y="" /> 
-	</arrow>
-	
-	<star color="" nr_points="2">
-		<point x="" y="" />
-		<point x="" y="" />
-	</star>
-	
-</group>
+<?xml version='1.0'?>
+<drawing>
+<circle color=''>
+<point x='1' y='2' />
+<point x='3' y='4' />
+</circle>
+<square color=''>
+<point x='' y='' /> 
+<point x='' y='' />
+</square>
+<line color=''>
+<point x='' y='' />
+<point x='' y='' />
+</line>
+<free color='' >
+<point x='' y='' />
+<point x='' y='' />
+</free>
+<arrow color=''>
+<point x='' y='' />
+<point x='' y='' /> 
+</arrow>
+<star color=''>
+<point x='' y='' />
+<point x='' y='' />
+</star>
+</drawing>
+
+
+
