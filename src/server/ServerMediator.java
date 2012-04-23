@@ -60,13 +60,13 @@ public class ServerMediator {
 	public void newGroup(SelectionKey key, String groupName, String userName, Color c) {
 		gm.addGroup(groupName, userName,c); 
 		serv.broadcast(new TreeStatusChange(gm.getTreeModel()));
-		serv.write(key, new OpenPanelMessage(userName,groupName));
+		serv.write(key, new OpenPanelMessage(userName,groupName, c));
 	}
 
 	public void joinGroup(SelectionKey key, String groupName, String userName, Color c, String email) {
 		if (gm.joinGroupCommand(userName, groupName, c)) {
 			serv.broadcast(new TreeStatusChange(gm.getTreeModel()));
-			serv.write(key, new OpenPanelMessage(userName,groupName));
+			serv.write(key, new OpenPanelMessage(userName,groupName, c));
 			serv.broadcast(new UpdateLegend(groupName, gm.getGroupLegend(groupName)));
 		} else
 			serv.write(key, new ErrorNoticeMessage("Could not join group"));
@@ -82,7 +82,7 @@ public class ServerMediator {
 		String s = gm.addUserCommand(by, userName, groupName);
 		if (s==null) {
 			serv.broadcast(new TreeStatusChange(gm.getTreeModel()));
-			serv.broadcast(new OpenPanelMessage(userName,groupName));
+			serv.broadcast(new OpenPanelMessage(userName,groupName, gm.getColor(userName, groupName)));
 			serv.broadcast(new UpdateLegend(groupName, gm.getGroupLegend(groupName)));
 		} else
 			serv.write(key, new ErrorNoticeMessage(s));

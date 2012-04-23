@@ -282,12 +282,13 @@ public class Mediator {
 		}
 	}
 
-	public void joinGroupAccepted(String user, String group) {
+	public void joinGroupAccepted(String user, String group, Color color) {
 		if (!user.equals(username)) {
 			return;
 		}
 		GroupTab tb = gg.addTab(group,new DefaultListModel());
 		Tab currentTab = new Tab(group,this);
+		currentTab.setColor(color);
 		currentTab.setCanvas(tb.panel);
 		currentTab.setGroupTab(tb);
 
@@ -347,6 +348,7 @@ public class Mediator {
 
 	public void sendDrawing(Drawing d) {
 		getCurrentTab().delDrawing(d);
+		// TODO - update xml with drawing  & color
 		comm.send(new DrawingMessage(username, getCurrentTab().getName(), d));
 	}
 
