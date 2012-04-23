@@ -11,7 +11,6 @@ public class Tab {
 	String name;
 	StateManager stateMgr;
 	GroupTab tab;
-	Mediator m;
 	Vector<Drawing> drawings;
 	Mediator med;
 	JCanvas jc;

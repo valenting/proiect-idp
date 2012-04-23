@@ -5,7 +5,6 @@ import java.awt.Point;
 
 public class Circle extends Drawing {
 	private static final long serialVersionUID = 1L;
-
 	public Circle(int x, int y) {
 		super(x, y);
 	}
@@ -25,5 +24,8 @@ public class Circle extends Drawing {
 		g.drawArc(x1, y1, x2-x1, y2-y1, 0 , 360);
 	}
 
+	public String getName() {
+		return "circle";
+	}
 
 }

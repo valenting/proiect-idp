@@ -18,4 +18,8 @@ public class Line extends Drawing {
 		g.setColor(color);
 		g.drawLine(start.x, start.y, end.x, end.y);
 	}
+	
+	public String getName() {
+		return "line";
+	}
 }
