@@ -28,10 +28,10 @@
     		<sequential> 
     			<sleep seconds="2"/> <antcall target="client"/> 
     		</sequential>
-    		<!--<sequential> 
+    		<sequential> 
     			<sleep seconds="2"/> <antcall target="client"/> 
     		</sequential>
-    		<sequential> 
+    		<!--<sequential> 
     			<sleep seconds="2"/> <antcall target="client"/> 
     		</sequential>
     		-->

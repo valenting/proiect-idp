@@ -268,9 +268,12 @@ public class Mediator {
 
 	public void joinGroupCommand(String user, String group, Color c) {
 		if (!groupExists(group)) {
-			// TODO create gdocument
-			if (email != null)
+			if (email != null) {
+				System.out.println("Create group " + group);
 				gcom.createNew(group);
+			} else {
+				System.out.println("Email null");
+			}
 			comm.send(new NewGroupMessage(group, username, c));
 		} else {
 			if (userInGroup(user, group))

@@ -19,7 +19,6 @@ import com.google.gdata.data.extensions.LastModifiedBy;
 import com.google.gdata.data.media.MediaByteArraySource;
 import com.google.gdata.data.media.MediaSource;
 
-import app.Log;
 import app.Mediator;
 
 public class GoogleComm {
@@ -49,7 +48,7 @@ public class GoogleComm {
 		try {
 			// Check if the document already exists
 			String rid = getResourceId(title);
-			if (rid == null || rid.equals(""))
+			if (!rid.equals(""))
 				return null;
 			DocumentListEntry newEntry = new DocumentEntry();
 			newEntry.setTitle(new PlainTextConstruct(title));
