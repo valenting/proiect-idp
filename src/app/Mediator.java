@@ -13,14 +13,12 @@ import javax.swing.tree.DefaultTreeModel;
 
 import org.ini4j.Ini;
 
-import com.google.gdata.util.AuthenticationException;
-
 import web.GoogleComm;
 import web.MyIni;
 
-
 import network.*;
 import network.c2s.AddUserMessage;
+import network.c2s.C2SEmailMessage;
 import network.c2s.ProbeGroupMessage;
 import network.c2s.DrawingMessage;
 import network.c2s.GetGroupDrawings;
@@ -52,6 +50,7 @@ public class Mediator {
 	String serverIP;
 	GoogleComm gcom;
 	Ini ini;
+	String email = null;
 	public Mediator(String serverIP) {
 		groupTab = new Hashtable<Object, GroupTab>();
 		comm = new Communicator(this);
@@ -99,6 +98,7 @@ public class Mediator {
 					public void run() {
 						 Mediator.this.gg.setMail(email);
 						 MyIni.put(username, email, pass);
+						 Mediator.this.email = email;
 					}
 				});
 			}
@@ -122,7 +122,6 @@ public class Mediator {
 
 	public void createGroup() {
 		gui.groupDialog();
-
 	}
 
 	public boolean groupExists(String group) {
@@ -269,22 +268,27 @@ public class Mediator {
 
 	public void joinGroupCommand(String user, String group, Color c) {
 		if (!groupExists(group)) {
-			// TODO create gdocument
-			comm.send(new NewGroupMessage(group, username,c));
+			if (email != null) {
+				Log.debug("Create group " + group);
+				gcom.createNew(group);
+			} else {
+				Log.debug("Email null");
+			}
+			comm.send(new NewGroupMessage(group, username, c));
 		} else {
 			if (userInGroup(user, group))
 				return;
-			comm.send(new JoinGroupMessage(group.toString(),username,c));
+			comm.send(new JoinGroupMessage(group.toString(), username, c, email));
 		}
 	}
 
-	public void joinGroupAccepted(String user, String group) {
+	public void joinGroupAccepted(String user, String group, Color color) {
 		if (!user.equals(username)) {
-			// TODO send gdocument link if user in group
 			return;
 		}
 		GroupTab tb = gg.addTab(group,new DefaultListModel());
 		Tab currentTab = new Tab(group,this);
+		currentTab.setColor(color);
 		currentTab.setCanvas(tb.panel);
 		currentTab.setGroupTab(tb);
 
@@ -296,7 +300,7 @@ public class Mediator {
 		comm.send(new GetGroupDrawings(group));
 		comm.send(new GetGroupHistory(group));
 		
-		// TODO get gdocument
+		comm.send(new C2SEmailMessage(email, group));
 	}
 
 
@@ -344,6 +348,7 @@ public class Mediator {
 
 	public void sendDrawing(Drawing d) {
 		getCurrentTab().delDrawing(d);
+		// TODO - update xml with drawing  & color
 		comm.send(new DrawingMessage(username, getCurrentTab().getName(), d));
 	}
 
@@ -360,6 +365,12 @@ public class Mediator {
 	public boolean gLogin(String user, String pass) {
 		connectToGoogle(user, pass);
 		return true;
+	}
+
+	public void emailReceived(String email2, String group) {
+		if (!userInGroup(username, group))
+			return;
+		gcom.addWriter(email2, group);
 	}
 }
 

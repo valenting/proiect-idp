@@ -4,6 +4,7 @@ import gui.GroupTab;
 import gui.JCanvas;
 import gui.drawings.Drawing;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.util.Vector;
 
@@ -14,6 +15,7 @@ public class Tab {
 	Vector<Drawing> drawings;
 	Mediator med;
 	JCanvas jc;
+	Color color;
 	
 	public Tab(String name, Mediator m) {
 		this.name = name;
@@ -74,5 +76,9 @@ public class Tab {
 	
 	public void setState(int type) {
 		stateMgr.setState(type);
+	}
+	
+	public void setColor(Color c) {
+		color = c;
 	}
 }

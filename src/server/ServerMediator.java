@@ -12,6 +12,7 @@ import network.s2c.ErrorNoticeMessage;
 import network.s2c.LogInResponse;
 import network.s2c.OpenColorDialogMessage;
 import network.s2c.OpenPanelMessage;
+import network.s2c.S2CEmailMessage;
 import network.s2c.TreeStatusChange;
 import network.s2c.UpdateDrawings;
 import network.s2c.UpdateHistory;
@@ -59,13 +60,13 @@ public class ServerMediator {
 	public void newGroup(SelectionKey key, String groupName, String userName, Color c) {
 		gm.addGroup(groupName, userName,c); 
 		serv.broadcast(new TreeStatusChange(gm.getTreeModel()));
-		serv.write(key, new OpenPanelMessage(userName,groupName));
+		serv.write(key, new OpenPanelMessage(userName,groupName, c));
 	}
 
-	public void joinGroup(SelectionKey key, String groupName, String userName, Color c) {
+	public void joinGroup(SelectionKey key, String groupName, String userName, Color c, String email) {
 		if (gm.joinGroupCommand(userName, groupName, c)) {
 			serv.broadcast(new TreeStatusChange(gm.getTreeModel()));
-			serv.write(key, new OpenPanelMessage(userName,groupName));
+			serv.write(key, new OpenPanelMessage(userName,groupName, c));
 			serv.broadcast(new UpdateLegend(groupName, gm.getGroupLegend(groupName)));
 		} else
 			serv.write(key, new ErrorNoticeMessage("Could not join group"));
@@ -81,7 +82,7 @@ public class ServerMediator {
 		String s = gm.addUserCommand(by, userName, groupName);
 		if (s==null) {
 			serv.broadcast(new TreeStatusChange(gm.getTreeModel()));
-			serv.broadcast(new OpenPanelMessage(userName,groupName));
+			serv.broadcast(new OpenPanelMessage(userName,groupName, gm.getColor(userName, groupName)));
 			serv.broadcast(new UpdateLegend(groupName, gm.getGroupLegend(groupName)));
 		} else
 			serv.write(key, new ErrorNoticeMessage(s));
@@ -91,7 +92,7 @@ public class ServerMediator {
 		if (gm.getColor(user, group)==null)
 			serv.write(k, new OpenColorDialogMessage(gm.getAvailableColors(group),group));
 		else
-			joinGroup(k,group,user,Color.black); // Color is already set.
+			joinGroup(k,group,user,Color.black, null); // Color is already set.
 	}
 
 	public void getGroupHistory(SelectionKey k, String groupName) {
@@ -114,8 +115,10 @@ public class ServerMediator {
 	public void addTextMessage(String groupName, String userName, String text, int fontSize, Color fontColor) {
 		gm.addTextMessage(groupName, userName, text, fontSize,fontColor);
 		serv.broadcast(new UpdateTextMessage(groupName, userName, text, fontSize, fontColor));
+	}
+
+	public void receivedEmail(String email, String group) {
+		serv.broadcast(new S2CEmailMessage(email, group));
 	} 
 	
-
- 
 }

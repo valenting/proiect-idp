@@ -1,5 +1,7 @@
 package network.s2c;
 
+import java.awt.Color;
+
 import javax.swing.SwingUtilities;
 
 import app.Mediator;
@@ -10,9 +12,11 @@ public class OpenPanelMessage extends S2CMessage {
 
 	String user;
 	String group;
-	public OpenPanelMessage(String username, String group) {
+	Color color;
+	public OpenPanelMessage(String username, String group, Color color) {
 		this.user = username;
 		this.group = group;
+		this.color = color;
 	}
 	
 	@Override
@@ -20,7 +24,7 @@ public class OpenPanelMessage extends S2CMessage {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
-				m.joinGroupAccepted(user, group);
+				m.joinGroupAccepted(user, group, color);
 			}
 		});
 		
