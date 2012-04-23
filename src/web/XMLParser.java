@@ -30,7 +30,7 @@ public class XMLParser {
 		doc = db.parse(is);
 	}
 
-	Vector<Drawing> getDrawings() {
+	public Vector<Drawing> getDrawings() {
 		NodeList nodes = doc.getChildNodes().item(0).getChildNodes();
 		Vector<Drawing> d = new Vector<Drawing>();
 
@@ -88,7 +88,7 @@ public class XMLParser {
 	public static void main(String args[]) throws Exception {
 		String xml = "<?xml version='1.0'?><drawing><circle color=''><point x='1' y='2' /><point x='3' y='4' /></circle></drawing>";
 		XMLParser p = new XMLParser(xml);
-		Vector<Drawing>d =p.getDrawings();
+		Vector<Drawing>d = p.getDrawings();
 		System.out.println(d.get(0));
 	}
 }

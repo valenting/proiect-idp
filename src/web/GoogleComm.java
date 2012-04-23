@@ -109,7 +109,7 @@ public class GoogleComm {
 	}*/
 
 
-	String getContent(DocumentListEntry ent, String format) {
+	public String getContent(DocumentListEntry ent, String format) {
 		String content = "";
 
 		try {
@@ -137,6 +137,11 @@ public class GoogleComm {
 		return content;
 	}
 
+	public String getContent(String title) {
+		DocumentListEntry entr = getDocument(title);
+		return getContent(entr, "txt");
+	}
+	
 	public void downloadDocument(String title, String filePath, String format) throws Exception {
 		// Obtain resourceId based on title
 		if (title == null || filePath == null || format == null)
@@ -144,7 +149,7 @@ public class GoogleComm {
 		String resourceId = getResourceId(title);
 		// If the resource doesn't exist
 		if (resourceId.length() <= 0) {
-			System.out.println("Nu exista\n");
+			Log.debug("Nu exista\n");
 			return;
 		}
 		String docType = resourceId.substring(0, resourceId.lastIndexOf(':'));

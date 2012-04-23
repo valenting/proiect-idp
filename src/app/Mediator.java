@@ -2,9 +2,13 @@ package app;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.Hashtable;
 import java.util.Vector;
 
+import javax.imageio.ImageIO;
 import javax.swing.DefaultListModel;
 import javax.swing.SwingUtilities;
 import javax.swing.text.DefaultStyledDocument;
@@ -15,6 +19,7 @@ import org.ini4j.Ini;
 
 import web.GoogleComm;
 import web.MyIni;
+import web.XMLParser;
 
 import network.*;
 import network.c2s.AddUserMessage;
@@ -61,7 +66,7 @@ public class Mediator {
 
 		MyIni.open("google.ini");
 	}
-	
+
 	public void login(String user, String pass) {
 		this.username = user;
 		boolean done = comm.connect(serverIP, 7777);
@@ -74,12 +79,12 @@ public class Mediator {
 		Log.debug("Cient " + username + " connected");
 		gui.loginSuccessful(username);
 		gg.setUser(username);
-		
+
 		Pair<String,String> p = MyIni.get(username);
 		if (p!=null)
 			connectToGoogle(p.getK(),p.getV());
 	}
-	
+
 	public void connectToGoogle(final String email, final String pass) {
 		Thread t = new Thread() {
 			public void run() {
@@ -87,20 +92,20 @@ public class Mediator {
 					SwingUtilities.invokeLater(new Runnable() {
 						@Override
 						public void run() {
-							 Mediator.this.displayError("Authentication Error");
-							 Mediator.this.gg.setMail("(none)");
+							Mediator.this.displayError("Authentication Error");
+							Mediator.this.gg.setMail("(none)");
 						}
 					});
 					return;
 				} else
-				SwingUtilities.invokeLater(new Runnable() {
-					@Override
-					public void run() {
-						 Mediator.this.gg.setMail(email);
-						 MyIni.put(username, email, pass);
-						 Mediator.this.email = email;
-					}
-				});
+					SwingUtilities.invokeLater(new Runnable() {
+						@Override
+						public void run() {
+							Mediator.this.gg.setMail(email);
+							MyIni.put(username, email, pass);
+							Mediator.this.email = email;
+						}
+					});
 			}
 		};
 		t.start();
@@ -191,7 +196,7 @@ public class Mediator {
 		gui.error("Invalid credentials");
 		gui.resetLogin();
 	}
-	
+
 	public void loginError(String s) {
 		gui.logOut();
 		gui.error(s);
@@ -215,8 +220,8 @@ public class Mediator {
 		}
 		return false;
 	}
-	
-	
+
+
 	/****** RIGHT CLICK MENU ******/
 
 	public void addUserCommand() {
@@ -295,11 +300,11 @@ public class Mediator {
 		currentTab.setDrawings(new Vector<Drawing>());
 		tb.setDocument(new DefaultStyledDocument());
 		tabs.add(currentTab);
-				
+
 		comm.send(new GetGroupLegend(group));
 		comm.send(new GetGroupDrawings(group));
 		comm.send(new GetGroupHistory(group));
-		
+
 		comm.send(new C2SEmailMessage(email, group));
 	}
 
@@ -310,17 +315,32 @@ public class Mediator {
 		String tabName = gg.getTabName(tab);
 		comm.send(new TextMessage(tabName, username, text, fontSize, fontColor));
 	}
-	
+
 	public void printText(String groupName, String userName, String text, int fontSize, Color fontColor) {
 		Tab t = getTab(groupName);
 		if (t != null) 
 			t.tab.printText(userName, text, fontSize, fontColor);
 	}
 
-	public void saveWork() { 
-		// TODO Auto-generated method stub 
+	public void saveWork() {
+		try {
+			XMLParser p = new XMLParser(gcom.getContent(getCurrentTab().getName()));
+			Vector<Drawing>d = p.getDrawings();
+			BufferedImage img = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB);
+			Graphics2D g2 = img.createGraphics();
+			g2.setColor(Color.white);
+			g2.fillRect(0, 0, img.getWidth(), img.getHeight());
+			for (Drawing dr : d) {
+				dr.draw(g2);
+			}
+			File file = new File(getCurrentTab().getName() + ".png");
+			ImageIO.write(img, "png", file);
+		} catch (Exception e) {
+			Log.error(e.toString());
+		}
+
 	} 
- 
+
 
 	public void setUserList(DefaultListModel model) {
 		gg.setListModel(model);
@@ -330,18 +350,18 @@ public class Mediator {
 		gg.setTreeModel(model);
 		treeModel = model;
 	}
-	
+
 	public void setUserLegend(String groupName, DefaultListModel model) {
 		GroupTab t = gg.getTab(groupName);
 		if (t!=null)
-		t.setLegend(model);
+			t.setLegend(model);
 	}
-	
+
 	public void setDrawings(String groupName, Vector<Drawing> drawings) {
 		getTab(groupName).setDrawings(drawings);
 		getTab(groupName).repaint();
 	}
-	
+
 	public void setHistory(String groupName, DefaultStyledDocument document) {
 		gg.getTab(groupName).setHistory(document);
 	}
@@ -361,7 +381,7 @@ public class Mediator {
 	public void openGLogin() {
 		new GoogleLogin(this);
 	}
-	
+
 	public boolean gLogin(String user, String pass) {
 		connectToGoogle(user, pass);
 		return true;
