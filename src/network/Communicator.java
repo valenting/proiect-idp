@@ -45,6 +45,7 @@ public class Communicator {
 			}
 			if (data.lengthByteBuffer.getInt(0)<0)
 				throw new IOException(); // TODO
+			// TODO use the same buffer
 			data.dataByteBuffer = ByteBuffer.allocate(data.lengthByteBuffer.getInt(0));
 			if (data.dataByteBuffer == null)
 				throw new IOException(); // TODO

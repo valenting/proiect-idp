@@ -269,6 +269,7 @@ public class Mediator {
 
 	public void joinGroupCommand(String user, String group, Color c) {
 		if (!groupExists(group)) {
+			// TODO create gdocument
 			comm.send(new NewGroupMessage(group, username,c));
 		} else {
 			if (userInGroup(user, group))
@@ -278,8 +279,10 @@ public class Mediator {
 	}
 
 	public void joinGroupAccepted(String user, String group) {
-		if (!user.equals(username))
+		if (!user.equals(username)) {
+			// TODO send gdocument link if user in group
 			return;
+		}
 		GroupTab tb = gg.addTab(group,new DefaultListModel());
 		Tab currentTab = new Tab(group,this);
 		currentTab.setCanvas(tb.panel);
@@ -292,6 +295,8 @@ public class Mediator {
 		comm.send(new GetGroupLegend(group));
 		comm.send(new GetGroupDrawings(group));
 		comm.send(new GetGroupHistory(group));
+		
+		// TODO get gdocument
 	}
 
 
