@@ -100,14 +100,14 @@ public class Mediator {
 					});
 					return;
 				} else
-				SwingUtilities.invokeLater(new Runnable() {
-					@Override
-					public void run() {
-						 Mediator.this.gg.setMail(email);
-						 MyIni.put(username, email, SimpleEncryption.encrypt(pass));
-						 Mediator.this.email = email;
-					}
-				});
+					SwingUtilities.invokeLater(new Runnable() {
+						@Override
+						public void run() {
+							Mediator.this.gg.setMail(email);
+							MyIni.put(username, email, SimpleEncryption.encrypt(pass));
+							Mediator.this.email = email;
+						}
+					});
 			}
 		};
 		t.start();
@@ -325,24 +325,29 @@ public class Mediator {
 	}
 
 	public void saveWork() {
+		String tabContent = gcom.getContent(getCurrentTab().getName());
+
+		if (tabContent.length() <= 0) {
+			Log.debug("Empty content");
+			return;
+		}
+		XMLParser p = new XMLParser(tabContent);
+		Vector<Drawing> d = p.getDrawings();
+		BufferedImage img = new BufferedImage(700, 500, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g2 = img.createGraphics();
+		g2.setColor(Color.white);
+		g2.fillRect(0, 0, img.getWidth(), img.getHeight());
+		for (Drawing dr : d) {
+			dr.draw(g2);
+		}
 		try {
-			XMLParser p = new XMLParser(gcom.getContent(getCurrentTab().getName()));
-			Vector<Drawing>d = p.getDrawings();
-			BufferedImage img = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB);
-			Graphics2D g2 = img.createGraphics();
-			g2.setColor(Color.white);
-			g2.fillRect(0, 0, img.getWidth(), img.getHeight());
-			for (Drawing dr : d) {
-				dr.draw(g2);
-			}
 			File file = new File(getCurrentTab().getName() + ".png");
 			ImageIO.write(img, "png", file);
 		} catch (Exception e) {
 			Log.error(e.toString());
 		}
 
-	} 
-
+	}
 
 	public void setUserList(DefaultListModel model) {
 		gg.setListModel(model);
@@ -369,14 +374,20 @@ public class Mediator {
 	}
 
 	public void sendDrawing(Drawing d) {
-		Tab t = getCurrentTab(); 
+		final Tab t = getCurrentTab();
+		d.setColor(t.color);
 		t.delDrawing(d);
 		t.addXMLDrawing(d);
-		String xmlrep = t.getXMLString();
+		final String xmlrep = t.getXMLString();
 		t.removeLastXML();
-		gcom.addData(t.getName(), xmlrep); // TODO other thread
+		Thread th = new Thread() {
+			public void run() {
+				gcom.addData(t.getName(), xmlrep);
+			}
+		};
+		th.start();
+
 		comm.send(new DrawingMessage(username, t.getName(), d));
-		
 	}
 
 	public void updateDrawings(String group, Drawing d) {

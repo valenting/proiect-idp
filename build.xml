@@ -22,7 +22,7 @@
         <javac srcdir="${src.dir}" destdir="${build.dir}" includeantruntime="false" classpathref="jars"/>
     </target>
  
-    <target name="run">
+    <target name="run" depends="cleanrun">
     	<parallel>
         	<antcall target="server"/>
     		<sequential> 
@@ -60,4 +60,10 @@
     <target name="clean">
         <delete dir="${build.dir}" />
     </target>     
+	
+	<target name="cleanrun">
+		<delete>
+			<fileset dir="." includes="*.log" />
+		</delete>
+	</target>
 </project>

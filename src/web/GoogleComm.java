@@ -1,11 +1,12 @@
 package web;
 
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import com.google.gdata.client.docs.DocsService;
-import com.google.gdata.data.DateTime;
 import com.google.gdata.data.MediaContent;
 import com.google.gdata.data.PlainTextConstruct;
 import com.google.gdata.data.acl.AclEntry;
@@ -15,9 +16,10 @@ import com.google.gdata.data.acl.AclScope;
 import com.google.gdata.data.docs.DocumentEntry;
 import com.google.gdata.data.docs.DocumentListEntry;
 import com.google.gdata.data.docs.DocumentListFeed;
-import com.google.gdata.data.extensions.LastModifiedBy;
 import com.google.gdata.data.media.MediaByteArraySource;
 import com.google.gdata.data.media.MediaSource;
+import com.google.gdata.util.AuthenticationException;
+import com.google.gdata.util.ServiceException;
 
 import app.Log;
 import app.Mediator;
@@ -30,118 +32,320 @@ public class GoogleComm {
 
 	public GoogleComm(Mediator m) {
 		service = new DocsService("Whiteboard");
-		service.setProtocolVersion(DocsService.Versions.V2);
+		service.setProtocolVersion(DocsService.Versions.V3);
 	}
-
+	String user;
+	String pass;
+	/* Verifica credentialele de Google si face logarea daca 
+	 * sunt corecte, altfel intoarce false
+	 */
 	public boolean login(String user, String pass)  {
 		try {
 			service.setUserCredentials(user,pass);
+			this.user = user;
+			this.pass = pass;
 			return true;
-		} catch (Exception e) {
-			System.err.println(e);
+		} catch (AuthenticationException e1) {
+			Log.error("AuthenticationError " + e1.toString());
 			return false;
 		}
 	}
 
+	/* Creeaza un nou document, doar daca nu mai exista 
+	 * un alt document cu acel nume -> grupurile sunt unice
+	 */
 	public DocumentListEntry createNew(String title) {
-		try {
-			// Check if the document already exists
-			String rid = getResourceId(title);
-			if (!rid.equals(""))
-				return null;
-			DocumentListEntry newEntry = new DocumentEntry();
-			newEntry.setTitle(new PlainTextConstruct(title));
-			URL url = new URL("https://docs.google.com/feeds/documents/private/full/");
-			return service.insert(url, newEntry);
-		} catch (Exception e) {
-			Log.debug(e.toString());
+		// Check if the document already exists
+		String rid = getResourceId(title);
+		if (!rid.equals("")) {
+			Log.debug("Resource " + title + " already exists");
+			return null;
 		}
-		return null;
+
+		DocumentListEntry newEntry = new DocumentEntry();
+		newEntry.setTitle(new PlainTextConstruct(title));
+		URL url;
+		try {
+			url = new URL("https://docs.google.com/feeds/default/private/full/");
+		} catch (MalformedURLException e) {
+			Log.debug("MalformedURLException + " + e.toString());
+			return null;
+		}
+		try {
+			return service.insert(url, newEntry);
+		} catch (IOException e) {
+			Log.debug("IOException + " + e.toString());
+			return null;
+		} catch (ServiceException e) {
+			Log.debug("ServiceException + " + e.toString());
+			return null;
+		}
 	}
 
+	/* Sterge un fisier pe baza numelui */
 	public void trashDocument(String title) {
+		String resourceId = getResourceId(title);
+		if (resourceId.equals("")) {
+			Log.debug("Resource " + title + " doesn't exists");
+			return;
+		}
+		DocumentListEntry ent = getDocument(title);
+		if (ent == null)
+			return;
+		String feedUrl = "https://docs.google.com/feeds/default/private/full/" + resourceId + "?delete=true";
 		try {
-			String resourceId = getResourceId(title);
-			DocumentListEntry ent = getDocument(title);
-			if (ent==null)
-				return;
-			String feedUrl = "https://docs.google.com/feeds/documents/private/full/" + resourceId + "?delete=true";
-
 			service.delete(new URL(feedUrl), ent.getEtag());
 		} catch (Exception e) {
 			Log.debug(e.toString());
 		}
 	}
 
-
 	private String getResourceId(String title) {
 		DocumentListEntry ent = getDocument(title);
-		if (ent!=null)
+		if (ent != null)
 			return ent.getResourceId();
 		return "";
 	}
 
+	/* Obtine documentEntry pe baza numelui. Exista un singur
+	 * document cu numele title Sau null daca nu exista
+	 */
 	public DocumentListEntry getDocument(String title) {
+		URL feedUri;
 		try {
-			URL feedUri = new URL("https://docs.google.com/feeds/documents/private/full/");
-			DocumentListFeed feed = service.getFeed(feedUri, DocumentListFeed.class);
-			for (DocumentListEntry entry : feed.getEntries())
-				if (entry.getTitle().getPlainText().equals(title)) 
-					return entry;
-			return null;
-		} catch (Exception e) {
-			Log.debug(e.toString());
+			feedUri = new URL("https://docs.google.com/feeds/default/private/full/");
+		} catch (MalformedURLException e) {
+			Log.debug("MalformedURLException + " + e.toString());
 			return null;
 		}
-
+		DocumentListFeed feed;
+		try {
+			feed = service.getFeed(feedUri, DocumentListFeed.class);
+		} catch (IOException e) {
+			Log.debug("IOException + " + e.toString());
+			return null;
+		} catch (ServiceException e) {
+			Log.debug("ServiceException + " + e.toString());
+			return null;
+		}
+		for (DocumentListEntry entry : feed.getEntries())
+			if (entry.getTitle().getPlainText().equals(title)) 
+				return entry;
+		return null;
 	}
-	/*
-	private DocumentListEntry getDocsListEntry(String resourceId) {
-		try {
-			if (resourceId == null)
-				throw new Exception("Null resourceId");
-			URL url = new URL("https://docs.google.com/feeds/documents/private/full/" + resourceId);
-			return service.getEntry(url, DocumentListEntry.class);
-		} catch (Exception e) {
-			Log.debug(e.toString());
-			return null;
-		}
-	}*/
 
-
+	/* Obtine continutul unui DocumentListEntry sau nimic daca apar probleme */
 	public String getContent(DocumentListEntry ent, String format) {
 		String content = "";
-
+		String resourceId = ent.getResourceId();
+		String docType = resourceId.substring(0, resourceId.lastIndexOf(':'));
+		String docId = resourceId.substring(resourceId.lastIndexOf(':') + 1);
+		URL exportUrl;
 		try {
-			String resourceId = ent.getResourceId();
-			String docType = resourceId.substring(0, resourceId.lastIndexOf(':'));
-			String docId = resourceId.substring(resourceId.lastIndexOf(':') + 1);
-			URL exportUrl = new URL("https://docs.google.com/feeds/download/" + docType +
+			exportUrl = new URL("https://docs.google.com/feeds/download/" + docType +
 					"s/Export?docID=" + docId + "&exportFormat=" + format);
-			MediaContent mc = new MediaContent();
-			mc.setUri(exportUrl.toString());
-			MediaSource ms = service.getMedia(mc);
+		} catch (MalformedURLException e1) {
+			Log.debug("MalformedURLException " + e1.toString());
+			return content;
+		}
+		MediaContent mc = new MediaContent();
+		mc.setUri(exportUrl.toString());
+		MediaSource ms;
+		try {
+			service.setHeader("If-Match", "*");
 
+			ms = service.getMedia(mc);
 			InputStream inStream = ms.getInputStream();
 			int c;
 			while ((c = inStream.read())!=-1) {
 				char ch = (char) c;
-				System.out.println(Character.getType(ch)+" "+ch);
 				if (ch != 'ï' && ch != '»' && ch != '¿')
 					content += ch;
 			}
-		} catch (Exception e) {
-			Log.debug(e.toString());
+		} catch (IOException e1) {
+			Log.debug("IOException " + e1.toString());
+			return content;
+		} catch (ServiceException e1) {
+			Log.debug("ServiceException " + e1.toString());
+
+			return content;
 		}
 
 		return content;
 	}
 
+	/* Obtine continutul unui fisier pe baza numelui */
 	public String getContent(String title) {
 		DocumentListEntry entr = getDocument(title);
+		if (entr == null) {
+			Log.debug("DocumentEntry " + title + " doesn't exists");
+			return "";
+		}
 		return getContent(entr, "txt");
 	}
-	
+
+	/* Inlocuieste continutul documentului title cu data */
+	public void addData(String title, String data) {
+		DocumentListEntry ent = getDocument(title);
+		if (ent == null) {
+			Log.debug("Null document " + title);
+			return;
+		}
+		addData(ent, data);
+	}
+
+	public void addData(DocumentListEntry ent, String data) {
+
+		//		String etag = ent.getEtag();
+		//		service.getRequestFactory().setHeader("If-Match", etag);
+		//		MediaByteArraySource s = new MediaByteArraySource(data.getBytes(), "text/plain");
+		//		s.setEtag(etag);
+		//		ent.setMediaSource(s);
+		//		try {
+		//			ent.updateMedia(false);
+		//			service.update(new URL(ent.getEditLink().getHref()), ent, s.getEtag());
+		//		} catch (IOException e) {
+		//			Log.debug("IOException " + e.toString());
+		//		} catch (ServiceException e) {
+		//			Log.debug("ServiceException " + e.toString());
+		//		}
+
+
+
+		//		String etag = ent.getEtag();
+		//		MediaByteArraySource s = new MediaByteArraySource(data.getBytes(), "text/plain");
+		//		s.setEtag(etag);
+		//		service.getRequestFactory().setHeader("If-Match", etag);
+		//		try {
+		//			service.updateMedia(new URL(ent.getEditLink().getHref()), DocumentListEntry.class, s);
+		//		} catch (MalformedURLException e) {
+		//			// TODO Auto-generated catch block
+		//			e.printStackTrace();
+		//		} catch (IOException e) {
+		//			// TODO Auto-generated catch block
+		//			e.printStackTrace();
+		//		} catch (ServiceException e) {
+		//			// TODO Auto-generated catch block
+		//			e.printStackTrace();
+		//		}
+		//		
+		//		service.setHeader("If-Match", null);
+
+		service.getRequestFactory().setHeader("If-Match", "*"); // ent.getEtag()
+		ent.setMediaSource(new MediaByteArraySource(data.getBytes(), "text/plain"));
+
+		try {
+			ent.updateMedia(false);
+		} catch (IOException e) {
+			Log.debug("IOException " + e.toString());
+		} catch (ServiceException e) {
+			Log.debug("ServiceException " + e.toString());
+			try {
+				Thread.sleep(5000);
+			} catch (InterruptedException e1) {
+			}
+			/*addData(ent, data);*/
+		}
+	}
+
+	public AclEntry addAclRole(AclRole role, AclScope scope, DocumentListEntry documentEntry) {
+		AclEntry entry = new AclEntry();
+		entry.setRole(role);
+		entry.setScope(scope);
+
+		URL url;
+		try {
+			url = new URL("https://docs.google.com/feeds/default/private/full/" + 
+					documentEntry.getResourceId() + "/acl");
+		} catch (MalformedURLException e) {
+			Log.debug("MalformedURLException " + e.toString());
+			return null;
+		}
+		try {
+			entry = service.insert(url, entry);
+		} catch (IOException e) {
+			Log.debug("IOException " + e.toString());
+			return null;
+		} catch (ServiceException e) {
+			Log.debug("ServiceException " + e.toString());
+			return null;
+		}
+		return entry;
+	}
+
+	public AclEntry changeAclRole(AclRole role, AclScope scope, DocumentListEntry documentEntry) {
+		if (role == null || scope == null || documentEntry == null) {
+			Log.debug("Null arguments");
+			return null;
+		}
+		URL url;
+		try {
+			url = new URL("https://docs.google.com/feeds/default/private/full/" + documentEntry.getResourceId() + "/acl");
+		} catch (MalformedURLException e) {
+			Log.debug("MalformedURLException " + e.toString());
+			return null;
+		}
+
+		try {
+			return service.update(url, scope, role);
+		} catch (IOException e) {
+			Log.debug("IOException " + e.toString());
+			return null;
+		} catch (ServiceException e) {
+			Log.debug("ServiceException " + e.toString());
+			return null;
+		}
+	}
+
+	public void removeAclRole(AclScope scope, DocumentListEntry documentEntry) {
+		if (scope == null || documentEntry == null) {
+			Log.debug("Null passed in for required parameters");
+			return;
+		}
+		try {
+			service.delete(new URL(documentEntry.getAclFeedLink().getHref()), scope);
+		} catch (MalformedURLException e) {
+			Log.debug("MalformedURLException " + e.toString());
+			return;
+		} catch (IOException e) {
+			Log.debug("IOException " + e.toString());
+			return;
+		} catch (ServiceException e) {
+			Log.debug("ServiceException " + e.toString());
+			return;
+		}
+	}
+
+	public void showPerms(DocumentListEntry ent) throws Exception {
+		AclFeed aclFeed = service.getFeed(new URL(ent.getAclFeedLink().getHref()), AclFeed.class);
+		for (AclEntry entry : aclFeed.getEntries()) {
+			System.out.println(
+					entry.getScope().getValue() + " (" + entry.getScope().getType() + ") : " + entry.getRole().getValue());
+		}
+	}
+
+	public void setPerms(DocumentListEntry ent, String user, AclRole role, int perm) {
+		AclScope scope = new AclScope(AclScope.Type.USER, user);
+		switch(perm) {
+		case ADD_ROLE:
+			addAclRole(role, scope, ent);
+			break;
+		case REMOVE_ROLE:
+			removeAclRole(scope, ent);
+			break;
+		case CHANGE_ROLE:
+			changeAclRole(role, scope, ent);
+			break;
+		}
+	}
+
+	public void addWriter(String email, String title) {
+		DocumentListEntry entry = getDocument(title);
+		if (entry == null)
+			return;
+		setPerms(entry, email, AclRole.WRITER, ADD_ROLE);
+	}
+
 	public void downloadDocument(String title, String filePath, String format) throws Exception {
 		// Obtain resourceId based on title
 		if (title == null || filePath == null || format == null)
@@ -181,152 +385,9 @@ public class GoogleComm {
 			}
 		}
 	}
-
-	//TODO - now it just replaces the content
-	// Later add new data
-	public void addData(String title, String data) {
-		DocumentListEntry ent = getDocument(title);
-		if (ent==null)
-			return;
-		addData(ent,data);
-	}
-
-	public void addData(DocumentListEntry ent, String data) {
-		try {
-			service.getRequestFactory().setHeader("If-Match", "*"); // ent.getEtag()
-			ent.setMediaSource(new MediaByteArraySource(data.getBytes(), "text/plain"));
-			ent.updateMedia(true);
-		} catch (Exception e) {
-			Log.debug(e.toString());
-		}
-	}
-
-	public void showAllDocs() {
-		try {
-			URL feedUri = new URL("https://docs.google.com/feeds/documents/private/full/");
-			DocumentListFeed feed = service.getFeed(feedUri, DocumentListFeed.class);
-			for (DocumentListEntry entry : feed.getEntries())
-				printDocumentEntry(entry);
-		} catch (Exception e) {
-			Log.debug(e.toString());
-		}
-
-	}
-
-	public void printDocumentEntry(DocumentListEntry doc) {
-		String resourceId = doc.getResourceId();
-		String docType = resourceId.substring(0, resourceId.lastIndexOf(':'));
-
-		System.out.println("'" + doc.getTitle().getPlainText() + "' (" + docType + ")");
-		System.out.println("  link to Google Docs: " + doc.getHtmlLink().getHref());
-		System.out.println("  resource id: " + resourceId);
-
-		// print the parent folder the document is in
-		if (!doc.getFolders().isEmpty()) {
-			System.out.println("  in folder: " +  doc.getFolders());
-		}
-
-		// print the timestamp the document was last viewed
-		DateTime lastViewed = doc.getLastViewed();
-		if (lastViewed != null) {
-			System.out.println("  last viewed: " + lastViewed.toString());
-		}
-
-		// print who made that modification
-		LastModifiedBy lastModifiedBy = doc.getLastModifiedBy();
-		if (lastModifiedBy != null) {
-			System.out.println("  updated by: " +
-					lastModifiedBy.getName() + " - " + lastModifiedBy.getEmail());
-		}
-
-		// print other useful metadata
-		System.out.println("  last updated: " + doc.getUpdated().toString());
-		System.out.println("  viewed by user? " + doc.isViewed());
-		System.out.println("  writersCanInvite? " + doc.isWritersCanInvite().toString());
-		System.out.println("  hidden? " + doc.isHidden());
-		System.out.println("  starrred? " + doc.isStarred());
-		System.out.println("PERMS:");
-		try {
-			showPerms(doc);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		System.out.println("-----");
-	}
-
-	public AclEntry addAclRole(AclRole role, AclScope scope, DocumentListEntry documentEntry) throws Exception  {
-		AclEntry entry = new AclEntry();
-		entry.setRole(role);
-		entry.setScope(scope);
-
-		URL url = new URL("https://docs.google.com/feeds/acl/private/full/" + documentEntry.getResourceId());
-		entry = service.insert(url, entry);
-		return entry;
-	}
-
-	public AclEntry changeAclRole(AclRole role, AclScope scope, DocumentListEntry documentEntry)
-	throws Exception {
-		if (role == null || scope == null || documentEntry == null) {
-			throw new Exception("Null passed in for required parameters");
-		}
-		URL url = new URL("https://docs.google.com/feeds/acl/private/full/" + documentEntry.getResourceId());
-
-		return service.update(url, scope, role);
-	}
-
-	public void removeAclRole(AclScope scope, DocumentListEntry documentEntry) throws Exception {
-		if (scope == null || documentEntry == null) {
-			throw new Exception("null passed in for required parameters");
-		}
-		service.delete(new URL(documentEntry.getAclFeedLink().getHref()), scope);
-	}
-
-	public void showPerms(DocumentListEntry ent) throws Exception {
-		AclFeed aclFeed = service.getFeed(new URL(ent.getAclFeedLink().getHref()), AclFeed.class);
-		for (AclEntry entry : aclFeed.getEntries()) {
-			System.out.println(
-					entry.getScope().getValue() + " (" + entry.getScope().getType() + ") : " + entry.getRole().getValue());
-		}
-	}
-
-	public void setPerms(DocumentListEntry ent, String user, AclRole role, int perm) {
-		try {
-			AclScope scope = new AclScope(AclScope.Type.USER, user);
-			switch(perm) {
-			case ADD_ROLE:
-				addAclRole(role, scope, ent);
-				break;
-			case REMOVE_ROLE:
-				removeAclRole(scope, ent);
-				break;
-			case CHANGE_ROLE:
-				changeAclRole(role, scope, ent);
-				break;
-			}
-		} catch (Exception e) {
-			Log.debug(e.toString());
-		}
-	}
-
-	public void addWriter(String email, String title) {
-		DocumentListEntry entry = getDocument(title);
-		if (entry == null)
-			return;
-		setPerms(entry, email, AclRole.WRITER, ADD_ROLE);
-	}
-
 	public static void main(String args[]) throws Exception {
 		GoogleComm comm = new GoogleComm(null);
 		comm.login("frigus.glacialis@gmail.com", "testpassword");
-		//		System.out.println("Done");
-		//		DocumentListEntry ent = comm.createNew("Test");
-		//		//comm.setPerms(ent, "emma.mirica@gmail.com", AclRole.WRITER, ADD_ROLE);
-		//		//comm.showPerms(ent);
-		//		comm.showAllDocs();
-		//		comm.addData("Test", "hai sa vedem ce iese!");
-		//		//comm.addData("Test", "hai sa vedem ce iese!");
-		//		System.out.println("Success");
-
 		DocumentListEntry ent = comm.getDocument("Test");
 		String out = comm.getContent(ent, "txt");
 		System.out.println(out);

@@ -42,7 +42,8 @@ public class FreeDrawing extends Drawing {
 	
 	public Node getXmlNode(Document doc) {
 		String tagName = this.getName();
-		Element el = doc.createElement(tagName);
+		Element el = doc.createElement("drawing");
+		el.setAttribute("name", tagName);
 		el.setAttribute("color", color.getRGB()+"");
 
 		Element p1 = doc.createElement("point");
@@ -54,6 +55,7 @@ public class FreeDrawing extends Drawing {
 			Element p = doc.createElement("point");
 			p.setAttribute("x", points.get(i).x+"");
 			p.setAttribute("y", points.get(i).y+"");
+			el.appendChild(p);
 		}
 		
 		return el;

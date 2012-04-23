@@ -9,7 +9,6 @@ import java.io.StringWriter;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
@@ -29,7 +28,7 @@ public class XMLDrawings {
 		try {
 			DocumentBuilder db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 			InputSource is = new InputSource();
-			is.setCharacterStream(new StringReader("<?xml version='1.0'?><drawing></drawing>"));
+			is.setCharacterStream(new StringReader("<?xml version='1.0'?><drawings></drawings>"));
 			doc = db.parse(is);
 			root = doc.getChildNodes().item(0);
 		} catch (Exception e) {

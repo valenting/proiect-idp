@@ -13,7 +13,7 @@ public class Drawing implements Serializable {
 	private static final long serialVersionUID = 1L;
 	protected Point start;
 	protected Point end;
-	protected Color color;
+	public Color color;
 	
 	public Drawing(Point start) {
 		this.start = new Point(start);
@@ -45,7 +45,8 @@ public class Drawing implements Serializable {
 	
 	public Node getXmlNode(Document doc) {
 		String tagName = this.getName();
-		Element el = doc.createElement(tagName);
+		Element el = doc.createElement("drawing");
+		el.setAttribute("name", tagName);
 		el.setAttribute("color", color.getRGB()+"");
 		Element p1 = doc.createElement("point");
 		Element p2 = doc.createElement("point");
