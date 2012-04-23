@@ -13,11 +13,8 @@ import javax.swing.tree.DefaultTreeModel;
 
 import org.ini4j.Ini;
 
-import com.google.gdata.util.AuthenticationException;
-
 import web.GoogleComm;
 import web.MyIni;
-
 
 import network.*;
 import network.c2s.AddUserMessage;
@@ -52,6 +49,7 @@ public class Mediator {
 	String serverIP;
 	GoogleComm gcom;
 	Ini ini;
+	String email = null;
 	public Mediator(String serverIP) {
 		groupTab = new Hashtable<Object, GroupTab>();
 		comm = new Communicator(this);
@@ -99,6 +97,7 @@ public class Mediator {
 					public void run() {
 						 Mediator.this.gg.setMail(email);
 						 MyIni.put(username, email, pass);
+						 Mediator.this.email = email;
 					}
 				});
 			}
@@ -122,7 +121,6 @@ public class Mediator {
 
 	public void createGroup() {
 		gui.groupDialog();
-
 	}
 
 	public boolean groupExists(String group) {
@@ -270,11 +268,13 @@ public class Mediator {
 	public void joinGroupCommand(String user, String group, Color c) {
 		if (!groupExists(group)) {
 			// TODO create gdocument
-			comm.send(new NewGroupMessage(group, username,c));
+			if (email != null)
+				gcom.createNew(group);
+			comm.send(new NewGroupMessage(group, username, c));
 		} else {
 			if (userInGroup(user, group))
 				return;
-			comm.send(new JoinGroupMessage(group.toString(),username,c));
+			comm.send(new JoinGroupMessage(group.toString(), username, c, email));
 		}
 	}
 
@@ -360,6 +360,12 @@ public class Mediator {
 	public boolean gLogin(String user, String pass) {
 		connectToGoogle(user, pass);
 		return true;
+	}
+
+	public void emailReceived(String email2, String group) {
+		if (!userInGroup(username, group))
+			return;
+		gcom.addWriter(email2, group);
 	}
 }
 

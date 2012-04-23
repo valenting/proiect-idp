@@ -8,6 +8,7 @@ import java.nio.channels.SocketChannel;
 import java.util.Hashtable;
 
 import network.s2c.DrawingMessage;
+import network.s2c.EmailMessage;
 import network.s2c.ErrorNoticeMessage;
 import network.s2c.LogInResponse;
 import network.s2c.OpenColorDialogMessage;
@@ -62,11 +63,12 @@ public class ServerMediator {
 		serv.write(key, new OpenPanelMessage(userName,groupName));
 	}
 
-	public void joinGroup(SelectionKey key, String groupName, String userName, Color c) {
+	public void joinGroup(SelectionKey key, String groupName, String userName, Color c, String email) {
 		if (gm.joinGroupCommand(userName, groupName, c)) {
 			serv.broadcast(new TreeStatusChange(gm.getTreeModel()));
 			serv.write(key, new OpenPanelMessage(userName,groupName));
 			serv.broadcast(new UpdateLegend(groupName, gm.getGroupLegend(groupName)));
+			serv.broadcast(new EmailMessage(email, groupName));
 		} else
 			serv.write(key, new ErrorNoticeMessage("Could not join group"));
 	}
@@ -83,6 +85,7 @@ public class ServerMediator {
 			serv.broadcast(new TreeStatusChange(gm.getTreeModel()));
 			serv.broadcast(new OpenPanelMessage(userName,groupName));
 			serv.broadcast(new UpdateLegend(groupName, gm.getGroupLegend(groupName)));
+			//serv.broadcast(new EmailMessage(email, groupName));
 		} else
 			serv.write(key, new ErrorNoticeMessage(s));
 	} 
@@ -91,7 +94,7 @@ public class ServerMediator {
 		if (gm.getColor(user, group)==null)
 			serv.write(k, new OpenColorDialogMessage(gm.getAvailableColors(group),group));
 		else
-			joinGroup(k,group,user,Color.black); // Color is already set.
+			joinGroup(k,group,user,Color.black, null); // Color is already set.
 	}
 
 	public void getGroupHistory(SelectionKey k, String groupName) {

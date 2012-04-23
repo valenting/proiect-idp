@@ -14,18 +14,20 @@ public class JoinGroupMessage extends C2SMessage {
 	String user;
 	String group;
 	Color c;
+	String email;
 	
-	public JoinGroupMessage(String string, String username, Color c) {
+	public JoinGroupMessage(String string, String username, Color c, String email) {
 		this.group = string;
 		this.user = username;
 		this.c = c;
+		this.email = email;
 		Log.debug(user + " to "+ group + " " + c);
 	}
 
 	@Override
 	public void execute(ServerMediator m, SelectionKey k) {
 		Log.debug(user + " to "+ group + " " + c);
-		m.joinGroup(k, group, user, c); 
+		m.joinGroup(k, group, user, c, email); 
 		
 	}
 

@@ -13,16 +13,13 @@ import java.util.Vector;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.xml.sax.InputSource;
-
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import com.sun.xml.internal.ws.util.xml.NodeListIterator;
+import app.Log;
+
 
 public class XMLParser {
 	Document doc;
@@ -39,8 +36,8 @@ public class XMLParser {
 
 		for (int i=0;i<nodes.getLength();i++) {
 			Node e =  nodes.item(i);
-			System.out.println(e.getNodeName());
 			String name = e.getNodeName();
+			Log.debug(name);
 			Drawing dr = null;
 			if (name.equals("free")) {
 				for (int j=0;j<e.getChildNodes().getLength(); j++) {

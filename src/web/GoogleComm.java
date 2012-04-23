@@ -1,7 +1,6 @@
 package web;
 
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
@@ -19,9 +18,8 @@ import com.google.gdata.data.docs.DocumentListFeed;
 import com.google.gdata.data.extensions.LastModifiedBy;
 import com.google.gdata.data.media.MediaByteArraySource;
 import com.google.gdata.data.media.MediaSource;
-import com.google.gdata.util.AuthenticationException;
-import com.google.gdata.util.ServiceException;
 
+import app.Log;
 import app.Mediator;
 
 public class GoogleComm {
@@ -70,7 +68,7 @@ public class GoogleComm {
 			if (ent==null)
 				return;
 			String feedUrl = "https://docs.google.com/feeds/documents/private/full/" + resourceId + "?delete=true";
-			
+
 			service.delete(new URL(feedUrl), ent.getEtag());
 		} catch (Exception e) {
 			System.err.println(e);
@@ -99,7 +97,7 @@ public class GoogleComm {
 		}
 
 	}
-/*
+	/*
 	private DocumentListEntry getDocsListEntry(String resourceId) {
 		try {
 			if (resourceId == null)
@@ -112,10 +110,10 @@ public class GoogleComm {
 		}
 	}*/
 
-	
+
 	String getContent(DocumentListEntry ent, String format) {
 		String content = "";
-		
+
 		try {
 			String resourceId = ent.getResourceId();
 			String docType = resourceId.substring(0, resourceId.lastIndexOf(':'));
@@ -137,10 +135,10 @@ public class GoogleComm {
 		} catch (Exception e) {
 			System.err.println(e);
 		}
-		
+
 		return content;
 	}
-	
+
 	public void downloadDocument(String title, String filePath, String format) throws Exception {
 		// Obtain resourceId based on title
 		if (title == null || filePath == null || format == null)
@@ -189,7 +187,7 @@ public class GoogleComm {
 			return;
 		addData(ent,data);
 	}
-	
+
 	public void addData(DocumentListEntry ent, String data) {
 		try {
 			service.getRequestFactory().setHeader("If-Match", ent.getEtag());
@@ -209,7 +207,7 @@ public class GoogleComm {
 		} catch (Exception e) {
 			System.err.println(e);
 		}
-		 
+
 	}
 
 	public void printDocumentEntry(DocumentListEntry doc) {
@@ -264,7 +262,7 @@ public class GoogleComm {
 	}
 
 	public AclEntry changeAclRole(AclRole role, AclScope scope, DocumentListEntry documentEntry)
-			throws Exception {
+	throws Exception {
 		if (role == null || scope == null || documentEntry == null) {
 			throw new Exception("Null passed in for required parameters");
 		}
@@ -292,34 +290,40 @@ public class GoogleComm {
 		try {
 			AclScope scope = new AclScope(AclScope.Type.USER, user);
 			switch(perm) {
-				case ADD_ROLE:
-					addAclRole(role, scope, ent);
-					break;
-				case REMOVE_ROLE:
-					removeAclRole(scope, ent);
-					break;
-				case CHANGE_ROLE:
-					changeAclRole(role, scope, ent);
-					break;
+			case ADD_ROLE:
+				addAclRole(role, scope, ent);
+				break;
+			case REMOVE_ROLE:
+				removeAclRole(scope, ent);
+				break;
+			case CHANGE_ROLE:
+				changeAclRole(role, scope, ent);
+				break;
 			}
 		} catch (Exception e) {
 			System.err.println(e);
 		}
+	}
 
+	public void addWriter(String email, String title) {
+		DocumentListEntry entry = getDocument(title);
+		if (entry == null)
+			return;
+		setPerms(entry, email, AclRole.WRITER, ADD_ROLE);
 	}
 
 	public static void main(String args[]) throws Exception {
 		GoogleComm comm = new GoogleComm(null);
 		comm.login("frigus.glacialis@gmail.com", "testpassword");
-//		System.out.println("Done");
-//		DocumentListEntry ent = comm.createNew("Test");
-//		//comm.setPerms(ent, "emma.mirica@gmail.com", AclRole.WRITER, ADD_ROLE);
-//		//comm.showPerms(ent);
-//		comm.showAllDocs();
-//		comm.addData("Test", "hai sa vedem ce iese!");
-//		//comm.addData("Test", "hai sa vedem ce iese!");
-//		System.out.println("Success");
-		
+		//		System.out.println("Done");
+		//		DocumentListEntry ent = comm.createNew("Test");
+		//		//comm.setPerms(ent, "emma.mirica@gmail.com", AclRole.WRITER, ADD_ROLE);
+		//		//comm.showPerms(ent);
+		//		comm.showAllDocs();
+		//		comm.addData("Test", "hai sa vedem ce iese!");
+		//		//comm.addData("Test", "hai sa vedem ce iese!");
+		//		System.out.println("Success");
+
 		DocumentListEntry ent = comm.getDocument("Test");
 		String out = comm.getContent(ent, "txt");
 		System.out.println(out);
