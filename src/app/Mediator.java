@@ -18,6 +18,7 @@ import web.MyIni;
 
 import network.*;
 import network.c2s.AddUserMessage;
+import network.c2s.C2SEmailMessage;
 import network.c2s.ProbeGroupMessage;
 import network.c2s.DrawingMessage;
 import network.c2s.GetGroupDrawings;
@@ -280,7 +281,6 @@ public class Mediator {
 
 	public void joinGroupAccepted(String user, String group) {
 		if (!user.equals(username)) {
-			// TODO send gdocument link if user in group
 			return;
 		}
 		GroupTab tb = gg.addTab(group,new DefaultListModel());
@@ -296,7 +296,7 @@ public class Mediator {
 		comm.send(new GetGroupDrawings(group));
 		comm.send(new GetGroupHistory(group));
 		
-		// TODO get gdocument
+		comm.send(new C2SEmailMessage(email, group));
 	}
 
 
