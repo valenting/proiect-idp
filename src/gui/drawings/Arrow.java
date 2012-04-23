@@ -58,4 +58,8 @@ public class Arrow extends Drawing {
 		g.drawLine(start.x, start.y, (int) baseX, (int) baseY);
 		g.fillPolygon(xPoints, yPoints, 3);
 	}
+	
+	public String getName() {
+		return "arrow";
+	}
 }

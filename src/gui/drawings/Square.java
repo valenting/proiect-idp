@@ -24,4 +24,8 @@ public class Square extends Drawing {
 		g.setColor(color);
 		g.drawRect(x1, y1, x2-x1, y2-y1);
 	}
+	
+	public String getName() {
+		return "square";
+	}
 }

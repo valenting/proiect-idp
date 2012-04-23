@@ -42,4 +42,8 @@ public class Star extends Drawing {
 			g.drawLine(x1,y1,x2,y2);
 		}
 	}
+	
+	public String getName() {
+		return "star";
+	}
 }
