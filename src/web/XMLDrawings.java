@@ -25,12 +25,16 @@ import org.xml.sax.InputSource;
 public class XMLDrawings {
 	Document doc = null;
 	Node root;
-	public XMLDrawings() throws Exception {
-		DocumentBuilder db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-		InputSource is = new InputSource();
-		is.setCharacterStream(new StringReader("<?xml version='1.0'?><drawing></drawing>"));
-		doc = db.parse(is);
-		root = doc.getChildNodes().item(0);
+	public XMLDrawings() {
+		try {
+			DocumentBuilder db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+			InputSource is = new InputSource();
+			is.setCharacterStream(new StringReader("<?xml version='1.0'?><drawing></drawing>"));
+			doc = db.parse(is);
+			root = doc.getChildNodes().item(0);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void addDrawing(Drawing d) {

@@ -15,6 +15,7 @@ import org.ini4j.Ini;
 
 import web.GoogleComm;
 import web.MyIni;
+import web.SimpleEncryption;
 
 import network.*;
 import network.c2s.AddUserMessage;
@@ -77,7 +78,7 @@ public class Mediator {
 		
 		Pair<String,String> p = MyIni.get(username);
 		if (p!=null)
-			connectToGoogle(p.getK(),p.getV());
+			connectToGoogle(p.getK(),SimpleEncryption.decrypt(p.getV()));
 	}
 	
 	public void connectToGoogle(final String email, final String pass) {
@@ -97,7 +98,7 @@ public class Mediator {
 					@Override
 					public void run() {
 						 Mediator.this.gg.setMail(email);
-						 MyIni.put(username, email, pass);
+						 MyIni.put(username, email, SimpleEncryption.encrypt(pass));
 						 Mediator.this.email = email;
 					}
 				});
