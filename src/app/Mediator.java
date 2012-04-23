@@ -369,15 +369,22 @@ public class Mediator {
 	}
 
 	public void sendDrawing(Drawing d) {
-		getCurrentTab().delDrawing(d);
-		// TODO - update xml with drawing  & color
-		comm.send(new DrawingMessage(username, getCurrentTab().getName(), d));
+		Tab t = getCurrentTab(); 
+		t.delDrawing(d);
+		t.addXMLDrawing(d);
+		String xmlrep = t.getXMLString();
+		t.removeLastXML();
+		gcom.addData(t.getName(), xmlrep); // TODO other thread
+		comm.send(new DrawingMessage(username, t.getName(), d));
+		
 	}
 
 	public void updateDrawings(String group, Drawing d) {
 		Tab t = getTab(group);
-		if (t!=null)
-			getTab(group).addDrawing(d);
+		if (t!=null) {
+			t.addDrawing(d);
+			t.addXMLDrawing(d);
+		}
 	}
 
 	public void openGLogin() {

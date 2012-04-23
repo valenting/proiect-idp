@@ -8,6 +8,8 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.util.Vector;
 
+import web.XMLDrawings;
+
 public class Tab {
 	String name;
 	StateManager stateMgr;
@@ -16,15 +18,33 @@ public class Tab {
 	Mediator med;
 	JCanvas jc;
 	Color color;
-	
+	XMLDrawings xml;
 	public Tab(String name, Mediator m) {
 		this.name = name;
 		med  = m;
 		stateMgr = new StateManager(m);
+		xml = new XMLDrawings();
 	}
 	
 	public void setDrawings(Vector<Drawing> v ) {
+		xml = new XMLDrawings();
 		drawings = v;
+		
+		for (Drawing d : drawings)
+			xml.addDrawing(d);
+		
+	}
+	
+	public void addXMLDrawing(Drawing d) {
+		xml.addDrawing(d);
+	}
+	
+	public void removeLastXML() {
+		xml.deleteLastDrawing();
+	}
+	
+	public String getXMLString() {
+		return xml.toString();
 	}
 	
 	public String getName() {

@@ -41,6 +41,10 @@ public class XMLDrawings {
 		root.appendChild(d.getXmlNode(doc));
 	}
 	
+	public void deleteLastDrawing() {
+		root.removeChild(root.getLastChild());
+	}
+	
 	public String toString() {
 		return XMLtoTXT.stringXML(doc);
 	}

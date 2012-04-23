@@ -193,9 +193,9 @@ public class GoogleComm {
 
 	public void addData(DocumentListEntry ent, String data) {
 		try {
-			service.getRequestFactory().setHeader("If-Match", ent.getEtag());
+			service.getRequestFactory().setHeader("If-Match", "*"); // ent.getEtag()
 			ent.setMediaSource(new MediaByteArraySource(data.getBytes(), "text/plain"));
-			ent.updateMedia(false);
+			ent.updateMedia(true);
 		} catch (Exception e) {
 			Log.debug(e.toString());
 		}
