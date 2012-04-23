@@ -269,10 +269,10 @@ public class Mediator {
 	public void joinGroupCommand(String user, String group, Color c) {
 		if (!groupExists(group)) {
 			if (email != null) {
-				System.out.println("Create group " + group);
+				Log.debug("Create group " + group);
 				gcom.createNew(group);
 			} else {
-				System.out.println("Email null");
+				Log.debug("Email null");
 			}
 			comm.send(new NewGroupMessage(group, username, c));
 		} else {

@@ -19,12 +19,11 @@ import com.google.gdata.data.extensions.LastModifiedBy;
 import com.google.gdata.data.media.MediaByteArraySource;
 import com.google.gdata.data.media.MediaSource;
 
+import app.Log;
 import app.Mediator;
 
 public class GoogleComm {
 	private DocsService service;
-	private String host = "docs.google.com";
-
 	private final static int ADD_ROLE = 1;
 	private final static int REMOVE_ROLE = 2;
 	private final static int CHANGE_ROLE = 3;
@@ -55,7 +54,7 @@ public class GoogleComm {
 			URL url = new URL("https://docs.google.com/feeds/documents/private/full/");
 			return service.insert(url, newEntry);
 		} catch (Exception e) {
-			System.err.println(e);
+			Log.debug(e.toString());
 		}
 		return null;
 	}
@@ -70,7 +69,7 @@ public class GoogleComm {
 
 			service.delete(new URL(feedUrl), ent.getEtag());
 		} catch (Exception e) {
-			System.err.println(e);
+			Log.debug(e.toString());
 		}
 	}
 
@@ -91,7 +90,7 @@ public class GoogleComm {
 					return entry;
 			return null;
 		} catch (Exception e) {
-			System.err.println(e);
+			Log.debug(e.toString());
 			return null;
 		}
 
@@ -104,7 +103,7 @@ public class GoogleComm {
 			URL url = new URL("https://docs.google.com/feeds/documents/private/full/" + resourceId);
 			return service.getEntry(url, DocumentListEntry.class);
 		} catch (Exception e) {
-			System.err.println(e);
+			Log.debug(e.toString());
 			return null;
 		}
 	}*/
@@ -132,7 +131,7 @@ public class GoogleComm {
 					content += ch;
 			}
 		} catch (Exception e) {
-			System.err.println(e);
+			Log.debug(e.toString());
 		}
 
 		return content;
@@ -193,7 +192,7 @@ public class GoogleComm {
 			ent.setMediaSource(new MediaByteArraySource(data.getBytes(), "text/plain"));
 			ent.updateMedia(false);
 		} catch (Exception e) {
-			System.err.println(e);
+			Log.debug(e.toString());
 		}
 	}
 
@@ -204,7 +203,7 @@ public class GoogleComm {
 			for (DocumentListEntry entry : feed.getEntries())
 				printDocumentEntry(entry);
 		} catch (Exception e) {
-			System.err.println(e);
+			Log.debug(e.toString());
 		}
 
 	}
@@ -300,7 +299,7 @@ public class GoogleComm {
 				break;
 			}
 		} catch (Exception e) {
-			System.err.println(e);
+			Log.debug(e.toString());
 		}
 	}
 
