@@ -7,6 +7,8 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
 import java.util.Hashtable;
 
+import app.Log;
+
 import network.s2c.DrawingMessage;
 import network.s2c.ErrorNoticeMessage;
 import network.s2c.LogInResponse;
@@ -40,7 +42,13 @@ public class ServerMediator {
 			serv.broadcast(new UserStatusChange(gm.getListModel()));
 			serv.write(key, new TreeStatusChange(gm.getTreeModel()));
 			hash.put((SocketChannel) key.channel(), user);
-		}
+		} else
+			try {
+				serv.removeSocket((SocketChannel) key.channel());
+				key.channel().close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 	}
 
 	public void disconnectUser(SocketChannel chan) {
@@ -48,6 +56,9 @@ public class ServerMediator {
 	}
 	
 	public void logOff(SelectionKey key, String user) {
+		Log.debug("Cleaning up user: "+user);
+		if (user==null)
+			return;
 		gm.logOffUser(user);
 		serv.broadcast(new UserStatusChange(gm.getListModel()));
 		serv.broadcast(new TreeStatusChange(gm.getTreeModel()));

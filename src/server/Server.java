@@ -39,7 +39,9 @@ public class Server {
 		sockets.add(socketChannel);
 	}
 
-
+	public void removeSocket(SocketChannel c) {
+		sockets.remove(c);
+	}
 
 	public void read(final SelectionKey key)  {
 		DataContainer data		= (DataContainer)key.attachment();		
