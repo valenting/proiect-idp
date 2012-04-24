@@ -115,6 +115,7 @@ public class GoogleComm {
 	 */
 	public DocumentListEntry getDocument(String title) {
 		URL feedUri;
+		//service.getRequestFactory().setHeader("If-Match", "*");
 		try {
 			feedUri = new URL("https://docs.google.com/feeds/default/private/full/");
 		} catch (MalformedURLException e) {
@@ -155,8 +156,6 @@ public class GoogleComm {
 		mc.setUri(exportUrl.toString());
 		MediaSource ms;
 		try {
-			service.setHeader("If-Match", "*");
-
 			ms = service.getMedia(mc);
 			InputStream inStream = ms.getInputStream();
 			int c;
@@ -198,47 +197,12 @@ public class GoogleComm {
 	}
 
 	public void addData(DocumentListEntry ent, String data) {
-
-		//		String etag = ent.getEtag();
-		//		service.getRequestFactory().setHeader("If-Match", etag);
-		//		MediaByteArraySource s = new MediaByteArraySource(data.getBytes(), "text/plain");
-		//		s.setEtag(etag);
-		//		ent.setMediaSource(s);
-		//		try {
-		//			ent.updateMedia(false);
-		//			service.update(new URL(ent.getEditLink().getHref()), ent, s.getEtag());
-		//		} catch (IOException e) {
-		//			Log.debug("IOException " + e.toString());
-		//		} catch (ServiceException e) {
-		//			Log.debug("ServiceException " + e.toString());
-		//		}
-
-
-
-		//		String etag = ent.getEtag();
-		//		MediaByteArraySource s = new MediaByteArraySource(data.getBytes(), "text/plain");
-		//		s.setEtag(etag);
-		//		service.getRequestFactory().setHeader("If-Match", etag);
-		//		try {
-		//			service.updateMedia(new URL(ent.getEditLink().getHref()), DocumentListEntry.class, s);
-		//		} catch (MalformedURLException e) {
-		//			// TODO Auto-generated catch block
-		//			e.printStackTrace();
-		//		} catch (IOException e) {
-		//			// TODO Auto-generated catch block
-		//			e.printStackTrace();
-		//		} catch (ServiceException e) {
-		//			// TODO Auto-generated catch block
-		//			e.printStackTrace();
-		//		}
-		//		
-		//		service.setHeader("If-Match", null);
-
+		getContent(ent, "txt");
 		service.getRequestFactory().setHeader("If-Match", "*"); // ent.getEtag()
 		ent.setMediaSource(new MediaByteArraySource(data.getBytes(), "text/plain"));
 
 		try {
-			ent.updateMedia(false);
+			ent.updateMedia(true);
 		} catch (IOException e) {
 			Log.debug("IOException " + e.toString());
 		} catch (ServiceException e) {
@@ -272,6 +236,8 @@ public class GoogleComm {
 		} catch (ServiceException e) {
 			Log.debug("ServiceException " + e.toString());
 			return null;
+		} catch (Exception e) {
+			Log.debug(e.toString());
 		}
 		return entry;
 	}
