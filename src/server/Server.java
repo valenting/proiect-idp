@@ -99,6 +99,7 @@ public class Server {
 	public void write(SocketChannel	chan, Message m){
 		if (!chan.isConnected()) {
 			System.out.println("Channel CLOSED");
+			sockets.remove(chan);
 			return;
 		}
 		try {
@@ -133,51 +134,42 @@ public class Server {
 	}
 
 	Selector selector;
-	public void exec() throws Exception {
+	public void exec() {
 
 		//Selector selector						= null;
 		ServerSocketChannel serverSocketChannel	= null;
 
-		try {
+			try {
 			selector = Selector.open();
 
 			serverSocketChannel = ServerSocketChannel.open();
 			serverSocketChannel.configureBlocking(false);
 			serverSocketChannel.socket().bind(new InetSocketAddress(PORT));
 			serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
+			} catch (Exception e) {
+				System.err.println(e);
+				System.exit(1);
+			}
 			// main loop
 			while (true) {
 				// wait for something to happen
-				selector.select();
-
-				// iterate over the events
-				for (Iterator<SelectionKey> it = selector.selectedKeys().iterator(); it.hasNext(); ) {
-					// get current event and REMOVE it from the list!!!
-					SelectionKey key = it.next();
-					it.remove();
-					if (key.isAcceptable())
-						accept(key);
-					else if (key.isReadable())
-						read(key);
-
+				try {
+					selector.select();
+					// iterate over the events
+					for (Iterator<SelectionKey> it = selector.selectedKeys().iterator(); it.hasNext(); ) {
+						// get current event and REMOVE it from the list!!!
+						SelectionKey key = it.next();
+						it.remove();
+						if (key.isAcceptable())
+							accept(key);
+						else if (key.isReadable())
+							read(key);	
+					}
+				} catch (Exception e) {
+					Log.error(e.toString());
+					System.err.println(e.toString());
 				}
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
-
-		} finally {
-			// cleanup
-
-			if (selector != null)
-				try {
-					selector.close();
-				} catch (IOException e) {}
-
-			if (serverSocketChannel != null)
-				try {
-					serverSocketChannel.close();
-				} catch (IOException e) {}
-		}
 
 	}
 
