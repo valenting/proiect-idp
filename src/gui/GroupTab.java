@@ -48,6 +48,7 @@ import javax.swing.text.StyledDocument;
 import javax.swing.DefaultComboBoxModel;
 
 import worker.ExportTask;
+import javax.swing.SwingConstants;
 
 
 public class GroupTab extends JPanel {
@@ -111,11 +112,30 @@ public class GroupTab extends JPanel {
 		JButton btnSaveWork = new SaveWorkButton(g, m);
 		GridBagConstraints gbc_btnSaveWork = new GridBagConstraints();
 		gbc_btnSaveWork.insets = new Insets(0, 0, 5, 0);
+		gbc_btnSaveWork.anchor = GridBagConstraints.WEST;
 		gbc_btnSaveWork.gridx = 1;
 		gbc_btnSaveWork.gridy = 0;
 		add(btnSaveWork, gbc_btnSaveWork);
 		m.addGroupElement(btnSaveWork, this);
 
+		JButton timeline = new JButton("TimeLine");
+		timeline.setHorizontalAlignment(SwingConstants.LEFT);
+		GridBagConstraints timeline_const = new GridBagConstraints();
+		timeline_const.anchor = GridBagConstraints.EAST;
+		timeline_const.insets = new Insets(0, 0, 5, 0);
+		timeline_const.gridx = 1;
+		timeline_const.gridy = 0;
+		add(timeline, timeline_const);
+		
+		timeline.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				m.openTimeline();
+			} 
+		});
+		
+		m.addGroupElement(timeline, this);
+		
 		final ExportTask export = new ExportTask();
 		
 		progressBar = new JProgressBar(0,10);

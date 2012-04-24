@@ -1,10 +1,10 @@
 package web;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Vector;
 
 import com.google.gdata.client.docs.DocsService;
 import com.google.gdata.data.MediaContent;
@@ -16,6 +16,8 @@ import com.google.gdata.data.acl.AclScope;
 import com.google.gdata.data.docs.DocumentEntry;
 import com.google.gdata.data.docs.DocumentListEntry;
 import com.google.gdata.data.docs.DocumentListFeed;
+import com.google.gdata.data.docs.RevisionEntry;
+import com.google.gdata.data.docs.RevisionFeed;
 import com.google.gdata.data.media.MediaByteArraySource;
 import com.google.gdata.data.media.MediaSource;
 import com.google.gdata.util.AuthenticationException;
@@ -23,6 +25,7 @@ import com.google.gdata.util.ServiceException;
 
 import app.Log;
 import app.Mediator;
+import app.Pair;
 
 public class GoogleComm {
 	private DocsService service;
@@ -346,45 +349,74 @@ public class GoogleComm {
 		setPerms(entry, email, AclRole.WRITER, ADD_ROLE);
 	}
 
-	public void downloadDocument(String title, String filePath, String format) throws Exception {
-		// Obtain resourceId based on title
-		if (title == null || filePath == null || format == null)
-			throw new Exception("Null arguments");
-		String resourceId = getResourceId(title);
-		// If the resource doesn't exist
-		if (resourceId.length() <= 0) {
-			Log.debug("Nu exista\n");
-			return;
+	public String downloadDocument(String href) {
+		String content = "";
+		URL exportUrl = null;
+		try {
+			exportUrl = new URL(href);
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
 		}
-		String docType = resourceId.substring(0, resourceId.lastIndexOf(':'));
-		String docId = resourceId.substring(resourceId.lastIndexOf(':') + 1);
-		URL exportUrl = new URL("https://docs.google.com/feeds/download/" + docType +
-				"s/Export?docID=" + docId + "&exportFormat=" + format);
 		MediaContent mc = new MediaContent();
 		mc.setUri(exportUrl.toString());
-		MediaSource ms = service.getMedia(mc);
-
-		InputStream inStream = null;
-		FileOutputStream outStream = null;
-
+		MediaSource ms;
 		try {
-			inStream = ms.getInputStream();
-			outStream = new FileOutputStream(filePath);
-
+			ms = service.getMedia(mc);
+			InputStream inStream = ms.getInputStream();
 			int c;
-			while ((c = inStream.read()) != -1) {
-				outStream.write(c);
+			while ((c = inStream.read())!=-1) {
+				char ch = (char) c;
+				if (ch != 'ï' && ch != '»' && ch != '¿')
+					content += ch;
 			}
-		} finally {
-			if (inStream != null) {
-				inStream.close();
-			}
-			if (outStream != null) {
-				outStream.flush();
-				outStream.close();
+		} catch (IOException e1) {
+			Log.debug("IOException " + e1.toString());
+			return content;
+		} catch (ServiceException e1) {
+			Log.debug("ServiceException " + e1.toString());
+
+			return content;
+		}
+
+		return content;
+	}
+
+	private RevisionFeed getRevisionFeed(String title) {
+		DocumentListEntry ent = getDocument(title);
+		if (ent == null)
+			return null;
+		String resId = ent.getResourceId();
+		try {
+			URL url = new URL("https://docs.google.com/feeds/default/private/full/"+resId+"/revisions");
+			return service.getFeed(url, RevisionFeed.class);
+		} catch (MalformedURLException e) {
+			Log.debug("MalformedURLException " + e.toString());
+		} catch (IOException e) {
+			Log.debug("IOException " + e.toString());
+		} catch (ServiceException e) {
+			Log.debug("ServiceException " + e.toString());
+		}
+		return null;
+	}
+
+	public Vector<Pair<String, String>> getRevisions(String title) {
+		Vector<Pair<String,String>> v = new Vector<Pair<String,String>>();
+		DocumentListEntry ent = getDocument(title);
+		RevisionFeed feed = getRevisionFeed(title);
+		if (feed != null) {
+			for (RevisionEntry e : feed.getEntries()) {
+				String s = e.getTitle().getPlainText()+" created on ";
+				s+= e.getUpdated().toUiString()+" by ";
+				s+=e.getModifyingUser().getEmail()+"\n";
+				String link = e.getEditLink().getHref();
+				String content = downloadDocument("https://docs.google.com/feeds/download/documents/Export?docID="+ent.getDocId()+
+						"&exportFormat=txt" + "&revision="+link.substring(link.lastIndexOf("/") + 1));
+				v.add(new Pair<String, String>(s, content));
 			}
 		}
+		return v;
 	}
+
 	public static void main(String args[]) throws Exception {
 		GoogleComm comm = new GoogleComm(null);
 		comm.login("frigus.glacialis@gmail.com", "testpassword");

@@ -43,6 +43,7 @@ import gui.GeneralGui;
 import gui.GoogleLogin;
 import gui.GroupTab;
 import gui.Gui;
+import gui.Timeline;
 import gui.buttons.ToolbarButton;
 import gui.drawings.Drawing;
 
@@ -404,13 +405,23 @@ public class Mediator {
 
 	public boolean gLogin(String user, String pass) {
 		connectToGoogle(user, pass);
-		return true;
+		return true; 
 	}
 
 	public void emailReceived(String email2, String group) {
 		if (!userInGroup(username, group))
 			return;
 		gcom.addWriter(email2, group);
+	}
+
+	public void openTimeline() {
+		Thread t = new Thread() {
+			@Override
+			public void run() {
+				new Timeline(gcom, getCurrentTab().getName());
+			}
+		};
+		t.start();
 	}
 }
 
