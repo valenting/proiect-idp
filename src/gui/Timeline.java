@@ -47,7 +47,7 @@ public class Timeline extends JFrame {
 		slider.setMinorTickSpacing(1);
 
 		slider.setMinimum(0);
-		slider.setMaximum(1);
+		slider.setMaximum(0);
 		slider.setValue(0);
 		
 		panel = new JTimelinePanel();
@@ -60,7 +60,7 @@ public class Timeline extends JFrame {
 				int id = slider.getValue();
 				if (v == null)
 					return;
-				if (id>v.size())
+				if (id >= v.size())
 					return;
 				textArea.setText(v.get(id).getK());
 				String content = v.get(id).getV();
@@ -90,11 +90,12 @@ public class Timeline extends JFrame {
 			
 			@Override
 			public void run() {
-				if (v.size() > 0)
+				if (v.size() > 0) {
 					textArea.setText(v.get(0).getK());
-				slider.setMinimum(0);
-				slider.setMaximum(v.size()-1);
-				slider.setValue(0);
+					slider.setMinimum(0);
+					slider.setMaximum(v.size()-1);
+					slider.setValue(0);
+				}
 			}
 		});
 	}

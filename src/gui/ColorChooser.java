@@ -26,7 +26,6 @@ public class ColorChooser extends JFrame {
 	 * Create the frame.
 	 */
 	public ColorChooser(Vector<Color> colors, final Mediator m, final String user, final String group) {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		Vector<Object> elements = new Vector<Object>(colors);

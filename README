@@ -52,8 +52,26 @@ OBSERVATIE: Pentru testare nu putem da nume user in linia de comanda caci
 	alte grupuri.
 	
 	Punctul 3.
+		La alaturarea la un grup, utilizatorii din grupul respectiv ii vor
+	oferi noului utilizator acces de scriere la documentul grupului.
+	Fiecare din utilizatori mentine un arbore DOM cu reprezentarea XML a 
+	desenelor. La adaugarea unui desen nou, utilizatorul scrie reprezentarea
+	XML in documentul partajat. La primirea unui desen din retea, utilizatorii
+	adauga desenul la arborele DOM.
 	
 	Punctul 4.
+		La alaturarea la un grup, clientul trimite catre server un mesaj de
+	tipul C2SEmailMessage ce contine adresa sa de email, si grupul pentru
+	care se face actualizarea. Serverul il trimite la toti clientii, iar cei
+	ce fac parte din grupul respectiv, incearca sa ii ofere perimisiuni de 
+	scriere la documentul grupului. Acesta nu este adaugat de creatorul 
+	grupului deoarece creatorul poate sa fi parasit aplicatia, cu sau fara
+	mesaj de log-off.
+		Desi functiile de revocare a permisiunilor sunt implementate, 
+	utilizatorii care parasesc grupul isi mentin drepturile asupra fisierului
+	din acelasi motiv legat de existenta unui owner.
+		In functie de calitatea conexiunii, adaugarea utilizatorului la grup
+	si scrierea in document pot esua.
 	
 	Bonus 2:
 		A fost implementat un Timeline Grafic. Acesta ia feedurile de revizii
@@ -70,10 +88,6 @@ OBSERVATIE: Pentru testare nu putem da nume user in linia de comanda caci
 	downloadam in format jpg caci este o problema cu acest format in 
 	Open-JDK. Insa modalitatea este absolut analoaga.
 	
-	TODO - problema cand incerca sa scrie in fisier un altul decat owner,
-	desi apare avem eroare, iar la revizii nu apare niciodata el ca cel care
-	a modificat.
-		- problema cu adaugareain fisier ?? o mai rezolvam ??
 ==============================================================
 
 3. Bonus
