@@ -33,6 +33,42 @@ OBSERVATIE: Pentru testare nu putem da nume user in linia de comanda caci
 	
 2. Implementare
 
+	Punctul 1. 
+		S-a folosit biblioteca ini pentru a mentine informatiile
+	de conectare la contul de google. In momentul logarii in aplicatie,
+	aceasta va citi fisierul si daca userul are credentialele de google
+	introduse le va lua automat din fisier si va incerca autentificarea.
+	Altfel, utilizatorul va trebui sa le introduca apasand butonul
+	GoogleLogin. Tot cu acesta va putea edita contul de google.
+	OBS: Ca sa nu tinem in clar parolele de google in fisier, am decis
+	sa implementam un modul simplu de criptare/decriptare.
+	
+	Punctul 2.
+		La incercarea autentificarii google, daca aceasta va reusi va
+	fi setat labelul Google User cu emailul cu care s-a logat, altfel va fi
+	afisata eroare pentru a se reincerca logarea. Daca nu este conectat cu
+	un cont de google in labelul respectiv va aparea '(none)', deci utilizatorul
+	trebuie sa fie foarte atent si sa introduca contul inainte de logare la
+	alte grupuri.
+	
+	Punctul 3.
+	
+	Punctul 4.
+	
+	Bonus 2:
+		A fost implementat un Timeline Grafic. Acesta ia feedurile de revizii
+	pentru fisierul corespunzator grupului si apoi la mutarea sliderului va citi
+	continutul acelei revizii, va parsa continutul, obtinand astfel un dom
+	si pe baza acestuia isi va construi desenele pe care le va afisa cu ajutorul
+	unui BufferedImage pe Jpanel.
+	
+	Bonus 3:
+		Pentru acesta, se citeste continutul fisierului xml de pe google.docs
+	si analog va fi parsat si obtinut arborele din care vor fi obtinute
+	desenele. Acestea vor fi afisate pe un BufferedImage si apoi le va
+	scrie in formate png. Nu am reusit pe Linux, folosind Open-JDK sa
+	downloadam in format jpg caci este o problema cu acest format in 
+	Open-JDK. Insa modalitatea este absolut analoaga.
 	
 	TODO - problema cand incerca sa scrie in fisier un altul decat owner,
 	desi apare avem eroare, iar la revizii nu apare niciodata el ca cel care

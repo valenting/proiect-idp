@@ -46,6 +46,7 @@ public class Communicator {
 			if (data.lengthByteBuffer.getInt(0)<0)
 				throw new IOException(); // TODO
 			// TODO use the same buffer
+
 			data.dataByteBuffer = ByteBuffer.allocate(data.lengthByteBuffer.getInt(0));
 			if (data.dataByteBuffer == null)
 				throw new IOException(); // TODO
@@ -71,6 +72,11 @@ public class Communicator {
 			
 		} catch (IOException e) {
 			m.loginError("Connection failure");
+			e.printStackTrace();
+			key.channel().close();
+		} catch (OutOfMemoryError e) {
+			m.loginError("Connection failure: Out Of Mem");
+			e.printStackTrace();
 			key.channel().close();
 		} catch (Exception e) {
 			e.printStackTrace();
