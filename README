@@ -9,14 +9,14 @@ Email:	emma.mirica@gmail.com
 Echipa:	*(NULL)
 
 ##################################################
-#                Tema 2 - NET                    #
+#                Tema 3 - Servicii Web           #
 ##################################################
 
 1. Continut arhiva
 
 	- src/ - folderul cu sursele
 	- build.xml - fisierul pentru rularea cu ant
-	- lib - cu jarurile necesare logarii si junit
+	- lib - cu jarurile necesare logarii si junit, gdocs api, ini
 	- README - fisierul cu explicatiile aferente
 	
 OBSERVATIE: Pentru testare nu putem da nume user in linia de comanda caci
@@ -33,57 +33,11 @@ OBSERVATIE: Pentru testare nu putem da nume user in linia de comanda caci
 	
 2. Implementare
 
-	2.1.1 Protocol comunicatie
-		Comunicatia intre client si server se realizeaza prin transmiterea 
-	de mesaje. Un mesaj consta dintr-un antet de 4 octeti ce reprezinta 
-	dimensiunea mesajului, si dintr-un obiect serializabil.
-		Mesajele sunt de 2 tipuri: Mesaj client-server sau mesaj server-client.
-	La primirea mesajului, se apeleaza metoda execute din clasa aferenta a 
-	mesajului. Diferenta dintre tipurile de mesaje consta in parametrii metodei
-	execute. Deoarece serverul este stateless, metoda execute primeste 
-	un obiect ServerMediator si un obiect SelectionKey. Cheia este folosita la
-	transmiterea mesajelor de raspuns clientului.
-		La nivelul serverului, primirea si executia unui mesaj conduce la 
-	transmiterea altor mesaje si la schimbarea anumitor proprietati din 
-	GroupManager.
 	
-	2.1.2 Modificari fata de etapa 1
-		Fata de etapa 1 s-au realizat modificari conform enuntului pentru
-	asigurarea managementului de grupuri la nivelul serverului. In acest sens
-	s-a mutat complet si relativ nealterata clasa GroupManager din Mediator-ul
-	clientului in ServerMediator. 
-		S-a adaugat clasa Communicator ce implementeaza primirea si trimiterea
-	mesajelor catre client.
-		La crearea unui grup, acum utilizatorul este intrebat ce culoare 
-	doreste, astfel culoarea Negru nu mai este default pentru creatorul 
-	grupului. De asemenea, nu pot exista mai multe sesiuni de de utilizatori
-	conectati cu acelasi user si parola. 
-		La nivelul legendei, userii ce au participat la grup si sunt conectati
-	apar cu sufixul "(+)" in timp ce userii care au parasit grupul apar cu
-	sufixul "(-)". La reconectarea la un grup, daca user-ul a fost anterior
-	in grup, acesta primeste automat culoarea precedenta. Daca user-ul este
-	adaugat de altcineva, si nu a mai fost in grupul respectiv, el primeste
-	automat prima culoare disponibila.
-		
-	
-	2.2 Logare
-		Pentru logare a fost folosit pachetul log4j. Se foloseste
-	clasa Log ce contine un logger static si tote metodele sunt statice.
-	Astfel, in momentul autentificarii in mediatorul clientului se va seta
-	fisierul de log la "numeUser.log". Si apoi toate mesajele vor fi logate
-	in acest fisier. Mesajele de eroare vr fi afisate si la consola.
-		Se foloseste un fisier de logare si pentru server.
-	
-	2.3 Junit
-		Pentru testare am folosit Junit. Am testat acele clase care sunt
-	independente. De aceea, nu am putut testa decat Authenticatorul si 
-	GroupManagerul. Partea de transmisie mesaje nu se putea testa la fel
-	de usor folosind Junit, caci depinde de mediator ar trebui stuburi
-	si cerinta temei nu specifica aceste lucruri.
-		Pentru cele doua clase testate se verifica daca autentificarea
-	se face corect si daca comenzile de add, join si leave group se fac ok.
-	
-	
+	TODO - problema cand incerca sa scrie in fisier un altul decat owner,
+	desi apare avem eroare, iar la revizii nu apare niciodata el ca cel care
+	a modificat.
+		- problema cu adaugareain fisier ?? o mai rezolvam ??
 ==============================================================
 
 3. Bonus
@@ -91,7 +45,11 @@ OBSERVATIE: Pentru testare nu putem da nume user in linia de comanda caci
 	Au fost implementate urmatoarele bonusuri:
 		- posibilitatea de desenare la mouseClick si mouseMove
 		- desenarea altor forme: free drawing si stea
-
+	
+	Bonus Tema 3:
+		- au fost implementate bonusurile Timeline grafic 
+		- salvare in format png, caci nu putem salva in format jpg, 
+	un bug in openjdk (Tema a fost implementata pe Linux);
 
 ==============================================================
 
