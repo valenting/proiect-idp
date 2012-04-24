@@ -48,7 +48,6 @@ public class MyIni {
 			return null;
 		String pass = s.get("pass");
 		String email = s.get("email");
-		//TODO decriptare pass
 		return new Pair<String, String>(email, pass);
 	}
 	
@@ -57,7 +56,6 @@ public class MyIni {
 			Section s = ini.get(user);
 			if (s==null)
 				s = ini.add(user);
-			//TODO criptare pass
 			s.put("email", email);
 			s.put("pass", pass);
 			store();

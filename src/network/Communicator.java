@@ -44,12 +44,11 @@ public class Communicator {
 				}
 			}
 			if (data.lengthByteBuffer.getInt(0)<0)
-				throw new IOException(); // TODO
-			// TODO use the same buffer
+				throw new IOException();
 
 			data.dataByteBuffer = ByteBuffer.allocate(data.lengthByteBuffer.getInt(0));
 			if (data.dataByteBuffer == null)
-				throw new IOException(); // TODO
+				throw new IOException();
 			data.lengthByteBuffer.clear();
 
 			while (data.dataByteBuffer.remaining()!=0) {

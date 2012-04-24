@@ -100,7 +100,7 @@ public class Server {
 
 	public void write(SocketChannel	chan, Message m){
 		if (!chan.isConnected()) {
-			System.out.println("Channel CLOSED");
+			Log.debug("Channel Closed");
 			sockets.remove(chan);
 			return;
 		}
@@ -149,7 +149,7 @@ public class Server {
 			serverSocketChannel.socket().bind(new InetSocketAddress(PORT));
 			serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
 			} catch (Exception e) {
-				System.err.println(e);
+				Log.error(e.toString());
 				System.exit(1);
 			}
 			// main loop
@@ -169,7 +169,6 @@ public class Server {
 					}
 				} catch (Exception e) {
 					Log.error(e.toString());
-					System.err.println(e.toString());
 				}
 			}
 

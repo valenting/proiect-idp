@@ -44,6 +44,8 @@ public class GoogleComm {
 	 */
 	public boolean login(String user, String pass)  {
 		try {
+			service = new DocsService("Whiteboard");
+			service.setProtocolVersion(DocsService.Versions.V3);
 			service.setUserCredentials(user,pass);
 			this.user = user;
 			this.pass = pass;
@@ -58,6 +60,7 @@ public class GoogleComm {
 	 * un alt document cu acel nume -> grupurile sunt unice
 	 */
 	public DocumentListEntry createNew(String title) {
+		login(user,pass);
 		// Check if the document already exists
 		String rid = getResourceId(title);
 		if (!rid.equals("")) {
@@ -115,6 +118,7 @@ public class GoogleComm {
 	 */
 	public DocumentListEntry getDocument(String title) {
 		URL feedUri;
+		login(user,pass);
 		//service.getRequestFactory().setHeader("If-Match", "*");
 		try {
 			feedUri = new URL("https://docs.google.com/feeds/default/private/full/");
@@ -197,8 +201,7 @@ public class GoogleComm {
 	}
 
 	public void addData(DocumentListEntry ent, String data) {
-		getContent(ent, "txt");
-		service.getRequestFactory().setHeader("If-Match", "*"); // ent.getEtag()
+		service.getRequestFactory().setHeader("If-Match", "*"); // 
 		ent.setMediaSource(new MediaByteArraySource(data.getBytes(), "text/plain"));
 
 		try {
@@ -386,8 +389,14 @@ public class GoogleComm {
 	public static void main(String args[]) throws Exception {
 		GoogleComm comm = new GoogleComm(null);
 		comm.login("frigus.glacialis@gmail.com", "testpassword");
-		DocumentListEntry ent = comm.getDocument("Test");
-		String out = comm.getContent(ent, "txt");
-		System.out.println(out);
+		DocumentListEntry ent = comm.createNew("EDCRFVTGB");
+		comm.addData("EDCRFVTGB", "testing...");
+		comm.addData("EDCRFVTGB", "teafdsdfasdsfd.");
+		comm.addWriter("valentin.gosu@gmail.com", "EDCRFVTGB");
+		System.out.println(comm.getContent("EDCRFVTGB"));
+		comm.addData("EDCRFVTGB", "funf");
+		System.out.println(comm.getContent("EDCRFVTGB"));
+		
+		
 	}
 }

@@ -78,8 +78,7 @@ class XMLtoTXT {
 	}
 	
 	public static String stringXML(Document doc) {
-		if (trans == null)
-			init();
+		init();
 		DOMSource source = new DOMSource(doc);
         try {
 			trans.transform(source, result);
